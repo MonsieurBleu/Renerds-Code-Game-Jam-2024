@@ -341,12 +341,25 @@ void Game::mainloop()
         .setPosition(vec3(2, 2, 0));
     scene.add(lanterne);
 
-    ModelRef werewolf = newModel(GameGlobals::PBRstencil);
-    werewolf->loadFromFolder("ressources/models/werewolf/", false, false);
-    werewolf->state
-        .scaleScalar(100)
+ 
+ //Portail 
+/*
+    ModelRef portailOuvert = newModel(GameGlobals::PBR);
+    portailOuvert->loadFromFolder("ressources/models/gate/gateOpen/");
+    portailOuvert->state
+        .scaleScalar(200)
+        .setPosition(vec3(0, 0, 0));
+    scene.add(portailOuvert);
+
+    
+    ModelRef portailFerme = newModel(GameGlobals::PBR);
+    portailFerme->loadFromFolder("ressources/models/gate/gateClose/");
+    portailFerme->state
+        .scaleScalar(200)
         .setPosition(vec3(10, 0, 0));
-    scene.add(werewolf);
+    scene.add(portailFerme);
+*/
+
 
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
