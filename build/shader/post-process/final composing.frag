@@ -148,7 +148,7 @@ void main() {
     float aspectRatio = float(iResolution.y) / float(iResolution.x);
 
     // Pixel art effect 
-        // float pixelSize = 0.0075;
+        // float pixelSize = (0.5 + 0.5*cos(iTime*2.f))*0.02; //0.0075
 
         // /* Additionnal depth based resolution change */
         // float d = texture(bDepth, uv).r*2.0;

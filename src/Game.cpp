@@ -193,8 +193,8 @@ void Game::mainloop()
     ModelRef floor = newModel(GameGlobals::PBR);
     floor->loadFromFolder("ressources/models/ground/");
 
-    int gridSize = 10;
-    int gridScale = 10;
+    int gridSize = 16;
+    int gridScale = 20;
     for (int i = -gridSize; i < gridSize; i++)
         for (int j = -gridSize; j < gridSize; j++)
         {
@@ -205,7 +205,7 @@ void Game::mainloop()
             scene.add(f);
         }
 
-    int forestSize = 8;
+    int forestSize = 16;
     float treeScale = 0.5;
 
     ModelRef leaves = newModel(GameGlobals::PBRstencil);

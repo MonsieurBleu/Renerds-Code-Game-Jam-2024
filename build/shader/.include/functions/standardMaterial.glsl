@@ -1,7 +1,6 @@
-#include functions / HSV.glsl
-
-#include globals / Constants.glsl
-#include functions / Noise.glsl
+#include functions/HSV.glsl
+#include globals/Constants.glsl
+#include functions/Noise.glsl
 
 float mRoughness;
 float mRoughness2;
