@@ -1,6 +1,7 @@
 #pragma once
 #include <../Engine/include/App.hpp>
-#include <demos/FPS/FPSController.hpp>
+// #include <demos/FPS/FPSController.hpp>
+#include <Player.hpp>
 #include <Fonts.hpp>
 #include <FastUI.hpp>
 
@@ -17,13 +18,13 @@ private:
     MeshMaterial depthOnlyInstancedMaterial;
 
     /* Fast-UI */
-    FontRef FUIfont;    
+    FontRef FUIfont;
     MeshMaterial defaultFontMaterial;
     MeshMaterial defaultSUIMaterial;
     SimpleUiTileBatchRef fuiBatch;
 
     /* Physics */
-    std::shared_ptr<FPSController> playerControler;
+    std::shared_ptr<Player> player;
     PhysicsEngine physicsEngine;
     LimitTimer physicsTicks;
     void physicsLoop();

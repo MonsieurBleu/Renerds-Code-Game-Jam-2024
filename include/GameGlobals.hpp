@@ -4,8 +4,10 @@
 
 class GameGlobals
 {
-    public :
-        static MeshMaterial PBR;
-        static MeshMaterial PBRstencil;
-        static MeshMaterial PBRinstanced;
+public:
+    static MeshMaterial PBR;
+    static MeshMaterial PBRstencil;
+    static MeshMaterial PBRinstanced;
+
+    static vec3 playerPosition;
 };
