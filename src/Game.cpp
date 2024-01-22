@@ -351,6 +351,10 @@ void Game::mainloop()
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
+    GameGlobals::Zone2Center = vec3(1E6);
+    GameGlobals::Zone2Objectif = vec3(80, 0, 5);
+    lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+
     /* Main Loop */
     while (state != AppState::quit)
     {
@@ -372,6 +376,8 @@ void Game::mainloop()
 
         menu.trackCursor();
         menu.updateText();
+
+        effects.update();
 
         mainloopPreRenderRoutine();
 

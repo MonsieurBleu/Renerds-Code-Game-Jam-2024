@@ -36,10 +36,10 @@ Player::Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffe
     cursorXNew = dcursorXNew;
     cursorYNew = dcursorYNew;
 
-    glfwSetCursorPosCallback(window, [](GLFWwindow *window, double x, double y)
-                             {
-        cursorXNew = x;
-        cursorYNew = y; });
+    // glfwSetCursorPosCallback(window, [](GLFWwindow *window, double x, double y)
+    //                          {
+    //     cursorXNew = x;
+    //     cursorYNew = y; });
 
     // might break things later
     CameraState state = globals.currentCamera->getState();
@@ -92,7 +92,10 @@ void Player::update(float deltaTime)
     float diffBias = 0.0001;
     vec3 diff = globals.currentCamera->getPosition() - pos;
     if (dot(diff, diff) > diffBias)
+    {
         globals.currentCamera->setPosition(pos);
+        GameGlobals::playerPosition = pos*vec3(1, 0, 1);
+    }
 
     if (running)
     {
@@ -124,7 +127,7 @@ void Player::update(float deltaTime)
         globals.currentCamera->setState(state);
     }
 
-    std::cout << "stamina: " << stamina << "\n";
+    // std::cout << "stamina: " << stamina << "\n";
 }
 
 void Player::doInputs(GLFWKeyInfo &input)
@@ -281,27 +284,27 @@ void Player::jump(float deltaTime)
 
 void Player::mouseLook()
 {
-    float xoffset = cursorXOld - cursorXNew;
-    float yoffset = cursorYOld - cursorYNew;
+    // float xoffset = cursorXOld - cursorXNew;
+    // float yoffset = cursorYOld - cursorYNew;
 
-    cursorXOld = cursorXNew;
-    cursorYOld = cursorYNew;
+    // cursorXOld = cursorXNew;
+    // cursorYOld = cursorYNew;
 
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    // xoffset *= sensitivity;
+    // yoffset *= sensitivity;
 
-    const vec3 camDir = globals.currentCamera->getDirection();
-    const vec3 camRight = normalize(cross(camDir, vec3(0.0f, 1.0f, 0.0f)));
-    // const vec3 camUp = normalize(cross(camRight, camDir));
+    // const vec3 camDir = globals.currentCamera->getDirection();
+    // const vec3 camRight = normalize(cross(camDir, vec3(0.0f, 1.0f, 0.0f)));
+    // // const vec3 camUp = normalize(cross(camRight, camDir));
 
-    quat pitchQuat = angleAxis(yoffset, camRight);
-    quat yawQuat = angleAxis(xoffset, vec3(0.0f, 1.0f, 0.0f));
+    // quat pitchQuat = angleAxis(yoffset, camRight);
+    // quat yawQuat = angleAxis(xoffset, vec3(0.0f, 1.0f, 0.0f));
 
-    quat newRotation = yawQuat * pitchQuat * globals.currentCamera->getDirection();
+    // quat newRotation = yawQuat * pitchQuat * globals.currentCamera->getDirection();
 
-    // print camera->getDirection()
-    // std::cout << "Camera direction: " << camera->getDirection().x << ", " << camera->getDirection().y << ", " << camera->getDirection().z << "\n";
-    // std::cout << "camera position: " << camera->getPosition().x << ", " << camera->getPosition().y << ", " << camera->getPosition().z << "\n";
-    vec3 rot = eulerAngles(newRotation);
-    globals.currentCamera->setDirection(rot);
+    // // print camera->getDirection()
+    // // std::cout << "Camera direction: " << camera->getDirection().x << ", " << camera->getDirection().y << ", " << camera->getDirection().z << "\n";
+    // // std::cout << "camera position: " << camera->getPosition().x << ", " << camera->getPosition().y << ", " << camera->getPosition().z << "\n";
+    // vec3 rot = eulerAngles(newRotation);
+    // globals.currentCamera->setDirection(rot);
 }

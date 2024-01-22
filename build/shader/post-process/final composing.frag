@@ -215,9 +215,6 @@ void main() {
 
     vec3 bloom = texture(bEmmisive, uv).rgb;
     if(bloomEnable != 0) 
-        // _fragColor.rgb += 0.125*texture(bEmmisive, uv).rgb; 
-        // _fragColor.rgb += 0.25*bloom; 
-        // _fragColor.rgb += exposure*0.25*pow(bloom, vec3(1.5)); 
         _fragColor.rgb += exposure * 0.25 * pow(bloom, vec3(2 - 1 / exposure));
 
     // exposure tone mapping
@@ -267,10 +264,10 @@ void main() {
         float mistAlpha = smoothstep(mistMaxDist + mistIntensity, mistMaxDist, d);
         mistAlpha = pow(mistAlpha, 25.0);
 
-        float heightFactor = max(((vp.y-10.0)/7.5)*d, 0.0);
+        float heightFactor = max(((vp.y-10.0)/5.5)*d, 0.0);
         mistAlpha *= max(1.0 - heightFactor, 0.0);
 
-        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha);
+        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);
 
     }
     //////////////////

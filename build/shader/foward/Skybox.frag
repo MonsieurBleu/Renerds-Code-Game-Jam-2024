@@ -31,7 +31,7 @@ void main()
     // fragEmmisive = 0.65*fragColor.rgb*(rgb2v(fragColor.rgb) - ambientLight);
 
     float v = rgb2v(fragColor.rgb);
-    fragEmmisive = fragColor.rgb*pow(v, 15.0);
+    fragEmmisive = fragColor.rgb*fragColor.rgb*pow(v, 10.0)*2.0;
 
     // fragColor.rgb = vec3(uv, 1.0);
     // fragColor.rgb = vec3(uv.x-mod(uv.x, 0.1), 0.1, 0.0);
