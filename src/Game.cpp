@@ -117,7 +117,7 @@ bool Game::userInput(GLFWKeyInfo input)
     if (baseInput(input))
         return true;
 
-    playerControler->doInputs(input);
+    player->doInputs(input);
 
     handItems->inputs(input);
 
@@ -263,7 +263,7 @@ void Game::mainloop()
     /* FPS demo initialization */
     RigidBody::gravity = vec3(0.0, -80, 0.0);
 
-    AABBCollider aabbCollider = AABBCollider(vec3(-32 * 5, -.1, -32 * 5), vec3(32 * 5, .1, 32 * 5));
+    AABBCollider aabbCollider = AABBCollider(vec3(-32 * 50, -.15, -32 * 50), vec3(32 * 50, .1, 32 * 50));
 
     RigidBodyRef FloorBody = newRigidBody(
         vec3(0.0, 0.0, 0.0),
@@ -287,15 +287,15 @@ void Game::mainloop()
         quat(0.0, 0.0, 0.0, 1.0),
         vec3(0.0, 0.0, 0.0),
         &playerCollider,
-        PhysicsMaterial(0.0f, 0.0f, 0.0f, 0.0f),
+        PhysicsMaterial(0.0f, 0.5f, 0.0f, 0.0f),
         1.0,
         true);
 
     physicsEngine.addObject(playerBody);
 
-    playerControler =
-        std::make_shared<FPSController>(window, playerBody, &camera, &inputs);
-    FPSVariables::thingsYouCanStandOn.push_back(FloorBody);
+    player =
+        std::make_shared<Player>(window, playerBody, &camera, &inputs);
+    Player::thingsYouCanStandOn.push_back(FloorBody);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
@@ -334,7 +334,6 @@ void Game::mainloop()
 
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
-
     ModelRef lanterne = newModel(GameGlobals::PBR);
     lanterne->loadFromFolder("ressources/models/lantern/");
     lanterne->state
@@ -343,12 +342,12 @@ void Game::mainloop()
     scene.add(lanterne);
 
     ModelRef werewolf = newModel(GameGlobals::PBRstencil);
-        werewolf->loadFromFolder("ressources/models/werewolf/",false,false);
-        werewolf->state
-            .scaleScalar(100)
-            .setPosition(vec3(10, 0, 0));
-        scene.add(werewolf);
-    
+    werewolf->loadFromFolder("ressources/models/werewolf/", false, false);
+    werewolf->state
+        .scaleScalar(100)
+        .setPosition(vec3(10, 0, 0));
+    scene.add(werewolf);
+
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
@@ -357,13 +356,14 @@ void Game::mainloop()
     {
         mainloopStartRoutine();
 
-        for (GLFWKeyInfo input; inputs.pull(input); userInput(input));
+        for (GLFWKeyInfo input; inputs.pull(input); userInput(input))
+            ;
 
         float delta = min(globals.simulationTime.getDelta(), 0.05f);
         if (globals.windowHasFocus() && delta > 0.00001f)
         {
             // physicsEngine.update(delta);
-            playerControler->update(delta);
+            player->update(delta);
             FloorGameObject.update(delta);
         }
 

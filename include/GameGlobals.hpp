@@ -14,4 +14,6 @@ class GameGlobals
 
         static vec3 Zone1Objectif;
         static vec3 Zone2Objectif;
+
+        static vec3 playerPosition;
 };
