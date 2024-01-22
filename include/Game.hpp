@@ -6,6 +6,7 @@
 
 #include <GameGlobals.hpp>
 #include <HandItem.hpp>
+#include <EffectHandler.hpp>
 
 class Game final : public App
 {
@@ -30,6 +31,8 @@ private:
 
     /* Hand Item */
     HandItemHandlerRef handItems;
+
+    EffectHandler effects;
 
 public:
     Game(GLFWwindow *window);

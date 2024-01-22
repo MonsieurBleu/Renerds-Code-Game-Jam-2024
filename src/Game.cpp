@@ -108,6 +108,8 @@ void Game::init(int paramSample)
     glfwSwapInterval(0);
 
     handItems = std::make_shared<HandItemHandler>();
+    effects.setDefaultMist();
+    effects.setDefaultPixel();
 }
 
 bool Game::userInput(GLFWKeyInfo input)
@@ -205,7 +207,7 @@ void Game::mainloop()
             scene.add(f);
         }
 
-    int forestSize = 16;
+    int forestSize = 8;
     float treeScale = 0.5;
 
     ModelRef leaves = newModel(GameGlobals::PBRstencil);
@@ -304,12 +306,14 @@ void Game::mainloop()
     FastUI_valueMenu menu(ui, {});
 
     menu->state.setPosition(vec3(-0.9, 0.5, 0)).scaleScalar(0.8);
-    globals.appTime.setMenuConst(menu);
-    globals.cpuTime.setMenu(menu);
-    globals.gpuTime.setMenu(menu);
-    globals.fpsLimiter.setMenu(menu);
-    physicsTicks.setMenu(menu);
+    // globals.appTime.setMenuConst(menu);
+    // globals.cpuTime.setMenu(menu);
+    // globals.gpuTime.setMenu(menu);
+    // globals.fpsLimiter.setMenu(menu);
+    // physicsTicks.setMenu(menu);
+
     sun->setMenu(menu, U"Sun");
+    effects.setMenu(menu);
 
     menu.batch();
     scene2D.updateAllObjects();
@@ -319,17 +323,16 @@ void Game::mainloop()
     std::thread physicsThreads(&Game::physicsLoop, this);
 
     /* Music ! */
-    AudioFile music1;
-    music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
+    // AudioFile music1;
+    // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
 
-    AudioSource musicSource;
-    musicSource
-        .setBuffer(music1.getHandle())
-        .setPosition(vec3(0, 0, 3))
-        .play();
+    // AudioSource musicSource;
+    // musicSource
+    //     .setBuffer(music1.getHandle())
+    //     .setPosition(vec3(0, 0, 3))
+    //     .play();
 
-    // alSourcei(musicSource.getHandle(), AL_SOURCE_RELATIVE, AL_TRUE);
-    alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
+    // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
 
     ModelRef lanterne = newModel(GameGlobals::PBR);
@@ -414,6 +417,15 @@ void Game::mainloop()
         /* Final Screen Composition */
         glViewport(0, 0, globals.windowWidth(), globals.windowHeight());
         finalProcessingStage.activate();
+        
+        mat4 cipm = inverse(camera.getProjectionMatrix());
+        ShaderUniform(&cipm, 3).activate();
+
+        mat4 cipv = inverse(camera.getViewMatrix());
+        ShaderUniform(&cipv, 4).activate();
+
+        effects.finalComposingUniforms.update();
+
         sun->shadowMap.bindTexture(0, 6);
         screenBuffer2D.bindTexture(0, 7);
         globals.drawFullscreenQuad();

@@ -4,6 +4,9 @@ layout(location = 0) uniform ivec2 iResolution;
 layout(location = 1) uniform float iTime;
 layout(location = 2) uniform mat4 MVP;
 
+layout(location = 3) uniform mat4 _cameraiProjectionMatrix;
+layout(location = 4) uniform mat4 _cameraiViewMatrix;
+
 layout(location = 10) uniform int bloomEnable;
 
 layout(binding = 0) uniform sampler2D bColor;
@@ -143,27 +146,52 @@ vec3 blur(sampler2D screenTexture, vec2 texCoords) {
     return result;
 }
 
+vec3 calculateViewPosition(vec2 textureCoordinate, float depth)
+{
+    vec4 clipSpacePos = vec4(18.f*(textureCoordinate * 1.0 - 0.5), depth, 1.0);
+    vec4 position = clipSpacePos * _cameraiProjectionMatrix;
+    position.z = 1.0 - position.z;
+    position.xyz /= -position.w;
+    position.z = -abs(position.z);
+
+    position = _cameraiViewMatrix*position;
+
+    return position.xyz;
+}
+
+
+
+layout(location = 16) uniform float _pixelSize;
+layout(location = 17) uniform float mistIntensity;
+layout(location = 18) uniform vec3 mistColor1;
+layout(location = 19) uniform vec3 mistColor2;
+
+// const float mistIntensity = 0.05;
+// const vec3 mistColor2 = vec3(0.8);
+// const vec3 mistColor1 = vec3(0.8);
+
 void main() {
     vec2 uv = uvScreen;
     float aspectRatio = float(iResolution.y) / float(iResolution.x);
 
     // Pixel art effect 
-        // float pixelSize = (0.5 + 0.5*cos(iTime*2.f))*0.02; //0.0075
+    if(_pixelSize > 0.0000001)
+    {
+        /* Additionnal depth based resolution change */
+        float pixelSize = _pixelSize;
+        float d = texture(bDepth, uv).r*2.0;
+        d = min(d, 0.05);
+        d = d - mod(d, 0.005);
+        pixelSize = 300.0 * pixelSize * (0.001 + pow(d, 2.0));
 
-        // /* Additionnal depth based resolution change */
-        // float d = texture(bDepth, uv).r*2.0;
-        // d = min(d, 0.05);
-        // d = d - mod(d, 0.005);
-        // pixelSize = 300.0 * pixelSize * (0.001 + pow(d, 2.0));
-
-        // uv = uv * vec2(1.0, aspectRatio);
-        // uv = uv - mod(uv, vec2(pixelSize)) + pixelSize*0.5;
-        // uv = uv / vec2(1.0, aspectRatio);
+        uv = uv * vec2(1.0, aspectRatio);
+        uv = uv - mod(uv, vec2(pixelSize)) + pixelSize*0.5;
+        uv = uv / vec2(1.0, aspectRatio);
+    }
     //////////////////
 
-    vec3 BackgroundColor = vec3(0.2, 0.3, 0.3);
     vec4 color = texture(bColor, uv);
-    // _fragColor.rgb = mix(BackgroundColor, color.rgb, color.a);
+
 
     float chromaticAberation = 0.0 / float(iResolution.y);
     vec2 rUv = max(uv - chromaticAberation, 0.0);
@@ -226,11 +254,31 @@ void main() {
         // _fragColor.rgb = mix(_fragColor.rgb, vec3(0.85), d);
     ////
 
+    // Mist effect
+    {
+        const float mistMaxDist = 0.00001;
+
+        float d = texture(bDepth, uv).r;
+
+        vec3 mistColor = mix(mistColor1, mistColor2, min(d*400, 1));
+
+        vec3 vp = calculateViewPosition(uv, d);
+
+        float mistAlpha = smoothstep(mistMaxDist + mistIntensity, mistMaxDist, d);
+        mistAlpha = pow(mistAlpha, 25.0);
+
+        float heightFactor = max(((vp.y-10.0)/7.5)*d, 0.0);
+        mistAlpha *= max(1.0 - heightFactor, 0.0);
+
+        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha);
+
+    }
+    //////////////////
+
     vec4 ui = texture(bUI, uvScreen);
     _fragColor.rgb = mix(_fragColor.rgb, ui.rgb, ui.a);
     _fragColor.a = 1.0;
 
-    // _fragColor.rgb = vec3(1.0 - AO.r);
-    // _fragColor.rgb = 1.0 - AO.rgb;
+
 
 }
