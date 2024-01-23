@@ -375,7 +375,7 @@ void Game::mainloop()
     // globals.appTime.setMenuConst(menu);
     // globals.cpuTime.setMenu(menu);
     // globals.gpuTime.setMenu(menu);
-    // globals.fpsLimiter.setMenu(menu);
+    globals.fpsLimiter.setMenu(menu);
     // physicsTicks.setMenu(menu);
 
     sun->setMenu(menu, U"Sun");
