@@ -4,6 +4,7 @@
 #include <CompilingOptions.hpp>
 #include <MathsUtils.hpp>
 #include <Audio.hpp>
+#include <TreeMapGenerator.hpp>
 
 #include <thread>
 
@@ -217,6 +218,9 @@ void Game::mainloop()
     ModelRef trunk = newModel(GameGlobals::PBR);
     trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunk, leaves);
+
+    /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
         for (int j = -forestSize; j < forestSize; j++)
         {
@@ -231,6 +235,9 @@ void Game::mainloop()
 
             scene.add(tree);
         }
+
+    */
+
 
     /* Instanced Mesh example */
     // InstancedModelRef trunk = newInstancedModel();
