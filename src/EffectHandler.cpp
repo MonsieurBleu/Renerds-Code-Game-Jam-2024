@@ -18,7 +18,7 @@ EffectHandler::EffectHandler()
 
 void EffectHandler::setDefaultMist()
 {
-    mistEffectItensity = 0.0075;
+    mistEffectItensity = 0.03; //0.0075
     mistEffectColor1 = vec3(0xf9, 0xb7, 0x2f) / 255.f;
     mistEffectColor2 = vec3(0xa8, 0x5d, 0x2a) / 255.f;
 }

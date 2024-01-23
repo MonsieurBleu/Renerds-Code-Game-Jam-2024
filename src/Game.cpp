@@ -473,14 +473,14 @@ void Game::mainloop()
     GameGlobals::sun = sun;
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::zone2radius = 60.0;
+    GameGlobals::zone2radius = 0.0;
     GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
 
     GameGlobals::Zone1Center = vec3(100, 0, 0);
-    GameGlobals::zone1radius = 60.0;
+    GameGlobals::zone1radius = 0.0;
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
 
-    GameGlobals::sun = sun;
+    GameGlobals::sun = sun; 
 
 
     monster = Monster(shadowMonster);

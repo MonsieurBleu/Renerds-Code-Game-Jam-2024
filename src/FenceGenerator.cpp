@@ -2,7 +2,8 @@
 #include "ObjectGroup.hpp"
 #include <FenceGenerator.hpp>
 
-#define FENCE_SIZE 256
+#define FENCE_SIZE 512
+//256
 
 void generateFence(ModelRef fenceSample, Scene &scene) {
   float fenceSegmentSize = fenceSample->getVao()->getAABBMax().x - fenceSample->getVao()->getAABBMin().x;

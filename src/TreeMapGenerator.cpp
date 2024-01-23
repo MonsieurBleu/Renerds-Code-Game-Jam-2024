@@ -5,7 +5,8 @@
 #include <stb/stb_image.h>
 #include <string>
 
-#define GRID_SIZE 256
+#define GRID_SIZE 512
+//256
 #define GRID_SQUARE_SIZE 8
 #define MAX_OFFSET 5
 
