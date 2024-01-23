@@ -108,6 +108,8 @@ void Game::init(int paramSample)
     glfwSwapInterval(0);
 
     handItems = std::make_shared<HandItemHandler>();
+    effects.setDefaultMist();
+    effects.setDefaultPixel();
 }
 
 bool Game::userInput(GLFWKeyInfo input)
@@ -115,7 +117,7 @@ bool Game::userInput(GLFWKeyInfo input)
     if (baseInput(input))
         return true;
 
-    playerControler->doInputs(input);
+    player->doInputs(input);
 
     handItems->inputs(input);
 
@@ -205,7 +207,7 @@ void Game::mainloop()
             scene.add(f);
         }
 
-    int forestSize = 16;
+    int forestSize = 8;
     float treeScale = 0.5;
 
     ModelRef leaves = newModel(GameGlobals::PBRstencil);
@@ -261,7 +263,7 @@ void Game::mainloop()
     /* FPS demo initialization */
     RigidBody::gravity = vec3(0.0, -80, 0.0);
 
-    AABBCollider aabbCollider = AABBCollider(vec3(-32 * 5, -.1, -32 * 5), vec3(32 * 5, .1, 32 * 5));
+    AABBCollider aabbCollider = AABBCollider(vec3(-32 * 50, -.15, -32 * 50), vec3(32 * 50, .1, 32 * 50));
 
     RigidBodyRef FloorBody = newRigidBody(
         vec3(0.0, 0.0, 0.0),
@@ -285,15 +287,15 @@ void Game::mainloop()
         quat(0.0, 0.0, 0.0, 1.0),
         vec3(0.0, 0.0, 0.0),
         &playerCollider,
-        PhysicsMaterial(0.0f, 0.0f, 0.0f, 0.0f),
+        PhysicsMaterial(0.0f, 0.5f, 0.0f, 0.0f),
         1.0,
         true);
 
     physicsEngine.addObject(playerBody);
 
-    playerControler =
-        std::make_shared<FPSController>(window, playerBody, &camera, &inputs);
-    FPSVariables::thingsYouCanStandOn.push_back(FloorBody);
+    player =
+        std::make_shared<Player>(window, playerBody, &camera, &inputs);
+    Player::thingsYouCanStandOn.push_back(FloorBody);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
@@ -304,12 +306,14 @@ void Game::mainloop()
     FastUI_valueMenu menu(ui, {});
 
     menu->state.setPosition(vec3(-0.9, 0.5, 0)).scaleScalar(0.8);
-    globals.appTime.setMenuConst(menu);
-    globals.cpuTime.setMenu(menu);
-    globals.gpuTime.setMenu(menu);
-    globals.fpsLimiter.setMenu(menu);
-    physicsTicks.setMenu(menu);
+    // globals.appTime.setMenuConst(menu);
+    // globals.cpuTime.setMenu(menu);
+    // globals.gpuTime.setMenu(menu);
+    // globals.fpsLimiter.setMenu(menu);
+    // physicsTicks.setMenu(menu);
+
     sun->setMenu(menu, U"Sun");
+    effects.setMenu(menu);
 
     menu.batch();
     scene2D.updateAllObjects();
@@ -319,18 +323,16 @@ void Game::mainloop()
     std::thread physicsThreads(&Game::physicsLoop, this);
 
     /* Music ! */
-    AudioFile music1;
-    music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
+    // AudioFile music1;
+    // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
 
-    AudioSource musicSource;
-    musicSource
-        .setBuffer(music1.getHandle())
-        .setPosition(vec3(0, 0, 3))
-        .play();
+    // AudioSource musicSource;
+    // musicSource
+    //     .setBuffer(music1.getHandle())
+    //     .setPosition(vec3(0, 0, 3))
+    //     .play();
 
-    // alSourcei(musicSource.getHandle(), AL_SOURCE_RELATIVE, AL_TRUE);
-    alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
-
+    // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
     ModelRef lanterne = newModel(GameGlobals::PBR);
     lanterne->loadFromFolder("ressources/models/lantern/");
@@ -339,28 +341,46 @@ void Game::mainloop()
         .setPosition(vec3(2, 2, 0));
     scene.add(lanterne);
 
-    ModelRef werewolf = newModel(GameGlobals::PBRstencil);
-        werewolf->loadFromFolder("ressources/models/werewolf/",false,false);
-        werewolf->state
-            .scaleScalar(100)
-            .setPosition(vec3(10, 0, 0));
-        scene.add(werewolf);
+ 
+ //Portail 
+/*
+    ModelRef portailOuvert = newModel(GameGlobals::PBR);
+    portailOuvert->loadFromFolder("ressources/models/gate/gateOpen/");
+    portailOuvert->state
+        .scaleScalar(200)
+        .setPosition(vec3(0, 0, 0));
+    scene.add(portailOuvert);
+
     
+    ModelRef portailFerme = newModel(GameGlobals::PBR);
+    portailFerme->loadFromFolder("ressources/models/gate/gateClose/");
+    portailFerme->state
+        .scaleScalar(200)
+        .setPosition(vec3(10, 0, 0));
+    scene.add(portailFerme);
+*/
+
+
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
+
+    GameGlobals::Zone2Center = vec3(1E6);
+    GameGlobals::Zone2Objectif = vec3(80, 0, 5);
+    lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
 
     /* Main Loop */
     while (state != AppState::quit)
     {
         mainloopStartRoutine();
 
-        for (GLFWKeyInfo input; inputs.pull(input); userInput(input));
+        for (GLFWKeyInfo input; inputs.pull(input); userInput(input))
+            ;
 
         float delta = min(globals.simulationTime.getDelta(), 0.05f);
         if (globals.windowHasFocus() && delta > 0.00001f)
         {
             // physicsEngine.update(delta);
-            playerControler->update(delta);
+            player->update(delta);
             FloorGameObject.update(delta);
         }
 
@@ -369,6 +389,8 @@ void Game::mainloop()
 
         menu.trackCursor();
         menu.updateText();
+
+        effects.update();
 
         mainloopPreRenderRoutine();
 
@@ -414,6 +436,15 @@ void Game::mainloop()
         /* Final Screen Composition */
         glViewport(0, 0, globals.windowWidth(), globals.windowHeight());
         finalProcessingStage.activate();
+        
+        mat4 cipm = inverse(camera.getProjectionMatrix());
+        ShaderUniform(&cipm, 3).activate();
+
+        mat4 cipv = inverse(camera.getViewMatrix());
+        ShaderUniform(&cipv, 4).activate();
+
+        effects.finalComposingUniforms.update();
+
         sun->shadowMap.bindTexture(0, 6);
         screenBuffer2D.bindTexture(0, 7);
         globals.drawFullscreenQuad();
