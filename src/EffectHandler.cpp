@@ -26,18 +26,10 @@ void EffectHandler::setMenu(FastUI_valueMenu &menu)
 {
     menu.push_back(
         {FastUI_menuTitle(menu.ui, U"Effects"), FastUI_valueTab(menu.ui, {
-            FastUI_value(&pixelEffectSize, U"Pixel Size\t"),
-            FastUI_value(&mistEffectItensity, U"Mist Intensity\t"),
-            FastUI_value(U"Color Mist 1"),
-            FastUI_value((vec3*)&mistEffectColor1, U"\fHEX\t", U"", FUI_vec3Color),
-            FastUI_value((vec3*)&mistEffectColor1, U"\fHue\t", U"°", FUI_vec3Hue),
-            FastUI_value((vec3*)&mistEffectColor1, U"\fSaturation\t", U"%", FUI_vec3Saturation),
-            FastUI_value((vec3*)&mistEffectColor1, U"\fLuminosity\t", U"%", FUI_vec3Value),
-            FastUI_value(U"Color Mist 2"),
-            FastUI_value((vec3*)&mistEffectColor2, U"\fHEX\t", U"", FUI_vec3Color),
-            FastUI_value((vec3*)&mistEffectColor2, U"\fHue\t", U"°", FUI_vec3Hue),
-            FastUI_value((vec3*)&mistEffectColor2, U"\fSaturation\t", U"%", FUI_vec3Saturation),
-            FastUI_value((vec3*)&mistEffectColor2, U"\fLuminosity\t", U"%", FUI_vec3Value)
+            FastUI_value(&z2MinDist, U"Zone2 Size\t"),
+            FastUI_value(&z2Transition, U"Zone2 Transition Distance\t"),
+            FastUI_value(&o2MinDist, U"Objectif2 Distance\t"),
+            FastUI_value(&o2Transition, U"Objectif2 Transition Distance\t")
         })}
     );
 }
@@ -50,8 +42,7 @@ void EffectHandler::update()
     float zone2dist = distance(GameGlobals::playerPosition, GameGlobals::Zone2Center);
 
     /* Update Mist for Zone 2 */
-    const float z2MinDist = 5.0;
-    const float z2MaxDist = z2MinDist + 50.0;
+    const float z2MaxDist = z2MinDist + z2Transition;
     float z2lerp = (max(zone2dist-z2MinDist, 0.f))/(z2MaxDist-z2MinDist);
     z2lerp = clamp(1.f-z2lerp, 0.f, 1.f);
     mistEffectItensity = mix(mistEffectItensity, 0.05f, z2lerp);
@@ -61,8 +52,7 @@ void EffectHandler::update()
     float objectif2dist = distance(GameGlobals::playerPosition, GameGlobals::Zone2Objectif);
 
     /* Update Pixel effect for Zone 2 */
-    const float o2MinDist = 5.0;
-    const float o2MaxDist = o2MinDist + 60.0;
+    const float o2MaxDist = o2MinDist + o2Transition;
     float o2lerp = (max(objectif2dist-o2MinDist, 0.f))/(o2MaxDist-o2MinDist);
     o2lerp = clamp(1.f-o2lerp, 0.f, 1.f);
     pixelEffectSize = mix(pixelEffectSize, 0.02f, o2lerp);

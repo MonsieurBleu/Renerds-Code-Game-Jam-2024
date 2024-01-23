@@ -34,6 +34,8 @@ public:
 
     void mouseLook();
 
+    bool isInShadow(SceneDirectionalLight sun);
+
     static constexpr float maxSpeed = 12.0f;
     static constexpr float maxSpeedRunning = 15.0f;
     static constexpr float stopSpeed = 15.0f;

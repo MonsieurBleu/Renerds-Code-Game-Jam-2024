@@ -2,6 +2,8 @@
 
 #include <Mesh.hpp>
 
+class FastUI_valueMenu;
+
 class GameGlobals
 {
     public :
@@ -16,4 +18,6 @@ class GameGlobals
         static vec3 Zone2Objectif;
 
         static vec3 playerPosition;
+
+        static void setMenu(FastUI_valueMenu &menu);
 };
