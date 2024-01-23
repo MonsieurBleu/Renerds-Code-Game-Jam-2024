@@ -431,10 +431,7 @@ void Player::flyUp(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
-    vec3 camDir = globals.currentCamera->getDirection();
-    vec3 camUp = normalize(cross(vec3(1.0f, 0.0f, 1.0f), camDir));
-
-    body->setPosition(pos + camUp * 10.0f * deltatime * speed);
+    body->setPosition(pos + vec3(0.0f, 1.0f, 0.0f) * 10.0f * deltatime * speed);
 }
 
 void Player::mouseLook()
