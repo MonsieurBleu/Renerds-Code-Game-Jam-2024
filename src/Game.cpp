@@ -423,6 +423,27 @@ void Game::mainloop()
         .setPosition(vec3(10, 0, 0));
     scene.add(maison);
 
+        ModelRef foxAlive = newModel(GameGlobals::PBR);
+        foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
+        foxAlive->state
+            .scaleScalar(0.009)
+            .setPosition(vec3(-10, 0, 0));
+        scene.add(foxAlive);
+/*
+        ModelRef foxDead = newModel(GameGlobals::PBR);
+        foxDead->loadFromFolder("ressources/models/fox/foxDead/");
+        foxDead->state
+            .scaleScalar(0.009)
+            .setPosition(vec3(-10, 0, 0));
+        scene.add(foxDead);
+*/
+        ModelRef fence = newModel(GameGlobals::PBRstencil);
+        fence->loadFromFolder("ressources/models/fence/");
+        fence->state
+            .scaleScalar(1)
+            .setPosition(vec3(-20, 0, 0));
+        scene.add(fence);
+
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
@@ -435,12 +456,7 @@ void Game::mainloop()
     GameGlobals::Zone1Center = vec3(100, 0, 0);
     GameGlobals::zone1radius = 60.0;
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
-    
 
-    GameGlobals::Zone1Center = vec3(0, 0, 80);
-    GameGlobals::Zone1Objectif = vec3(0, 0, 80);
-
-    GameGlobals::zone1radius = 70.0f;
 
     GameGlobals::sun = sun;
 

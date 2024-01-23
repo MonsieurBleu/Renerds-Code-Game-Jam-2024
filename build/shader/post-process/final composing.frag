@@ -161,10 +161,11 @@ vec3 calculateViewPosition(vec2 textureCoordinate, float depth)
 
 
 
-layout(location = 16) uniform float _pixelSize;
-layout(location = 17) uniform float mistIntensity;
-layout(location = 18) uniform vec3 mistColor1;
-layout(location = 19) uniform vec3 mistColor2;
+layout (location = 16) uniform float _pixelSize;
+layout (location = 17) uniform float mistIntensity;
+layout (location = 18) uniform vec3 mistColor1;
+layout (location = 19) uniform vec3 mistColor2;
+layout (location = 20) uniform float playerDeath;
 
 // const float mistIntensity = 0.05;
 // const vec3 mistColor2 = vec3(0.8);
