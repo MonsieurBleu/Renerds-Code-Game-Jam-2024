@@ -17,20 +17,27 @@ class FastUI_valueMenu;
 class Monster
 {
 private:
-    GameObject monster;
+    ModelRef model;
 
     bool isPlayerInZone();
 
-    bool enabled = false;
+    static bool enabled;
 
 public:
-    Monster(GameObject monster);
+    Monster(ModelRef monster);
+    Monster();
     ~Monster();
 
     void update(float deltaTime);
 
     void setMenu(FastUI_valueMenu &menu);
 
-    static constexpr float maxSpeed = 20.0f;
+    static float maxSpeed;
     static float speed;
+    static float distance;
+
+    static float lastScreamTime;
+    static constexpr float screamP = 0.001f;
+    static constexpr float screamCooldown = 15.0f;
+    static constexpr float screamMinDist = 20.0f;
 };

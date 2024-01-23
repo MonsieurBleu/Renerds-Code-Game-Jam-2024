@@ -83,4 +83,10 @@ public:
     static float stressSmoothing;
 
     bool flying = false;
+
+    static bool invertedControls;
+    static float invertStart;
+    static constexpr float invertLength = 1.0f;
+
+    static bool hasTeddyBear;
 };

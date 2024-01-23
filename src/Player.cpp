@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include <chrono>
 #include "../Engine/include/FastUI.hpp"
 
 float Player::cursorXOld = 0.0f;
@@ -23,6 +24,10 @@ float Player::stressFactor = 1.0f;
 float Player::stressSmoothing = 0.7f;
 
 float Player::stamina = 100.0f;
+
+bool Player::invertedControls = false;
+float Player::invertStart = 0.0f;
+bool Player::hasTeddyBear = false;
 
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
@@ -66,13 +71,13 @@ void Player::update(float deltaTime)
     float side = 0.0f;
 
     if (W)
-        forward += forwardSpeed * (running ? 2.0f : 1.0f);
+        forward += forwardSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
     if (S)
-        forward -= backSpeed * (running ? 2.0f : 1.0f);
+        forward -= backSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
     if (A)
-        side -= sideSpeed * (running ? 2.0f : 1.0f);
+        side -= sideSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
     if (D)
-        side += sideSpeed * (running ? 2.0f : 1.0f);
+        side += sideSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
 
     if (flying && !W && !S && !A && !D)
     {
@@ -171,6 +176,11 @@ void Player::update(float deltaTime)
         newDir = normalize(newDir * (1.0f - stressSmoothing) + camDir * stressSmoothing);
 
         globals.currentCamera->setDirection(newDir);
+    }
+
+    if (invertedControls && (invertStart + invertLength < globals.appTime.getElapsedTime()))
+    {
+        invertedControls = false;
     }
 
     // std::cout << "stamina: " << stamina << "\n";

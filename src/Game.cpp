@@ -238,7 +238,6 @@ void Game::mainloop()
 
     */
 
-
     /* Instanced Mesh example */
     // InstancedModelRef trunk = newInstancedModel();
     // trunk->setMaterial(PBRinstanced);
@@ -324,13 +323,6 @@ void Game::mainloop()
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
 
-    menu.batch();
-    scene2D.updateAllObjects();
-    fuiBatch->batch();
-
-    state = AppState::run;
-    std::thread physicsThreads(&Game::physicsLoop, this);
-
     /* Music ! */
     // AudioFile music1;
     // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
@@ -368,15 +360,27 @@ void Game::mainloop()
         scene.add(portailFerme);
     */
 
-    handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
-    scene.add(handItems);
+    // handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
+    // scene.add(handItems);
 
-    GameGlobals::Zone2Center = vec3(-80, 0, 5);
+    GameGlobals::Zone2Center = vec3(80, 0, 5);
     GameGlobals::Zone2Objectif = vec3(80, 0, 5);
     GameGlobals::sun = sun;
-    
 
-    lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+    // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+
+    monster = Monster(lanterne);
+    lanterne->state.hide = ModelStateHideStatus::HIDE;
+    lanterne->state.setPosition(GameGlobals::Zone2Center);
+
+    monster.setMenu(menu);
+
+    menu.batch();
+    scene2D.updateAllObjects();
+    fuiBatch->batch();
+
+    state = AppState::run;
+    std::thread physicsThreads(&Game::physicsLoop, this);
 
     /* Main Loop */
     while (state != AppState::quit)
@@ -392,6 +396,8 @@ void Game::mainloop()
             // physicsEngine.update(delta);
             player->update(delta);
             FloorGameObject.update(delta);
+
+            monster.update(delta);
         }
 
         // float c = 0.5 + 0.5*cos(globals.appTime.getElapsedTime());
