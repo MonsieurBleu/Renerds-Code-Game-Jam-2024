@@ -429,14 +429,14 @@ void Game::mainloop()
             .scaleScalar(0.009)
             .setPosition(vec3(-10, 0, 0));
         scene.add(foxAlive);
-/*
+
         ModelRef foxDead = newModel(GameGlobals::PBR);
         foxDead->loadFromFolder("ressources/models/fox/foxDead/");
         foxDead->state
             .scaleScalar(0.009)
-            .setPosition(vec3(-10, 0, 0));
+            .setPosition(vec3(-20, 0, -20));
         scene.add(foxDead);
-*/
+
         ModelRef fence = newModel(GameGlobals::PBRstencil);
         fence->loadFromFolder("ressources/models/fence/");
         fence->state
