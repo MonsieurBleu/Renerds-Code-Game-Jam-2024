@@ -229,7 +229,7 @@ void main() {
         // _fragColor.rgb = vec3(1.0 - pow(1.0 - depth, 50.0));
     ////////
 
-// #define SHOW_SHADOWMAP
+    //#define SHOW_SHADOWMAP
     #ifdef SHOW_SHADOWMAP
     vec2 SSMuv = uvScreen * vec2(iResolution) * 1 / 900.0;
     if(SSMuv.x >= 0. && SSMuv.x <= 1.0 && SSMuv.y >= 0. && SSMuv.y <= 1.0) {
