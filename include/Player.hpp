@@ -21,6 +21,19 @@ private:
 
     bool doJump;
 
+    void move(float forward, float side, float deltaTime);
+    void accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime);
+
+    void jump(float deltaTime);
+    void flyForward(float speed, float deltaTime);
+    void flySide(float speed, float deltaTime);
+    void flyUp(float speed, float deltaTime);
+
+    void mouseLook();
+
+    void die();
+    void respawn();
+
 public:
     Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs);
     ~Player();
@@ -28,15 +41,6 @@ public:
     void update(float deltaTime);
 
     void doInputs(GLFWKeyInfo &input);
-
-    void move(float forward, float side, float deltaTime);
-    void accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime);
-
-    void jump(float deltaTime);
-    void fly(float speed, float deltaTime);
-    void flyUp(float speed, float deltaTime);
-
-    void mouseLook();
 
     bool isInShadow();
     void setMenu(FastUI_valueMenu &menu);
@@ -56,6 +60,8 @@ public:
     static bool A;
     static bool S;
     static bool D;
+    static bool Q;
+    static bool E;
 
     static bool grounded;
     static bool lockJump;
@@ -64,6 +70,9 @@ public:
     static float stamina;
     static constexpr float staminaDrain = 50.0f;
     static constexpr float staminaRegen = 50.0f;
+
+    static float stressIncreaseRate;
+    static float stressDecreaseRate;
 
     // probably should have a better name
     static std::vector<RigidBodyRef> thingsYouCanStandOn;
@@ -83,4 +92,19 @@ public:
     static float stressSmoothing;
 
     bool flying = false;
+
+    static bool invertedControls;
+    static float invertStart;
+    static constexpr float invertLength = 1.0f;
+
+    static bool hasTeddyBear;
+
+    static vec3 respawnPoint;
+
+    static bool dead;
+    static float deathTime;
+    static float respawnDelay;
+
+    static bool canDie;
+    static float deathAnimationProgress;
 };

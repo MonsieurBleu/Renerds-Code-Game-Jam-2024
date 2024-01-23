@@ -264,7 +264,7 @@ void main() {
         float mistAlpha = smoothstep(mistMaxDist + mistIntensity, mistMaxDist, d);
         mistAlpha = pow(mistAlpha, 25.0);
 
-        float heightFactor = max(((vp.y-10.0)/5.5)*d, 0.0);
+        float heightFactor = max(((vp.y-10.0)/3.0)*d, 0.0);
         mistAlpha *= max(1.0 - heightFactor, 0.0);
 
         _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);

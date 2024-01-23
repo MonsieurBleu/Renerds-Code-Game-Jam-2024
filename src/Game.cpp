@@ -48,19 +48,26 @@ void Game::init(int paramSample)
             "shader/foward/basicInstance.vert",
             ""));
 
+    
+    
+    std::vector<ShaderUniform> uniforms3D = globals.standartShaderUniform3D();
+    uniforms3D.push_back(ShaderUniform(&effects.sunColor, 20));
+    uniforms3D.push_back(ShaderUniform(&effects.z1lerp, 21));
+    uniforms3D.push_back(ShaderUniform(&effects.o1lerp, 22));
+
     GameGlobals::PBR = MeshMaterial(
         new ShaderProgram(
             "shader/foward/PBR.frag",
             "shader/foward/basic.vert",
             "",
-            globals.standartShaderUniform3D()));
+            uniforms3D));
 
     GameGlobals::PBRstencil = MeshMaterial(
         new ShaderProgram(
             "shader/foward/PBR.frag",
             "shader/foward/basic.vert",
             "",
-            globals.standartShaderUniform3D()));
+            uniforms3D));
 
     GameGlobals::PBRinstanced = MeshMaterial(
         new ShaderProgram(
@@ -74,11 +81,17 @@ void Game::init(int paramSample)
             "shader/foward/Skybox.frag",
             "shader/foward/basic.vert",
             "",
-            globals.standartShaderUniform3D()));
+            uniforms3D));
 
     GameGlobals::PBRstencil.depthOnly = depthOnlyStencilMaterial;
     GameGlobals::PBRinstanced.depthOnly = depthOnlyInstancedMaterial;
     scene.depthOnlyMaterial = depthOnlyMaterial;
+
+    // GameGlobals::PBR->addUniform(ShaderUniform(&effects.sunColor, 20));
+    // GameGlobals::PBR->addUniform(ShaderUniform(&effects.z1lerp, 21));
+
+    // GameGlobals::PBRstencil->addUniform(ShaderUniform(&effects.sunColor, 20));
+    // GameGlobals::PBRstencil->addUniform(ShaderUniform(&effects.z1lerp, 21));
 
     /* UI */
     FUIfont = FontRef(new FontUFT8);
@@ -187,6 +200,9 @@ void Game::mainloop()
     ModelRef skybox = newModel(skyboxMaterial);
     skybox->loadFromFolder("ressources/models/skybox/", true, false);
 
+    Texture2D skyboxNightTexture = Texture2D().
+        loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
+
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
     skybox->state.frustumCulled = false;
@@ -218,16 +234,15 @@ void Game::mainloop()
     ModelRef trunk = newModel(GameGlobals::PBR);
     trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
-
-//Models Oak
+    // Models Oak
     Texture2D leafTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/CE.ktx");
     Texture2D leafTextureMat = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/NRM.ktx");
     Texture2D trunkTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/trunc/CE.ktx");
     Texture2D trunkTextureMat = Texture2D().loadFromFileKTX("ressources/models/oak/textures/trunc/NRM.ktx");
 
-    ModelRef largeLeaf  = newModel(GameGlobals::PBRstencil);
+    ModelRef largeLeaf = newModel(GameGlobals::PBRstencil);
     ModelRef mediumLeaf = newModel(GameGlobals::PBRstencil);
-    ModelRef smallLeaf  = newModel(GameGlobals::PBRstencil);
+    ModelRef smallLeaf = newModel(GameGlobals::PBRstencil);
 
     largeLeaf->loadFromFolder("ressources/models/oak/large/leaf/", false, false);
     mediumLeaf->loadFromFolder("ressources/models/oak/med/leaf/", false, false);
@@ -249,7 +264,17 @@ void Game::mainloop()
     mediumTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
     smallTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
 
-    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", largeTrunk, largeLeaf);
+    treeSizes trunkSizes;
+    trunkSizes.t0 = smallTrunk;
+    trunkSizes.t1 = mediumTrunk;
+    trunkSizes.t2 = largeTrunk;
+
+    treeSizes leavesSizes;
+    leavesSizes.t0 = smallLeaf;
+    leavesSizes.t1 = mediumLeaf;
+    leavesSizes.t2 = largeLeaf;
+
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunkSizes, leavesSizes);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
@@ -268,7 +293,6 @@ void Game::mainloop()
         }
 
     */
-
 
     /* Instanced Mesh example */
     // InstancedModelRef trunk = newInstancedModel();
@@ -355,13 +379,6 @@ void Game::mainloop()
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
 
-    menu.batch();
-    scene2D.updateAllObjects();
-    fuiBatch->batch();
-
-    state = AppState::run;
-    std::thread physicsThreads(&Game::physicsLoop, this);
-
     /* Music ! */
     // AudioFile music1;
     // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
@@ -399,13 +416,12 @@ void Game::mainloop()
         scene.add(portailFerme);
     */
 
-        ModelRef maison = newModel(GameGlobals::PBR);
-        maison->loadFromFolder("ressources/models/house/");
-        maison->state
-            .scaleScalar(1.5)
-            .setPosition(vec3(10, 0, 0));
-        scene.add(maison);
-
+    ModelRef maison = newModel(GameGlobals::PBR);
+    maison->loadFromFolder("ressources/models/house/");
+    maison->state
+        .scaleScalar(1.5)
+        .setPosition(vec3(10, 0, 0));
+    scene.add(maison);
 
         ModelRef foxAlive = newModel(GameGlobals::PBR);
         foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
@@ -431,12 +447,38 @@ void Game::mainloop()
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
-    GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::Zone2Objectif = vec3(80, 0, 5);
     GameGlobals::sun = sun;
+
+    GameGlobals::Zone2Center = vec3(-80, 0, 5);
+    GameGlobals::zone2radius = 0.0;
+    GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
+
+    GameGlobals::Zone1Center = vec3(100, 0, 0);
+    GameGlobals::zone1radius = 60.0;
+    GameGlobals::Zone1Objectif = vec3(100, 0, 0);
     
 
-    lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+    GameGlobals::Zone1Center = vec3(0, 0, 80);
+    GameGlobals::Zone1Objectif = vec3(0, 0, 80);
+
+    GameGlobals::zone1radius = 70.0f;
+
+    GameGlobals::sun = sun;
+
+    // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+
+    monster = Monster(lanterne);
+    lanterne->state.hide = ModelStateHideStatus::HIDE;
+    lanterne->state.setPosition(GameGlobals::Zone2Center);
+
+    monster.setMenu(menu);
+
+    menu.batch();
+    scene2D.updateAllObjects();
+    fuiBatch->batch();
+
+    state = AppState::run;
+    std::thread physicsThreads(&Game::physicsLoop, this);
 
     /* Main Loop */
     while (state != AppState::quit)
@@ -452,6 +494,8 @@ void Game::mainloop()
             // physicsEngine.update(delta);
             player->update(delta);
             FloorGameObject.update(delta);
+
+            monster.update(delta);
         }
 
         // float c = 0.5 + 0.5*cos(globals.appTime.getElapsedTime());
@@ -494,6 +538,7 @@ void Game::mainloop()
 
         /* 3D Render */
         skybox->bindMap(0, 4);
+        skyboxNightTexture.bind(5);
         scene.genLightBuffer();
         scene.draw();
         renderBuffer.deactivate();

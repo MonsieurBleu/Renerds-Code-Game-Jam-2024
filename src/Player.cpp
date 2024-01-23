@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include <chrono>
 #include "../Engine/include/FastUI.hpp"
 
 float Player::cursorXOld = 0.0f;
@@ -10,6 +11,8 @@ bool Player::W = false;
 bool Player::A = false;
 bool Player::S = false;
 bool Player::D = false;
+bool Player::Q = false;
+bool Player::E = false;
 
 bool Player::grounded = false;
 bool Player::lockJump = false;
@@ -23,6 +26,21 @@ float Player::stressFactor = 1.0f;
 float Player::stressSmoothing = 0.7f;
 
 float Player::stamina = 100.0f;
+
+bool Player::invertedControls = false;
+float Player::invertStart = 0.0f;
+bool Player::hasTeddyBear = false;
+
+float Player::stressDecreaseRate = 50.0f;
+float Player::stressIncreaseRate = 35.0f;
+
+float Player::deathAnimationProgress = 0.0f;
+
+bool Player::dead = false;
+float Player::deathTime = 0.0f;
+float Player::respawnDelay = 3.0f;
+bool Player::canDie = true;
+vec3 Player::respawnPoint = vec3(0.0f);
 
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
@@ -65,14 +83,29 @@ void Player::update(float deltaTime)
     float forward = 0.0f;
     float side = 0.0f;
 
+    if (dead)
+    {
+        if (deathTime + respawnDelay < globals.appTime.getElapsedTime())
+        {
+            respawn();
+        }
+        else
+        {
+            deathAnimationProgress = (globals.appTime.getElapsedTime() - deathTime) / respawnDelay;
+        }
+
+        globals.currentCamera->setPosition(body->getPosition());
+        return;
+    }
+
     if (W)
-        forward += forwardSpeed * (running ? 2.0f : 1.0f);
+        forward += forwardSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
     if (S)
-        forward -= backSpeed * (running ? 2.0f : 1.0f);
+        forward -= backSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
     if (A)
-        side -= sideSpeed * (running ? 2.0f : 1.0f);
+        side -= sideSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
     if (D)
-        side += sideSpeed * (running ? 2.0f : 1.0f);
+        side += sideSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
 
     if (flying && !W && !S && !A && !D)
     {
@@ -145,7 +178,17 @@ void Player::update(float deltaTime)
     else
     {
         if (W)
-            fly((running ? 2.0f : 1.0f), deltaTime);
+            flyForward((running ? 2.0f : 1.0f), deltaTime);
+        if (S)
+            flyForward(-(running ? 2.0f : 1.0f), deltaTime);
+        if (A)
+            flySide(-(running ? 2.0f : 1.0f), deltaTime);
+        if (D)
+            flySide((running ? 2.0f : 1.0f), deltaTime);
+        if (Q)
+            flyUp(-(running ? 2.0f : 1.0f), deltaTime);
+        if (E)
+            flyUp((running ? 2.0f : 1.0f), deltaTime);
 
         if (doJump)
             flyUp((running ? 2.0f : 1.0f), deltaTime);
@@ -173,6 +216,11 @@ void Player::update(float deltaTime)
         globals.currentCamera->setDirection(newDir);
     }
 
+    if (invertedControls && (invertStart + invertLength < globals.appTime.getElapsedTime()))
+    {
+        invertedControls = false;
+    }
+
     // std::cout << "stamina: " << stamina << "\n";
 }
 
@@ -183,8 +231,11 @@ void Player::setMenu(FastUI_valueMenu &menu)
          FastUI_valueTab(menu.ui, {
                                       FastUI_value((const float *)(&stamina), U"Stamina\t"),
                                       FastUI_value(&stress, U"Stress\t"),
+                                      FastUI_value(&stressDecreaseRate, U"Stress Decrease Rate\t"),
+                                      FastUI_value(&stressIncreaseRate, U"Stress Increase Rate\t"),
                                       FastUI_value(&stressFactor, U"Stress Factor\t"),
                                       FastUI_value(&stressSmoothing, U"Stress Smoothing\t"),
+                                      FastUI_value(&deathAnimationProgress, U"Death Animation Progress\t"),
 
                                   })});
 }
@@ -218,6 +269,20 @@ void Player::doInputs(GLFWKeyInfo &input)
             D = true;
         else if (input.action == GLFW_RELEASE)
             D = false;
+    }
+    if (input.key == GLFW_KEY_Q)
+    {
+        if (input.action == GLFW_PRESS)
+            Q = true;
+        else if (input.action == GLFW_RELEASE)
+            Q = false;
+    }
+    if (input.key == GLFW_KEY_E)
+    {
+        if (input.action == GLFW_PRESS)
+            E = true;
+        else if (input.action == GLFW_RELEASE)
+            E = false;
     }
     if (input.key == GLFW_KEY_SPACE)
     {
@@ -307,6 +372,32 @@ void Player::move(float fmove, float smove, float deltaTime)
             body->setVelocity(vel);
         }
     }
+
+    if (GameGlobals::isPlayerinZone1())
+    {
+        if (!isInShadow())
+        {
+            stress += stressIncreaseRate * deltaTime;
+
+            if (stress > 100.0f)
+            {
+                die();
+                stress = 0.0f;
+            }
+        }
+        else
+        {
+            stress -= stressDecreaseRate * deltaTime;
+            if (stress < 0.0f)
+                stress = 0.0f;
+        }
+    }
+    else
+    {
+        stress -= stressDecreaseRate * deltaTime;
+        if (stress < 0.0f)
+            stress = 0.0f;
+    }
 }
 
 void Player::accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime)
@@ -349,11 +440,21 @@ void Player::jump(float deltaTime)
     doJump = false;
 }
 
-void Player::fly(float speed, float deltatime)
+void Player::flyForward(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
     body->setPosition(pos + globals.currentCamera->getDirection() * 10.0f * deltatime * speed);
+}
+
+void Player::flySide(float speed, float deltatime)
+{
+    vec3 pos = body->getPosition();
+
+    vec3 camDir = globals.currentCamera->getDirection();
+    vec3 camRight = normalize(cross(camDir, vec3(0.0f, 1.0f, 0.0f)));
+
+    body->setPosition(pos + camRight * 10.0f * deltatime * speed);
 }
 
 void Player::flyUp(float speed, float deltatime)
@@ -388,6 +489,26 @@ void Player::mouseLook()
     // // std::cout << "camera position: " << camera->getPosition().x << ", " << camera->getPosition().y << ", " << camera->getPosition().z << "\n";
     // vec3 rot = eulerAngles(newRotation);
     // globals.currentCamera->setDirection(rot);
+}
+
+void Player::die()
+{
+    // death animation
+    ((SphereCollider *)body->getCollider())->setRadius(0.5f);
+    body->setVelocity(vec3(0.0f));
+    dead = true;
+    deathTime = globals.appTime.getElapsedTime();
+}
+
+void Player::respawn()
+{
+    // respawn animation
+    ((SphereCollider *)body->getCollider())->setRadius(2.0f);
+    body->setVelocity(vec3(0.0f));
+    body->setPosition(respawnPoint + vec3(0.0f, 2.0f, 0.0f));
+    dead = false;
+    deathAnimationProgress = 0.0f;
+    deathTime = globals.appTime.getElapsedTime();
 }
 
 bool Player::isInShadow()
