@@ -33,8 +33,8 @@ public:
     void accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime);
 
     void jump(float deltaTime);
-    void fly(float deltaTime);
-    void flyUp(float deltaTime);
+    void fly(float speed, float deltaTime);
+    void flyUp(float speed, float deltaTime);
 
     void mouseLook();
 

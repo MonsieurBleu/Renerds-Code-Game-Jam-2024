@@ -145,10 +145,10 @@ void Player::update(float deltaTime)
     else
     {
         if (W)
-            fly(deltaTime);
+            fly((running ? 2.0f : 1.0f), deltaTime);
 
         if (doJump)
-            flyUp(deltaTime);
+            flyUp((running ? 2.0f : 1.0f), deltaTime);
 
         globals.currentCamera->setPosition(body->getPosition());
     }
@@ -349,20 +349,18 @@ void Player::jump(float deltaTime)
     doJump = false;
 }
 
-void Player::fly(float deltatime)
+void Player::fly(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
-    std::cout << "pos: " << pos.x << ", " << pos.y << ", " << pos.z << "\n";
-
-    body->setPosition(pos + globals.currentCamera->getDirection() * 10.0f * deltatime);
+    body->setPosition(pos + globals.currentCamera->getDirection() * 10.0f * deltatime * speed);
 }
 
-void Player::flyUp(float deltatime)
+void Player::flyUp(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
-    body->setPosition(pos + vec3(0.0f, 1.0f, 0.0f) * 10.0f * deltatime);
+    body->setPosition(pos + vec3(0.0f, 1.0f, 0.0f) * 10.0f * deltatime * speed);
 }
 
 void Player::mouseLook()
