@@ -439,15 +439,9 @@ void Game::mainloop()
         .setPosition(vec3(-20, 0, 0));
     scene.add(fence);
 
-    ModelRef shadowMonster = newModel(GameGlobals::PBR);
-    shadowMonster->loadFromFolder("ressources/models/shadow/");
-    shadowMonster->state
-        .scaleScalar(0.8)
-        .setPosition(vec3(-30, 0, 0));
-    scene.add(shadowMonster);
 
 
-
+/*
     ModelRef lanterne = newModel(GameGlobals::PBR);
     lanterne->loadFromFolder("ressources/models/lantern/");
     lanterne->state
@@ -456,6 +450,16 @@ void Game::mainloop()
     scene.add(lanterne);
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
+*/
+    // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+
+
+    ModelRef shadowMonster = newModel(GameGlobals::PBR);
+    shadowMonster->loadFromFolder("ressources/models/shadow/");
+    shadowMonster->state
+        .scaleScalar(0.75)
+        .setPosition(vec3(-30, 0, 0));
+    scene.add(shadowMonster);
 
     GameGlobals::sun = sun;
 
@@ -469,11 +473,10 @@ void Game::mainloop()
 
     GameGlobals::sun = sun;
 
-    // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
 
-    monster = Monster(lanterne);
-    lanterne->state.hide = ModelStateHideStatus::HIDE;
-    lanterne->state.setPosition(GameGlobals::Zone2Center);
+    monster = Monster(shadowMonster);
+    shadowMonster->state.hide = ModelStateHideStatus::HIDE;
+    shadowMonster->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;
 
