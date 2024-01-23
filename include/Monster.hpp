@@ -21,6 +21,8 @@ private:
 
     bool isPlayerInZone();
 
+    bool enabled = false;
+
 public:
     Monster(GameObject monster);
     ~Monster();

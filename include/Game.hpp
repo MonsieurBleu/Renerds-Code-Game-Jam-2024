@@ -8,6 +8,7 @@
 #include <GameGlobals.hpp>
 #include <HandItem.hpp>
 #include <EffectHandler.hpp>
+#include <Monster.hpp>
 
 class Game final : public App
 {
@@ -34,6 +35,8 @@ private:
     HandItemHandlerRef handItems;
 
     EffectHandler effects;
+
+    // Monster monster;
 
 public:
     Game(GLFWwindow *window);

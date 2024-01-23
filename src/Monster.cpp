@@ -15,7 +15,7 @@ Monster::~Monster()
 
 void Monster::update(float deltaTime)
 {
-    if (isPlayerInZone())
+    if (isPlayerInZone() && enabled)
     {
         vec3 playerPosition = GameGlobals::playerPosition;
         vec3 monsterPosition = monster.getPosition();
@@ -31,8 +31,7 @@ void Monster::update(float deltaTime)
 
             // make speed decrease proportionally with distance
             // max speed is when the monster is at 2* the radius of the zone away
-            const float radius = 50.0f; // temporary
-            float actualSpeed = speed * (1.0f - distance / (2.0f * radius));
+            float actualSpeed = speed * (1.0f - distance / (2.0f * GameGlobals::zone2radius));
 
             float speed = actualSpeed * deltaTime;
 
@@ -45,18 +44,31 @@ void Monster::update(float deltaTime)
         }
     }
 
+    if (!enabled && isPlayerInZone())
+    {
+        enabled = true;
+        // spawn the monster at the center of the zone
+        monster.setPosition(GameGlobals::Zone2Center);
+        monster.getGroup()->state.hide = ModelStateHideStatus::SHOW;
+    }
+
+    if (enabled && !isPlayerInZone())
+    {
+        enabled = false;
+        monster.getGroup()->state.hide = ModelStateHideStatus::HIDE;
+    }
+
     GameGlobals::Zone2Objectif = monster.getPosition();
 }
 
 bool Monster::isPlayerInZone()
 {
-    vec3 playerPosition = GameGlobals::playerPosition;
-    vec3 monsterPosition = monster.getPosition();
+    vec2 playerPosition = vec2(GameGlobals::playerPosition.x, GameGlobals::playerPosition.z);
 
-    vec3 direction = playerPosition - monsterPosition;
+    vec2 direction = playerPosition - vec2(GameGlobals::Zone2Center.x, GameGlobals::Zone2Center.z);
     direction.y = 0.0f;
 
     float distance = length(direction);
 
-    return distance < 50.0f;
+    return distance < GameGlobals::zone2radius;
 }
