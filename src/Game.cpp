@@ -437,7 +437,7 @@ void Game::mainloop()
     ModelRef fence = newModel(GameGlobals::PBRstencil);
     fence->loadFromFolder("ressources/models/fence/");
     fence->state
-        .scaleScalar(1)
+        .scaleScalar(0.8)
         .setPosition(vec3(-20, 0, 0));
     scene.add(fence);
 
