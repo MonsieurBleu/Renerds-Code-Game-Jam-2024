@@ -349,13 +349,20 @@ void Player::mouseLook()
     // globals.currentCamera->setDirection(rot);
 }
 
-bool Player::isInShadow(SceneDirectionalLight sun)
+bool Player::isInShadow()
 {
-    sun->bindShadowMap();
+    glBindFramebuffer(GL_FRAMEBUFFER, GameGlobals::sun->shadowMap.getHandle());
+    glViewport(0, 0, GameGlobals::sun->cameraResolution.x, GameGlobals::sun->cameraResolution.y);
+
+    vec4 mapPosition = GameGlobals::sun->getInfos()._rShadowMatrix * vec4(GameGlobals::playerPosition, 1.f);
+    mapPosition /= mapPosition.w;
+    mapPosition.x = mapPosition.x*0.5 +0.5;
+    mapPosition.y = mapPosition.y*0.5 +0.5;
+
     float d;
     glReadPixels(
-        0, 
-        0, 
+        mapPosition.x*GameGlobals::sun->cameraResolution.x, 
+        mapPosition.y*GameGlobals::sun->cameraResolution.y, 
         1,
         1,
         GL_DEPTH_COMPONENT,
@@ -363,5 +370,7 @@ bool Player::isInShadow(SceneDirectionalLight sun)
         &d
     );
 
-    std::cout << d << "\n";
+    GameGlobals::sun->shadowMap.deactivate();
+
+    return d - 0.001 > mapPosition.z;
 }

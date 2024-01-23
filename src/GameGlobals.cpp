@@ -13,6 +13,8 @@ vec3 GameGlobals::Zone2Center;
 vec3 GameGlobals::Zone1Objectif;
 vec3 GameGlobals::Zone2Objectif;
 
+SceneDirectionalLight GameGlobals::sun;
+
 void GameGlobals::setMenu(FastUI_valueMenu &menu)
 {
     menu.push_back(
