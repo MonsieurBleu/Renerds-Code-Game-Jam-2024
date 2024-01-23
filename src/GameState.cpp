@@ -1,4 +1,5 @@
 #include "GameState.hpp"
+#include <Player.hpp>
 
 void GameStateManager::update(float deltatime)
 {
@@ -30,11 +31,50 @@ void GameStateManager::setState(GameState *state)
 
 bool StartState::update(float deltaTime)
 {
+
+    float d = distance(
+        GameGlobals::playerPosition,
+        GameGlobals::foxAlive->state.position
+    );
+
+    if(d < 3.0)
+    {
+        if(GameGlobals::E)
+        {
+            // GameGlobals::foxAlive->state
+            //     .scaleScalar(
+            //         5.0*GameGlobals::foxAlive->state.scale.x);
+
+            // ScenePointLight l = newPointLight();
+            // l->
+            //      setPosition(
+            //         GameGlobals::foxAlive->state.position
+            //         +vec3(0, 2, 0))
+            //     .setIntensity(10.0)
+            //     .setRadius(10.0)
+            //     .setColor(vec3(0.2, 0.5, 1.0))
+            //     ;
+            
+            // GameGlobals::scene->add(l);
+
+            return true;
+        }
+    }
+
+
     return false;
 }
 
 void StartState::onEnter()
 {
+    //globals.currentCamera->setPosition(vec3(126, 1, 136));
+    Player::respawnPoint = vec3(126, 1, 136);
+    GameGlobals::player->respawn();
+    //GameGlobals::player->teleport(vec3(126, 1, 136));
+
+
+    GameGlobals::foxAlive->state.setPosition(vec3(110, 0, 126));
+    GameGlobals::scene->add(GameGlobals::foxAlive);
 }
 
 void StartState::onExit()
@@ -43,19 +83,61 @@ void StartState::onExit()
 
 bool FoxState::update(float deltaTime)
 {
+    static vec3 lp = globals.currentCamera->getPosition() + globals.currentCamera->getDirection();
+
+    timer.end();
+    timer.start();
+
+    float t = timer.getElapsedTime();
+
+    float i = 0.5 + 0.5*sin(t*1.5);
+
+    l->setRadius(3.0 + i*5.f);
+
+    // std::cout << i << "\n";
+
+    globals.currentCamera->lookAt(
+        mix(
+            lp,
+            GameGlobals::foxAlive->state.position,
+            min(t, 1.f)
+        )
+    );
+
     return false;
 }
 
 void FoxState::onEnter()
 {
+    timer.start();
+
+    l = newPointLight();
+    l->setPosition(
+            GameGlobals::foxAlive->state.position
+            +vec3(0, 2, 0))
+        .setIntensity(15.0)
+        // .setRadius(5.0)
+        .setColor(vec3(0.0, 0.1, 1.0))
+        ;
+    
+    GameGlobals::scene->add(l);
+
+    globals.currentCamera->setForceLookAtPoint(true);
+    // globals.currentCamera->lookAt(
+    //     GameGlobals::foxAlive->state.position
+    // );
+    Player::locked = true;
 }
 
 void FoxState::onExit()
 {
+    globals.currentCamera->setForceLookAtPoint(false);
+    Player::locked = false;
 }
 
 bool PlayState::update(float deltaTime)
 {
+
     return false;
 }
 
