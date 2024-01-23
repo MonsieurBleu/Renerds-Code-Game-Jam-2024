@@ -202,7 +202,8 @@ void Game::mainloop()
         loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
     
     Texture2D skyboxReflectTexture = Texture2D().
-        loadFromFile("ressources/models/skybox/reflect.png");
+        // loadFromFile("ressources/models/skybox/reflect.png");
+        loadFromFileKTX("ressources/models/skybox/reflect.ktx");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
