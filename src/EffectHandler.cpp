@@ -1,6 +1,7 @@
 #include <EffectHandler.hpp>
 #include <FastUI.hpp>
 #include <GameGlobals.hpp>
+#include <Player.hpp>
 
 EffectHandler::EffectHandler()
 {
@@ -8,11 +9,15 @@ EffectHandler::EffectHandler()
     finalComposingUniforms.add(ShaderUniform(&mistEffectItensity, 17));
     finalComposingUniforms.add(ShaderUniform(&mistEffectColor1, 18));
     finalComposingUniforms.add(ShaderUniform(&mistEffectColor2, 19));
+    finalComposingUniforms.add(ShaderUniform(&Player::deathAnimationProgress, 20));
+    finalComposingUniforms.add(ShaderUniform(&Player::reviveAnimationProgress, 21));
+    // skyboxUniforms.add(ShaderUniform(&sunColor, 20));
+    // skyboxUniforms.add(ShaderUniform(&z1lerp, 21));
 }
 
 void EffectHandler::setDefaultMist()
 {
-    mistEffectItensity = 0.0075 * 0.0;
+    mistEffectItensity = 0.0075;
     mistEffectColor1 = vec3(0xf9, 0xb7, 0x2f) / 255.f;
     mistEffectColor2 = vec3(0xa8, 0x5d, 0x2a) / 255.f;
 }
@@ -37,6 +42,10 @@ void EffectHandler::update()
     setDefaultPixel();
 
     float zone2dist = distance(GameGlobals::playerPosition, GameGlobals::Zone2Center);
+    float zone1dist = distance(GameGlobals::playerPosition, GameGlobals::Zone1Center);
+
+    float objectif2dist = distance(GameGlobals::playerPosition, GameGlobals::Zone2Objectif);
+    float objectif1dist = distance(GameGlobals::playerPosition, GameGlobals::Zone1Objectif);
 
     /* Update Mist for Zone 2 */
     const float z2MaxDist = GameGlobals::zone2radius + z2Transition;
@@ -45,8 +54,7 @@ void EffectHandler::update()
     mistEffectItensity = mix(mistEffectItensity, 0.05f, z2lerp);
     mistEffectColor1 = mix(mistEffectColor1, vec3(0.8), z2lerp);
     mistEffectColor2 = mix(mistEffectColor2, vec3(0.8), z2lerp);
-
-    float objectif2dist = distance(GameGlobals::playerPosition, GameGlobals::Zone2Objectif);
+    
 
     /* Update Pixel effect for Zone 2 */
     const float o2MaxDist = o2MinDist + o2Transition;
@@ -54,5 +62,39 @@ void EffectHandler::update()
     o2lerp = clamp(1.f - o2lerp, 0.f, 1.f);
     pixelEffectSize = mix(pixelEffectSize, 0.02f, o2lerp);
 
-    // std::cout << zone2dist << " " << z2lerp << "\n";
+    /* Update Zone 1 */
+    const float z1MaxDist = GameGlobals::zone1radius + z1Transition;
+    z1lerp = (max(zone1dist - GameGlobals::zone1radius, 0.f)) / (z1MaxDist - GameGlobals::zone1radius);
+    z1lerp = clamp(1.f - z1lerp, 0.f, 1.f);
+
+    /* Update Objectif 1*/
+    const float o1MaxDist = o1MinDist + o1Transition;
+    o1lerp = (max(objectif1dist - o1MinDist, 0.f)) / (o1MaxDist - o1MinDist);
+    o1lerp = clamp(1.f - o1lerp, 0.f, 1.f);
+
+
+    mistEffectItensity = mix(mistEffectItensity, 0.0175f, z1lerp);
+    mistEffectColor1 = mix(mistEffectColor1, vec3(0.75, 0.8, 0.9)*vec3(0.5), z1lerp);
+    mistEffectColor2 = mix(mistEffectColor2, vec3(0.75, 0.8, 0.9)*vec3(0.5), z1lerp);
+
+    mistEffectColor1 = mix(mistEffectColor1, vec3(0.9, 0.3, 0.3)*vec3(0.5), o1lerp);
+    mistEffectColor2 = mix(mistEffectColor2, vec3(0.9, 0.3, 0.3)*vec3(0.5), o1lerp);
+
+
+    sunColor = mix(
+            vec3(143, 107, 71) / vec3(255), 
+            vec3(0x5e, 0x7a, 0x9e) / vec3(255), 
+            z1lerp);
+
+    sunColor = mix(
+            sunColor, 
+            vec3(0xFF, 0x0e, 0x08) / vec3(255), 
+            o1lerp);
+
+    float sunIntensity = mix(5.0f, 1.f, z1lerp);
+    sunIntensity = mix(sunIntensity, 4.f, o1lerp);
+
+    GameGlobals::sun->
+        setColor(sunColor)
+        .setIntensity(sunIntensity);
 }

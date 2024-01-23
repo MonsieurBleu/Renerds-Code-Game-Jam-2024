@@ -27,6 +27,7 @@ void main() {
 
     mEmmisive = 1.0 - CE.a;
     mMetallic = 1.0 - NRM.a;
+    mMetallic = 0.0;
     mRoughness = NRM.b;
     mRoughness2 = mRoughness * mRoughness;
     color = CE.rgb;

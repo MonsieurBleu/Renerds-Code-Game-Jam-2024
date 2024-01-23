@@ -161,10 +161,12 @@ vec3 calculateViewPosition(vec2 textureCoordinate, float depth)
 
 
 
-layout(location = 16) uniform float _pixelSize;
-layout(location = 17) uniform float mistIntensity;
-layout(location = 18) uniform vec3 mistColor1;
-layout(location = 19) uniform vec3 mistColor2;
+layout (location = 16) uniform float _pixelSize;
+layout (location = 17) uniform float mistIntensity;
+layout (location = 18) uniform vec3 mistColor1;
+layout (location = 19) uniform vec3 mistColor2;
+layout (location = 20) uniform float playerDeath;
+layout (location = 21) uniform float playerRevive;
 
 // const float mistIntensity = 0.05;
 // const vec3 mistColor2 = vec3(0.8);
@@ -264,7 +266,7 @@ void main() {
         float mistAlpha = smoothstep(mistMaxDist + mistIntensity, mistMaxDist, d);
         mistAlpha = pow(mistAlpha, 25.0);
 
-        float heightFactor = max(((vp.y-10.0)/5.5)*d, 0.0);
+        float heightFactor = max(((vp.y-10.0)/3.0)*d, 0.0);
         mistAlpha *= max(1.0 - heightFactor, 0.0);
 
         _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);
@@ -276,6 +278,29 @@ void main() {
     _fragColor.rgb = mix(_fragColor.rgb, ui.rgb, ui.a);
     _fragColor.a = 1.0;
 
+    /* Player Death Animation */
 
+        float pa = playerDeath;
+        if(playerRevive > 0.f)
+            pa = 1.0 - playerRevive;
 
+        pa *= 3.0;
+
+        float u;
+
+        if(uv.y < 0.5)
+            u = uv.y;
+        else
+            u = 1.0-uv.y;
+
+        //u = pow(u, 1.0 - 2.0*distance(uv.x, 0.5));
+
+        float eye = distance(uv.x, 0.5);
+        u -= pow(eye, 30.0);
+
+        float alpha = smoothstep(pa+0.1, pa-1.0, u);
+
+        _fragColor.rgb = mix(_fragColor.rgb, vec3(0), alpha);
+
+    ////////////////
 }

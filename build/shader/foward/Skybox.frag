@@ -1,6 +1,7 @@
 #version 460
 
 #define USING_VERTEX_TEXTURE_UV
+#define NO_REFLECT_TEXTURE
 
 #include uniform/Base3D.glsl
 #include uniform/Model3D.glsl
@@ -22,20 +23,10 @@ float exposure = 1.0;
 void main()
 {
     color = getSkyColor(uv);
-
-    // color = pow(vec3(1.0) - exp(-color*exposure), vec3(1.0/gamma));
-
     fragColor.rgb = color;
-    // fragEmmisive = getStandardEmmisive(fragColor.rgb, ambientLight);
-
-    // fragEmmisive = 0.65*fragColor.rgb*(rgb2v(fragColor.rgb) - ambientLight);
 
     float v = rgb2v(fragColor.rgb);
     fragEmmisive = fragColor.rgb*fragColor.rgb*pow(v, 10.0)*2.0;
-
-    // fragColor.rgb = vec3(uv, 1.0);
-    // fragColor.rgb = vec3(uv.x-mod(uv.x, 0.1), 0.1, 0.0);
-    // fragColor.rgb = vec3(0.1, uv.y-mod(uv.y, 0.1), 0.0);
 
     fragNormal = vec3(1);
 }

@@ -21,14 +21,6 @@ private:
 
     bool doJump;
 
-public:
-    Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs);
-    ~Player();
-
-    void update(float deltaTime);
-
-    void doInputs(GLFWKeyInfo &input);
-
     void move(float forward, float side, float deltaTime);
     void accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime);
 
@@ -38,6 +30,17 @@ public:
     void flyUp(float speed, float deltaTime);
 
     void mouseLook();
+
+    void die();
+    void respawn();
+
+public:
+    Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs);
+    ~Player();
+
+    void update(float deltaTime);
+
+    void doInputs(GLFWKeyInfo &input);
 
     bool isInShadow();
     void setMenu(FastUI_valueMenu &menu);
@@ -68,6 +71,9 @@ public:
     static constexpr float staminaDrain = 50.0f;
     static constexpr float staminaRegen = 50.0f;
 
+    static float stressIncreaseRate;
+    static float stressDecreaseRate;
+
     // probably should have a better name
     static std::vector<RigidBodyRef> thingsYouCanStandOn;
 
@@ -92,4 +98,20 @@ public:
     static constexpr float invertLength = 1.0f;
 
     static bool hasTeddyBear;
+
+    static vec3 respawnPoint;
+
+    static bool dead;
+    static float deathTime;
+    static float respawnDelay;
+
+    static bool canDie;
+    static float deathAnimationProgress;
+
+    static vec3 deathLookDir;
+
+    static bool reviveAnimation;
+    static float reviveAnimationStart;
+    static float reviveAnimationLength;
+    static float reviveAnimationProgress;
 };

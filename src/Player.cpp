@@ -31,6 +31,24 @@ bool Player::invertedControls = false;
 float Player::invertStart = 0.0f;
 bool Player::hasTeddyBear = false;
 
+float Player::stressDecreaseRate = 50.0f;
+float Player::stressIncreaseRate = 35.0f;
+
+float Player::deathAnimationProgress = 0.0f;
+
+bool Player::dead = false;
+float Player::deathTime = 0.0f;
+float Player::respawnDelay = 3.0f;
+bool Player::canDie = true;
+vec3 Player::respawnPoint = vec3(0.0f);
+
+vec3 Player::deathLookDir = vec3(0.0f);
+
+bool Player::reviveAnimation = false;
+float Player::reviveAnimationStart = 0.0f;
+float Player::reviveAnimationLength = 1.0f;
+float Player::reviveAnimationProgress = 0.000f;
+
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
 
@@ -71,6 +89,61 @@ void Player::update(float deltaTime)
 
     float forward = 0.0f;
     float side = 0.0f;
+
+    vec3 monsterdiff = GameGlobals::Zone2Objectif - GameGlobals::playerPosition;
+    monsterdiff.y = 0.0f;
+    float monsterdist = length(monsterdiff);
+
+    if (monsterdist < 1.0f)
+    {
+        if (!hasTeddyBear)
+        {
+            if (canDie)
+                die();
+        }
+
+        // else win here or something
+    }
+
+    if (dead)
+    {
+        if (deathTime + respawnDelay < globals.appTime.getElapsedTime())
+        {
+            respawn();
+        }
+        else
+        {
+            deathAnimationProgress = (globals.appTime.getElapsedTime() - deathTime) / respawnDelay;
+
+            vec3 finalLookDir = deathLookDir;
+            finalLookDir.y = M_PI - (M_PI / 8.0f);
+            finalLookDir = normalize(finalLookDir);
+
+            vec3 camDir = lerp(deathLookDir, finalLookDir, min(deathAnimationProgress * 1.5f, 1.0f));
+            globals.currentCamera->setDirection(camDir);
+        }
+
+        globals.currentCamera->setPosition(body->getPosition());
+        return;
+    }
+
+    if (reviveAnimation)
+    {
+        if (reviveAnimationStart + reviveAnimationLength < globals.appTime.getElapsedTime())
+        {
+            reviveAnimation = false;
+            reviveAnimationProgress = 0.0f;
+        }
+        else
+        {
+            reviveAnimationProgress = (globals.appTime.getElapsedTime() - reviveAnimationStart) / reviveAnimationLength;
+            vec3 camDir = lerp(deathLookDir, vec3(1, 0, 0), reviveAnimationProgress);
+            globals.currentCamera->setDirection(camDir);
+        }
+
+        globals.currentCamera->setPosition(body->getPosition());
+        return;
+    }
 
     if (W)
         forward += forwardSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
@@ -205,8 +278,12 @@ void Player::setMenu(FastUI_valueMenu &menu)
          FastUI_valueTab(menu.ui, {
                                       FastUI_value((const float *)(&stamina), U"Stamina\t"),
                                       FastUI_value(&stress, U"Stress\t"),
+                                      FastUI_value(&stressDecreaseRate, U"Stress Decrease Rate\t"),
+                                      FastUI_value(&stressIncreaseRate, U"Stress Increase Rate\t"),
                                       FastUI_value(&stressFactor, U"Stress Factor\t"),
                                       FastUI_value(&stressSmoothing, U"Stress Smoothing\t"),
+                                      FastUI_value(&deathAnimationProgress, U"Death Animation Progress\t"),
+                                      FastUI_value(&reviveAnimationProgress, U"Revive Animation Progress\t"),
 
                                   })});
 }
@@ -343,6 +420,32 @@ void Player::move(float fmove, float smove, float deltaTime)
             body->setVelocity(vel);
         }
     }
+
+    if (GameGlobals::isPlayerinZone1())
+    {
+        if (!isInShadow())
+        {
+            stress += stressIncreaseRate * deltaTime;
+
+            if (stress > 100.0f)
+            {
+                die();
+                stress = 0.0f;
+            }
+        }
+        else
+        {
+            stress -= stressDecreaseRate * deltaTime;
+            if (stress < 0.0f)
+                stress = 0.0f;
+        }
+    }
+    else
+    {
+        stress -= stressDecreaseRate * deltaTime;
+        if (stress < 0.0f)
+            stress = 0.0f;
+    }
 }
 
 void Player::accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime)
@@ -406,10 +509,7 @@ void Player::flyUp(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
-    vec3 camDir = globals.currentCamera->getDirection();
-    vec3 camUp = normalize(cross(vec3(1.0f, 0.0f, 1.0f), camDir));
-
-    body->setPosition(pos + camUp * 10.0f * deltatime * speed);
+    body->setPosition(pos + vec3(0.0f, 1.0f, 0.0f) * 10.0f * deltatime * speed);
 }
 
 void Player::mouseLook()
@@ -437,6 +537,39 @@ void Player::mouseLook()
     // // std::cout << "camera position: " << camera->getPosition().x << ", " << camera->getPosition().y << ", " << camera->getPosition().z << "\n";
     // vec3 rot = eulerAngles(newRotation);
     // globals.currentCamera->setDirection(rot);
+}
+
+void Player::die()
+{
+    canDie = false;
+    // death animation
+    ((SphereCollider *)body->getCollider())->setRadius(0.5f);
+    body->setVelocity(vec3(0.0f));
+    dead = true;
+    deathTime = globals.appTime.getElapsedTime();
+    GameGlobals::monster->disable();
+    GameGlobals::monster->activated = false;
+    deathLookDir = globals.currentCamera->getDirection();
+}
+
+void Player::respawn()
+{
+    // respawn animation
+    ((SphereCollider *)body->getCollider())->setRadius(2.0f);
+    body->setVelocity(vec3(0.0f));
+    body->setPosition(respawnPoint + vec3(0.0f, 2.0f, 0.0f));
+    GameGlobals::playerPosition = respawnPoint;
+    dead = false;
+    deathAnimationProgress = 0.0f;
+    deathTime = globals.appTime.getElapsedTime();
+    canDie = true;
+    GameGlobals::monster->activated = true;
+
+    reviveAnimation = true;
+    reviveAnimationStart = globals.appTime.getElapsedTime();
+    reviveAnimationProgress = 0.001f;
+
+    deathLookDir = globals.currentCamera->getDirection();
 }
 
 bool Player::isInShadow()
