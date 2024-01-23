@@ -5,6 +5,7 @@
 #include <MathsUtils.hpp>
 #include <Audio.hpp>
 #include <TreeMapGenerator.hpp>
+#include <GameState.hpp>
 
 #include <thread>
 
@@ -198,11 +199,9 @@ void Game::mainloop()
     ModelRef skybox = newModel(skyboxMaterial);
     skybox->loadFromFolder("ressources/models/skybox/", true, false);
 
-    Texture2D skyboxNightTexture = Texture2D().
-        loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
-    
-    Texture2D skyboxReflectTexture = Texture2D().
-        loadFromFile("ressources/models/skybox/reflect.png");
+    Texture2D skyboxNightTexture = Texture2D().loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
+
+    Texture2D skyboxReflectTexture = Texture2D().loadFromFile("ressources/models/skybox/reflect.png");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
@@ -424,26 +423,26 @@ void Game::mainloop()
         .setPosition(vec3(10, 0, 0));
     scene.add(maison);
 
-        ModelRef foxAlive = newModel(GameGlobals::PBR);
-        foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
-        foxAlive->state
-            .scaleScalar(0.009)
-            .setPosition(vec3(-10, 0, 0));
-        scene.add(foxAlive);
+    ModelRef foxAlive = newModel(GameGlobals::PBR);
+    foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
+    foxAlive->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 0));
+    scene.add(foxAlive);
 
-        ModelRef foxDead = newModel(GameGlobals::PBR);
-        foxDead->loadFromFolder("ressources/models/fox/foxDead/");
-        foxDead->state
-            .scaleScalar(0.009)
-            .setPosition(vec3(-20, 0, -20));
-        scene.add(foxDead);
+    ModelRef foxDead = newModel(GameGlobals::PBR);
+    foxDead->loadFromFolder("ressources/models/fox/foxDead/");
+    foxDead->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-20, 0, -20));
+    scene.add(foxDead);
 
-        ModelRef fence = newModel(GameGlobals::PBRstencil);
-        fence->loadFromFolder("ressources/models/fence/");
-        fence->state
-            .scaleScalar(0.8)
-            .setPosition(vec3(-20, 0, 0));
-        scene.add(fence);
+    ModelRef fence = newModel(GameGlobals::PBRstencil);
+    fence->loadFromFolder("ressources/models/fence/");
+    fence->state
+        .scaleScalar(0.8)
+        .setPosition(vec3(-20, 0, 0));
+    scene.add(fence);
 
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
@@ -467,6 +466,21 @@ void Game::mainloop()
     lanterne->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;
+
+    std::vector<GameState *> states;
+    states.push_back(new StartState());
+    states.push_back(new FoxState());
+    states.push_back(new PlayState());
+    states.push_back(new EndState());
+
+    states[0]->setNextState(states[1]);
+    states[1]->setNextState(states[2]);
+    states[2]->setNextState(states[3]);
+
+    GameState *currentState = states[0];
+
+    GameStateManager stateManager;
+    stateManager.setState(states[0]);
 
     monster.setMenu(menu);
 
@@ -494,6 +508,8 @@ void Game::mainloop()
 
             monster.update(delta);
         }
+
+        stateManager.update(delta);
 
         // float c = 0.5 + 0.5*cos(globals.appTime.getElapsedTime());
         // musicSource.setPitch(0.1 + c*2);
