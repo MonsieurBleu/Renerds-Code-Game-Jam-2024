@@ -60,9 +60,9 @@ float getShadow(sampler2D shadowmap, mat4 rMatrix)
     mapPosition.xyz /= mapPosition.w;
     mapPosition.xy = mapPosition.xy * 0.5 + 0.5;
 
-    if (mapPosition.x < 0. || mapPosition.x > 1. ||
-        mapPosition.y < 0. || mapPosition.y > 1.)
-        return 1.;
+    if (mapPosition.x < 0.0 || mapPosition.x > 1.0 ||
+        mapPosition.y < 0.0 || mapPosition.y > 1.0)
+        return 1.0;
 
     float res = 0.;
     float bias = 0.00005; // 0.00002
