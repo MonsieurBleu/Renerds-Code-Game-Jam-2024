@@ -5,6 +5,7 @@
 #include <MathsUtils.hpp>
 #include <Audio.hpp>
 #include <TreeMapGenerator.hpp>
+#include <GameState.hpp>
 
 #include <thread>
 
@@ -198,11 +199,9 @@ void Game::mainloop()
     ModelRef skybox = newModel(skyboxMaterial);
     skybox->loadFromFolder("ressources/models/skybox/", true, false);
 
-    Texture2D skyboxNightTexture = Texture2D().
-        loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
-    
-    Texture2D skyboxReflectTexture = Texture2D().
-        loadFromFile("ressources/models/skybox/reflect.png");
+    Texture2D skyboxNightTexture = Texture2D().loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
+
+    Texture2D skyboxReflectTexture = Texture2D().loadFromFile("ressources/models/skybox/reflect.png");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
@@ -478,6 +477,21 @@ void Game::mainloop()
 
     GameGlobals::monster = &monster;
 
+    std::vector<GameState *> states;
+    states.push_back(new StartState());
+    states.push_back(new FoxState());
+    states.push_back(new PlayState());
+    states.push_back(new EndState());
+
+    states[0]->setNextState(states[1]);
+    states[1]->setNextState(states[2]);
+    states[2]->setNextState(states[3]);
+
+    GameState *currentState = states[0];
+
+    GameStateManager stateManager;
+    stateManager.setState(states[0]);
+
     monster.setMenu(menu);
 
     menu.batch();
@@ -504,6 +518,8 @@ void Game::mainloop()
 
             monster.update(delta);
         }
+
+        stateManager.update(delta);
 
         // float c = 0.5 + 0.5*cos(globals.appTime.getElapsedTime());
         // musicSource.setPitch(0.1 + c*2);
