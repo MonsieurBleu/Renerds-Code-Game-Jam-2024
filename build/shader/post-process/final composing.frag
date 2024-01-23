@@ -277,6 +277,26 @@ void main() {
     _fragColor.rgb = mix(_fragColor.rgb, ui.rgb, ui.a);
     _fragColor.a = 1.0;
 
+    /* Player Death Animation */
+
+        float pa = playerDeath*3.0;
+        float u;
+
+        if(uv.y < 0.5)
+            u = uv.y;
+        else
+            u = 1.0-uv.y;
+
+        //u = pow(u, 1.0 - 2.0*distance(uv.x, 0.5));
+
+        float eye = distance(uv.x, 0.5);
+        u -= pow(eye, 30.0);
+
+        float alpha = smoothstep(pa+0.1, pa-1.0, u);
+
+        _fragColor.rgb = mix(_fragColor.rgb, vec3(0), alpha);
+
+    ////////////////
 
 
 }
