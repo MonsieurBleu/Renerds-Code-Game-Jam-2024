@@ -12,7 +12,7 @@ void generateFence(ModelRef fenceSample, Scene &scene, PhysicsEngine &physicsEng
 
     for (int i = 0; i < 4; i++)
     {
-        for (float j = 0; j < FENCE_SIZE; j += fenceSegmentSize)
+        for (float j = (-FENCE_SIZE) / 2.0; j < FENCE_SIZE / 2.0; j += fenceSegmentSize)
         {
             ModelRef fenceSegment = fenceSample->copyWithSharedMesh();
             fenceSegment->state

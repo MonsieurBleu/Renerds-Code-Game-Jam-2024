@@ -92,7 +92,7 @@ void EffectHandler::update()
             vec3(0xFF, 0x0e, 0x08) / vec3(255), 
             o1lerp);
 
-    float sunIntensity = mix(5.0f, 1.f, z1lerp);
+    float sunIntensity = mix(3.0f, 1.f, z1lerp);
     sunIntensity = mix(sunIntensity, 4.f, o1lerp);
 
     GameGlobals::sun->

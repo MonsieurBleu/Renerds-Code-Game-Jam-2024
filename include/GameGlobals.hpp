@@ -5,6 +5,8 @@
 #include <Light.hpp>
 #include <Monster.hpp>
 
+class Player;
+
 class FastUI_valueMenu;
 class Monster;
 
@@ -25,6 +27,12 @@ public:
     static float zone2radius;
 
     static vec3 playerPosition;
+
+    static Player* player; 
+
+    static ModelRef foxAlive;
+    static ModelRef foxDead;
+    static Scene* scene;
 
     static void setMenu(FastUI_valueMenu &menu);
 
@@ -47,4 +55,6 @@ public:
 
     static bool isPlayerinZone1();
     static bool isPlayerinZone2();
+
+    static bool E;
 };
