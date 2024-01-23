@@ -276,7 +276,7 @@ void main() {
     /* Player Death Animation */
 
     float pa = playerDeath;
-    if(playerRevive > 0.)
+    if(playerRevive >= 0.00001f)
         pa = 1.0 - playerRevive;
 
     pa *= 3.0;

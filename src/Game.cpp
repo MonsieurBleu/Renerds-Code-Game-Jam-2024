@@ -200,9 +200,12 @@ void Game::mainloop()
     ModelRef skybox = newModel(skyboxMaterial);
     skybox->loadFromFolder("ressources/models/skybox/", true, false);
 
-    Texture2D skyboxNightTexture = Texture2D().loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
-
-    Texture2D skyboxReflectTexture = Texture2D().loadFromFile("ressources/models/skybox/reflect.png");
+    Texture2D skyboxNightTexture = Texture2D().
+        loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
+    
+    Texture2D skyboxReflectTexture = Texture2D().
+        // loadFromFile("ressources/models/skybox/reflect.png");
+        loadFromFileKTX("ressources/models/skybox/reflect.ktx");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
