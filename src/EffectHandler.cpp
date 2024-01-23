@@ -1,6 +1,7 @@
 #include <EffectHandler.hpp>
 #include <FastUI.hpp>
 #include <GameGlobals.hpp>
+#include <Player.hpp>
 
 EffectHandler::EffectHandler()
 {
@@ -8,7 +9,7 @@ EffectHandler::EffectHandler()
     finalComposingUniforms.add(ShaderUniform(&mistEffectItensity, 17));
     finalComposingUniforms.add(ShaderUniform(&mistEffectColor1, 18));
     finalComposingUniforms.add(ShaderUniform(&mistEffectColor2, 19));
-
+    finalComposingUniforms.add(ShaderUniform(&Player::deathAnimationProgress, 20));
     // skyboxUniforms.add(ShaderUniform(&sunColor, 20));
     // skyboxUniforms.add(ShaderUniform(&z1lerp, 21));
 }
