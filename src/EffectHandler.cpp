@@ -75,7 +75,6 @@ void EffectHandler::update()
     mistEffectColor1 = mix(mistEffectColor1, vec3(0.75, 0.8, 0.9)*vec3(0.5), z1lerp);
     mistEffectColor2 = mix(mistEffectColor2, vec3(0.75, 0.8, 0.9)*vec3(0.5), z1lerp);
 
-    mistEffectItensity = mix(mistEffectItensity, 0.0175f, z1lerp);
     mistEffectColor1 = mix(mistEffectColor1, vec3(0.9, 0.3, 0.3)*vec3(0.5), o1lerp);
     mistEffectColor2 = mix(mistEffectColor2, vec3(0.9, 0.3, 0.3)*vec3(0.5), o1lerp);
 
@@ -90,7 +89,10 @@ void EffectHandler::update()
             vec3(0xFF, 0x0e, 0x08) / vec3(255), 
             o1lerp);
 
+    float sunIntensity = mix(5.0f, 1.f, z1lerp);
+    sunIntensity = mix(sunIntensity, 4.f, o1lerp);
+
     GameGlobals::sun->
         setColor(sunColor)
-        .setIntensity(mix(5.0, 15.0, o1lerp));
+        .setIntensity(sunIntensity);
 }
