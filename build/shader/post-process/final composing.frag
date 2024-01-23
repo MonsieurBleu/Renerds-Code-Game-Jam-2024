@@ -166,6 +166,7 @@ layout (location = 17) uniform float mistIntensity;
 layout (location = 18) uniform vec3 mistColor1;
 layout (location = 19) uniform vec3 mistColor2;
 layout (location = 20) uniform float playerDeath;
+layout (location = 21) uniform float playerRevive;
 
 // const float mistIntensity = 0.05;
 // const vec3 mistColor2 = vec3(0.8);
@@ -279,7 +280,12 @@ void main() {
 
     /* Player Death Animation */
 
-        float pa = playerDeath*3.0;
+        float pa = playerDeath;
+        if(playerRevive > 0.f)
+            pa = 1.0 - playerRevive;
+
+        pa *= 3.0;
+
         float u;
 
         if(uv.y < 0.5)
@@ -297,6 +303,4 @@ void main() {
         _fragColor.rgb = mix(_fragColor.rgb, vec3(0), alpha);
 
     ////////////////
-
-
 }

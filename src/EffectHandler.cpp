@@ -10,6 +10,7 @@ EffectHandler::EffectHandler()
     finalComposingUniforms.add(ShaderUniform(&mistEffectColor1, 18));
     finalComposingUniforms.add(ShaderUniform(&mistEffectColor2, 19));
     finalComposingUniforms.add(ShaderUniform(&Player::deathAnimationProgress, 20));
+    finalComposingUniforms.add(ShaderUniform(&Player::reviveAnimationProgress, 21));
     // skyboxUniforms.add(ShaderUniform(&sunColor, 20));
     // skyboxUniforms.add(ShaderUniform(&z1lerp, 21));
 }
