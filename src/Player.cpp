@@ -11,6 +11,8 @@ bool Player::W = false;
 bool Player::A = false;
 bool Player::S = false;
 bool Player::D = false;
+bool Player::Q = false;
+bool Player::E = false;
 
 bool Player::grounded = false;
 bool Player::lockJump = false;
@@ -150,7 +152,17 @@ void Player::update(float deltaTime)
     else
     {
         if (W)
-            fly((running ? 2.0f : 1.0f), deltaTime);
+            flyForward((running ? 2.0f : 1.0f), deltaTime);
+        if (S)
+            flyForward(-(running ? 2.0f : 1.0f), deltaTime);
+        if (A)
+            flySide(-(running ? 2.0f : 1.0f), deltaTime);
+        if (D)
+            flySide((running ? 2.0f : 1.0f), deltaTime);
+        if (Q)
+            flyUp(-(running ? 2.0f : 1.0f), deltaTime);
+        if (E)
+            flyUp((running ? 2.0f : 1.0f), deltaTime);
 
         if (doJump)
             flyUp((running ? 2.0f : 1.0f), deltaTime);
@@ -228,6 +240,20 @@ void Player::doInputs(GLFWKeyInfo &input)
             D = true;
         else if (input.action == GLFW_RELEASE)
             D = false;
+    }
+    if (input.key == GLFW_KEY_Q)
+    {
+        if (input.action == GLFW_PRESS)
+            Q = true;
+        else if (input.action == GLFW_RELEASE)
+            Q = false;
+    }
+    if (input.key == GLFW_KEY_E)
+    {
+        if (input.action == GLFW_PRESS)
+            E = true;
+        else if (input.action == GLFW_RELEASE)
+            E = false;
     }
     if (input.key == GLFW_KEY_SPACE)
     {
@@ -359,18 +385,31 @@ void Player::jump(float deltaTime)
     doJump = false;
 }
 
-void Player::fly(float speed, float deltatime)
+void Player::flyForward(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
     body->setPosition(pos + globals.currentCamera->getDirection() * 10.0f * deltatime * speed);
 }
 
+void Player::flySide(float speed, float deltatime)
+{
+    vec3 pos = body->getPosition();
+
+    vec3 camDir = globals.currentCamera->getDirection();
+    vec3 camRight = normalize(cross(camDir, vec3(0.0f, 1.0f, 0.0f)));
+
+    body->setPosition(pos + camRight * 10.0f * deltatime * speed);
+}
+
 void Player::flyUp(float speed, float deltatime)
 {
     vec3 pos = body->getPosition();
 
-    body->setPosition(pos + vec3(0.0f, 1.0f, 0.0f) * 10.0f * deltatime * speed);
+    vec3 camDir = globals.currentCamera->getDirection();
+    vec3 camUp = normalize(cross(vec3(1.0f, 0.0f, 1.0f), camDir));
+
+    body->setPosition(pos + camUp * 10.0f * deltatime * speed);
 }
 
 void Player::mouseLook()

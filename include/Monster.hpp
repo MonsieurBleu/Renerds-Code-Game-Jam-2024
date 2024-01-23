@@ -19,8 +19,6 @@ class Monster
 private:
     ModelRef model;
 
-    bool isPlayerInZone();
-
     static bool enabled;
 
 public:

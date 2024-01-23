@@ -26,7 +26,7 @@ Monster::~Monster()
 
 void Monster::update(float deltaTime)
 {
-    bool inZone = isPlayerInZone();
+    bool inZone = GameGlobals::isPlayerinZone2();
     if (inZone && enabled)
     {
         vec3 playerPosition = GameGlobals::playerPosition;
@@ -84,17 +84,6 @@ void Monster::update(float deltaTime)
 
     GameGlobals::Zone2Objectif = model->state.position;
     // GameGlobals::Zone2Center = model->state.position;
-}
-
-bool Monster::isPlayerInZone()
-{
-    vec2 playerPosition = vec2(GameGlobals::playerPosition.x, GameGlobals::playerPosition.z);
-
-    vec2 direction = playerPosition - vec2(GameGlobals::Zone2Center.x, GameGlobals::Zone2Center.z);
-
-    float distance = length(direction);
-
-    return distance < GameGlobals::zone2radius;
 }
 
 void Monster::setMenu(FastUI_valueMenu &menu)
