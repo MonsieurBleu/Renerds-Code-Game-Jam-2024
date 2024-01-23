@@ -3,7 +3,6 @@
 #include "../Engine/include/PhysicsEngine.hpp"
 #include "../Engine/include/Camera.hpp"
 #include "../Engine/include/Inputs.hpp"
-#include "../Engine/include/FastUI.hpp"
 
 #include <iostream>
 #include <vector>
@@ -11,6 +10,8 @@
 #include <GameGlobals.hpp>
 
 using namespace glm;
+
+class FastUI_valueMenu;
 
 class Player
 {
