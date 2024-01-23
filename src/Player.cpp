@@ -225,13 +225,13 @@ void Player::update(float deltaTime)
     else
     {
         if (W)
-            flyForward((running ? 2.0f : 1.0f), deltaTime);
+            flyForward((running ? 20.0f : 1.0f), deltaTime);
         if (S)
-            flyForward(-(running ? 2.0f : 1.0f), deltaTime);
+            flyForward(-(running ? 20.0f : 1.0f), deltaTime);
         if (A)
-            flySide(-(running ? 2.0f : 1.0f), deltaTime);
+            flySide(-(running ? 20.0f : 1.0f), deltaTime);
         if (D)
-            flySide((running ? 2.0f : 1.0f), deltaTime);
+            flySide((running ? 20.0f : 1.0f), deltaTime);
         if (Q)
             flyUp(-(running ? 2.0f : 1.0f), deltaTime);
         if (E)
