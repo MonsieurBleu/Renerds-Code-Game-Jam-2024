@@ -430,7 +430,6 @@ void Player::move(float fmove, float smove, float deltaTime)
             if (stress > 100.0f)
             {
                 die();
-                stress = 0.0f;
             }
         }
         else
@@ -561,6 +560,7 @@ void Player::respawn()
     GameGlobals::playerPosition = respawnPoint;
     dead = false;
     deathAnimationProgress = 0.0f;
+    stress = 0;
     deathTime = globals.appTime.getElapsedTime();
     canDie = true;
     GameGlobals::monster->activated = true;

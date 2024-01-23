@@ -340,8 +340,8 @@ void Game::mainloop()
 
     physicsEngine.addObject(FloorBody);
 
-    GameObject FloorGameObject(newObjectGroup(), FloorBody);
-    FloorGameObject.getGroup()->add(floor);
+    // GameObject FloorGameObject(newObjectGroup(), FloorBody);
+    // FloorGameObject.getGroup()->add(floor);
 
     SphereCollider playerCollider = SphereCollider(2.0);
     RigidBodyRef playerBody = newRigidBody(
@@ -392,8 +392,6 @@ void Game::mainloop()
 
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
-
-
     // Portail
     /*
         ModelRef portailOuvert = newModel(GameGlobals::PBR);
@@ -437,23 +435,32 @@ void Game::mainloop()
     fence->loadFromFolder("ressources/models/fence/");
     fence->state
         .scaleScalar(0.8);
-    generateFence(fence, scene); 
+    generateFence(fence, scene, physicsEngine);
 
+    // AABBCollider wall1Collider = AABBCollider(vec3(-3), vec3(0));
+    // RigidBodyRef wall1 = newRigidBody(
+    //     vec3(0, 0.0, 0),
+    //     vec3(0.0, 0.0, 0.0),
+    //     quat(0.0, 0.0, 0.0, 1.0),
+    //     vec3(0.0, 0.0, 0.0),
+    //     &wall1Collider,
+    //     PhysicsMaterial(),
+    //     0.0,
+    //     false);
 
+    // physicsEngine.addObject(wall1);
 
-
-/*
-    ModelRef lanterne = newModel(GameGlobals::PBR);
-    lanterne->loadFromFolder("ressources/models/lantern/");
-    lanterne->state
-        .scaleScalar(0.01)
-        .setPosition(vec3(2, 2, 0));
-    scene.add(lanterne);
-    handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
-    scene.add(handItems);
-*/
+    /*
+        ModelRef lanterne = newModel(GameGlobals::PBR);
+        lanterne->loadFromFolder("ressources/models/lantern/");
+        lanterne->state
+            .scaleScalar(0.01)
+            .setPosition(vec3(2, 2, 0));
+        scene.add(lanterne);
+        handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
+        scene.add(handItems);
+    */
     // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
-
 
     ModelRef shadowMonster = newModel(GameGlobals::PBR);
     shadowMonster->loadFromFolder("ressources/models/shadow/");
@@ -473,7 +480,6 @@ void Game::mainloop()
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
 
     GameGlobals::sun = sun;
-
 
     monster = Monster(shadowMonster);
     shadowMonster->state.hide = ModelStateHideStatus::HIDE;
@@ -518,7 +524,7 @@ void Game::mainloop()
         {
             // physicsEngine.update(delta);
             player->update(delta);
-            FloorGameObject.update(delta);
+            // FloorGameObject.update(delta);
 
             monster.update(delta);
         }
