@@ -164,6 +164,7 @@ layout(location = 18) uniform vec3 mistColor1;
 layout(location = 19) uniform vec3 mistColor2;
 layout(location = 20) uniform float playerDeath;
 layout(location = 21) uniform float playerRevive;
+layout(location = 22) uniform float playerStressLevel;
 
 // const float mistIntensity = 0.05;
 // const vec3 mistColor2 = vec3(0.8);
@@ -209,6 +210,9 @@ void main() {
 
     float exposure = 2.0;
     float gamma = 2.2;
+
+    //gamma = 1.0;
+    //exposure = 0.2;
 
     vec3 bloom = texture(bEmmisive, uv).rgb;
     if(bloomEnable != 0)
@@ -269,9 +273,20 @@ void main() {
     }
     //////////////////
 
+
+    float stress = playerStressLevel/100.f;
+    //stress = 0.5 + 0.5*cos(iTime);
+    stress = pow(stress, 2.0);
+    vec3 stressColor = pow(vec3(10), _fragColor.rgb)/2.25;
+    stressColor = vec3(0.25, 0.35, 1.0)*pow(stressColor, vec3(4.0));
+
+    _fragColor.rgb = mix(_fragColor.rgb, stressColor, stress);
+
     vec4 ui = texture(bUI, uvScreen);
     _fragColor.rgb = mix(_fragColor.rgb, ui.rgb, ui.a);
     _fragColor.a = 1.0;
+
+
 
     /* Player Death Animation */
 
