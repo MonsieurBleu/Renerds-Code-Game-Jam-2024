@@ -218,7 +218,18 @@ void Game::mainloop()
     ModelRef trunk = newModel(GameGlobals::PBR);
     trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
-    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunk, leaves);
+    treeSizes trunks;
+    trunks.t0 = trunk;
+    trunks.t1 = trunk;
+    trunks.t2 = trunk;
+
+    treeSizes leavesSizes;
+    leavesSizes.t0 = leaves;
+    leavesSizes.t1 = leaves;
+    leavesSizes.t2 = leaves;
+
+
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunks, leavesSizes);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
