@@ -234,7 +234,47 @@ void Game::mainloop()
     ModelRef trunk = newModel(GameGlobals::PBR);
     trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
-    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunk, leaves);
+    // Models Oak
+    Texture2D leafTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/CE.ktx");
+    Texture2D leafTextureMat = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/NRM.ktx");
+    Texture2D trunkTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/trunc/CE.ktx");
+    Texture2D trunkTextureMat = Texture2D().loadFromFileKTX("ressources/models/oak/textures/trunc/NRM.ktx");
+
+    ModelRef largeLeaf = newModel(GameGlobals::PBRstencil);
+    ModelRef mediumLeaf = newModel(GameGlobals::PBRstencil);
+    ModelRef smallLeaf = newModel(GameGlobals::PBRstencil);
+
+    largeLeaf->loadFromFolder("ressources/models/oak/large/leaf/", false, false);
+    mediumLeaf->loadFromFolder("ressources/models/oak/med/leaf/", false, false);
+    smallLeaf->loadFromFolder("ressources/models/oak/small/leaf/", false, false);
+
+    largeLeaf->setMap(leafTexture, 0).setMap(leafTextureMat, 1);
+    mediumLeaf->setMap(leafTexture, 0).setMap(leafTextureMat, 1);
+    smallLeaf->setMap(leafTexture, 0).setMap(leafTextureMat, 1);
+
+    ModelRef largeTrunk = newModel(GameGlobals::PBR);
+    ModelRef mediumTrunk = newModel(GameGlobals::PBR);
+    ModelRef smallTrunk = newModel(GameGlobals::PBR);
+
+    largeTrunk->loadFromFolder("ressources/models/oak/large/trunc/", false, false);
+    mediumTrunk->loadFromFolder("ressources/models/oak/med/trunc/", false, false);
+    smallTrunk->loadFromFolder("ressources/models/oak/small/trunc/", false, false);
+
+    largeTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
+    mediumTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
+    smallTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
+
+    treeSizes trunkSizes;
+    trunkSizes.t0 = smallTrunk;
+    trunkSizes.t1 = mediumTrunk;
+    trunkSizes.t2 = largeTrunk;
+
+    treeSizes leavesSizes;
+    leavesSizes.t0 = smallLeaf;
+    leavesSizes.t1 = mediumLeaf;
+    leavesSizes.t2 = largeLeaf;
+
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunkSizes, leavesSizes);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
@@ -253,7 +293,6 @@ void Game::mainloop()
         }
 
     */
-
 
     /* Instanced Mesh example */
     // InstancedModelRef trunk = newInstancedModel();
@@ -340,13 +379,6 @@ void Game::mainloop()
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
 
-    menu.batch();
-    scene2D.updateAllObjects();
-    fuiBatch->batch();
-
-    state = AppState::run;
-    std::thread physicsThreads(&Game::physicsLoop, this);
-
     /* Music ! */
     // AudioFile music1;
     // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
@@ -384,6 +416,13 @@ void Game::mainloop()
         scene.add(portailFerme);
     */
 
+    ModelRef maison = newModel(GameGlobals::PBR);
+    maison->loadFromFolder("ressources/models/house/");
+    maison->state
+        .scaleScalar(1.5)
+        .setPosition(vec3(10, 0, 0));
+    scene.add(maison);
+
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
@@ -398,7 +437,27 @@ void Game::mainloop()
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
     
 
-    lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+    GameGlobals::Zone1Center = vec3(0, 0, 80);
+    GameGlobals::Zone1Objectif = vec3(0, 0, 80);
+
+    GameGlobals::zone1radius = 70.0f;
+
+    GameGlobals::sun = sun;
+
+    // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+
+    monster = Monster(lanterne);
+    lanterne->state.hide = ModelStateHideStatus::HIDE;
+    lanterne->state.setPosition(GameGlobals::Zone2Center);
+
+    monster.setMenu(menu);
+
+    menu.batch();
+    scene2D.updateAllObjects();
+    fuiBatch->batch();
+
+    state = AppState::run;
+    std::thread physicsThreads(&Game::physicsLoop, this);
 
     /* Main Loop */
     while (state != AppState::quit)
@@ -414,6 +473,8 @@ void Game::mainloop()
             // physicsEngine.update(delta);
             player->update(delta);
             FloorGameObject.update(delta);
+
+            monster.update(delta);
         }
 
         // float c = 0.5 + 0.5*cos(globals.appTime.getElapsedTime());

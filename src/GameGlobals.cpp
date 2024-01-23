@@ -14,9 +14,8 @@ vec3 GameGlobals::Zone1Objectif;
 vec3 GameGlobals::Zone2Objectif;
 
 float GameGlobals::zone2radius;
-SceneDirectionalLight GameGlobals::sun;
-
 float GameGlobals::zone1radius;
+SceneDirectionalLight GameGlobals::sun;
 
 void GameGlobals::setMenu(FastUI_valueMenu &menu)
 {
@@ -55,4 +54,26 @@ float GameGlobals::randomFloat01()
 float GameGlobals::randomFloat11()
 {
     return randomFloatDist11(randomEngine);
+}
+
+bool GameGlobals::isPlayerinZone2()
+{
+    vec2 playerPosition = vec2(GameGlobals::playerPosition.x, GameGlobals::playerPosition.z);
+
+    vec2 direction = playerPosition - vec2(GameGlobals::Zone2Center.x, GameGlobals::Zone2Center.z);
+
+    float distance = length(direction);
+
+    return distance < GameGlobals::zone2radius;
+}
+
+bool GameGlobals::isPlayerinZone1()
+{
+    vec2 playerPosition = vec2(GameGlobals::playerPosition.x, GameGlobals::playerPosition.z);
+
+    vec2 direction = playerPosition - vec2(GameGlobals::Zone1Center.x, GameGlobals::Zone1Center.z);
+
+    float distance = length(direction);
+
+    return distance < GameGlobals::zone1radius;
 }

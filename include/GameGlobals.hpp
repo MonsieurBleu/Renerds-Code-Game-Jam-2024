@@ -19,6 +19,7 @@ public:
     static vec3 Zone1Objectif;
     static vec3 Zone2Objectif;
 
+    static float zone1radius;
     static float zone2radius;
     static float zone1radius;
 
@@ -40,4 +41,7 @@ public:
     static float randomFloat01();
 
     static float randomFloat11();
+
+    static bool isPlayerinZone1();
+    static bool isPlayerinZone2();
 };

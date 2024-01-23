@@ -1,4 +1,10 @@
 #include <string>
 #include <Scene.hpp>
 
-void generateTreesFromHeatMap(Scene &scene, std::string path, ModelRef trunk, ModelRef leaves);
+typedef struct {
+  ModelRef t0;
+  ModelRef t1;
+  ModelRef t2;
+} treeSizes;
+
+void generateTreesFromHeatMap(Scene &scene, std::string path, treeSizes trunk, treeSizes leaves);
