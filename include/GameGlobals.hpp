@@ -21,7 +21,6 @@ public:
 
     static float zone1radius;
     static float zone2radius;
-    static float zone1radius;
 
     static vec3 playerPosition;
 
