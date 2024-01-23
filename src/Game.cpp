@@ -443,8 +443,16 @@ void Game::mainloop()
     foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
     foxTeddy->state
         .scaleScalar(7)
-        .setPosition(vec3(-15, 0, 0));
+        .setPosition(vec3(-10, 0, 10));
     scene.add(foxTeddy);
+
+
+    ModelRef bookFox = newModel(GameGlobals::PBR);
+    bookFox->loadFromFolder("ressources/models/book/");
+    bookFox->state
+        .scaleScalar(0.05)
+        .setPosition(vec3(-10, 0, 5));
+    scene.add(bookFox);
 
     /*
         ModelRef lanterne = newModel(GameGlobals::PBR);
