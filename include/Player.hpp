@@ -36,6 +36,7 @@ public:
 
     void mouseLook();
 
+    bool isInShadow(SceneDirectionalLight sun);
     void setMenu(FastUI_valueMenu &menu);
 
     static constexpr float maxSpeed = 12.0f;

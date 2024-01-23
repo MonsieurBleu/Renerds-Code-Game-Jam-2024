@@ -349,3 +349,20 @@ void Player::mouseLook()
     // vec3 rot = eulerAngles(newRotation);
     // globals.currentCamera->setDirection(rot);
 }
+
+bool Player::isInShadow(SceneDirectionalLight sun)
+{
+    sun->bindShadowMap();
+    float d;
+    glReadPixels(
+        0, 
+        0, 
+        1,
+        1,
+        GL_DEPTH_COMPONENT,
+        GL_FLOAT,
+        &d
+    );
+
+    std::cout << d << "\n";
+}
