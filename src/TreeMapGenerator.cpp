@@ -6,8 +6,8 @@
 #include <string>
 
 #define GRID_SIZE 256
-#define GRID_SQUARE_SIZE 16
-
+#define GRID_SQUARE_SIZE 10
+#define MAX_OFFSET 5
 
 unsigned char getValue(unsigned char *tex, int texH, int texW, int x, int y) {
   x = clamp(x, 0, texH - 1);
@@ -39,21 +39,27 @@ int getPixel(unsigned char *tex, int texH, int texW, vec2 uv) {
 void addTree(float x, float y, treeSizes trunkModels, treeSizes leavesModels, int size, ObjectGroupRef forest) {
   ModelRef trunk;
   ModelRef leaves;
+  vec3 rot(0, radians(GameGlobals::randomFloat01()*180), 0);
+
   switch (size) {
-    case 1:
+    case 0:
     trunk = trunkModels.t0 -> copyWithSharedMesh();
     leaves = leavesModels.t0 -> copyWithSharedMesh();
     break;
-    case 2:
+    case 1:
     trunk = trunkModels.t1 -> copyWithSharedMesh();
     leaves = leavesModels.t1 -> copyWithSharedMesh();
     break;
     default:
     trunk = trunkModels.t2 -> copyWithSharedMesh();
-    leaves = leavesModels.t2 -> copyWithSharedMesh();
+    leaves = leavesModels.t2 -> copyWithSharedMesh();  
   }
-  trunk->state.setPosition(vec3(x, 0, y));
-  leaves->state.setPosition(vec3(x, 1.4, y));
+  trunk->state.setPosition(vec3(x, 0, y)).scaleScalar(5.0);
+  trunk->state.setRotation(rot);
+  leaves->state.setPosition(vec3(x, 0, y)).scaleScalar(5.0);
+  leaves->state.setRotation(rot);
+
+  leaves->noBackFaceCulling = true;
   forest->add(trunk);
   forest->add(leaves);
 }
@@ -105,6 +111,8 @@ void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeS
 void generateTreesFromHeatMap(Scene &scene, std::string path, treeSizes trunks,
                               treeSizes leaves) {
   int mapWidth, mapHeight, n;
+  float offsetx, offesty;
+
   stbi_uc *tex = stbi_load(path.c_str(), &mapWidth, &mapHeight, &n, 1);
   ObjectGroupRef forest = newObjectGroup();
 
@@ -112,8 +120,12 @@ void generateTreesFromHeatMap(Scene &scene, std::string path, treeSizes trunks,
     for (float y = 0; y < GRID_SIZE; y += GRID_SQUARE_SIZE) {
       float xOnMap = (x / GRID_SIZE);
       float yOnMap = (y / GRID_SIZE);
+  
+      offsetx = MAX_OFFSET * GameGlobals::randomFloat11();
+      offesty = MAX_OFFSET * GameGlobals::randomFloat11();
+
       vec2 uv(xOnMap, yOnMap);  
-      generateTreeAtSpot(x, y, getPixel(tex, mapWidth, mapHeight, uv), trunks, leaves, forest);
+      generateTreeAtSpot(x + offsetx, y + offesty, getPixel(tex, mapWidth, mapHeight, uv), trunks, leaves, forest);
     }
   }
   scene.add(forest);
