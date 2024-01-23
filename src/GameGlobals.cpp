@@ -13,7 +13,7 @@ vec3 GameGlobals::Zone2Center;
 vec3 GameGlobals::Zone1Objectif;
 vec3 GameGlobals::Zone2Objectif;
 
-float GameGlobals::zone2radius = 50.0f;
+float GameGlobals::zone2radius = 70.0f;
 SceneDirectionalLight GameGlobals::sun;
 
 void GameGlobals::setMenu(FastUI_valueMenu &menu)

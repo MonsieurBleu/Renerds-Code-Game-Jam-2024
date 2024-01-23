@@ -36,7 +36,7 @@ private:
 
     EffectHandler effects;
 
-    // Monster monster;
+    Monster monster;
 
 public:
     Game(GLFWwindow *window);
