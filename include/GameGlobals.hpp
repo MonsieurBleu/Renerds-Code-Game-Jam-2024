@@ -3,8 +3,10 @@
 #include <Mesh.hpp>
 #include <random>
 #include <Light.hpp>
+#include <Monster.hpp>
 
 class FastUI_valueMenu;
+class Monster;
 
 class GameGlobals
 {
@@ -36,6 +38,8 @@ public:
     static std::uniform_real_distribution<float> randomFloatDist11;
 
     static SceneDirectionalLight sun;
+
+    static Monster *monster;
 
     static float randomFloat01();
 

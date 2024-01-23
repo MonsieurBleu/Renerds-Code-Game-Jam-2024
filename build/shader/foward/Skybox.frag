@@ -1,6 +1,7 @@
 #version 460
 
 #define USING_VERTEX_TEXTURE_UV
+#define NO_REFLECT_TEXTURE
 
 #include uniform/Base3D.glsl
 #include uniform/Model3D.glsl

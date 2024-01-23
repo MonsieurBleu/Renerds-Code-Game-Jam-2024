@@ -26,6 +26,12 @@ public:
     Monster();
     ~Monster();
 
+    void enable();
+    void disable();
+
+    // whether or not the monster can be enabled when entering it's zone
+    static bool activated;
+
     void update(float deltaTime);
 
     void setMenu(FastUI_valueMenu &menu);
