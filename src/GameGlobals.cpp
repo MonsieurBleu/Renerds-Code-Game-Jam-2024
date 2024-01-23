@@ -17,6 +17,8 @@ float GameGlobals::zone2radius;
 float GameGlobals::zone1radius;
 SceneDirectionalLight GameGlobals::sun;
 
+Monster *GameGlobals::monster;
+
 void GameGlobals::setMenu(FastUI_valueMenu &menu)
 {
     menu.push_back(

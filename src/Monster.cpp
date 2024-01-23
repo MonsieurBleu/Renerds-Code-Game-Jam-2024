@@ -11,6 +11,8 @@ bool Monster::enabled = false;
 float Monster::lastScreamTime = -Monster::screamCooldown;
 float Monster::distance = 0.0f;
 
+bool Monster::activated = true;
+
 Monster::Monster(ModelRef monster)
 {
     this->model = monster;
@@ -70,16 +72,12 @@ void Monster::update(float deltaTime)
 
     if (!enabled && inZone)
     {
-        enabled = true;
-        // spawn the monster at the center of the zone
-        model->state.setPosition(GameGlobals::Zone2Center);
-        model->state.hide = ModelStateHideStatus::SHOW;
+        enable();
     }
 
     else if (enabled && !inZone)
     {
-        enabled = false;
-        model->state.hide = ModelStateHideStatus::HIDE;
+        disable();
     }
 
     GameGlobals::Zone2Objectif = model->state.position;
@@ -93,4 +91,23 @@ void Monster::setMenu(FastUI_valueMenu &menu)
                                                                           FastUI_value(&maxSpeed, U"maxSpeed\t"),
                                                                           FastUI_value(&enabled, U"enabled\t"),
                                                                           FastUI_value(&distance, U"distance\t")})});
+}
+
+void Monster::enable()
+{
+    if (!activated)
+        return;
+    enabled = true;
+    // spawn the monster at the center of the zone
+    model->state.setPosition(GameGlobals::Zone2Center);
+    model->state.hide = ModelStateHideStatus::SHOW;
+}
+
+void Monster::disable()
+{
+    enabled = false;
+    model->state.hide = ModelStateHideStatus::HIDE;
+
+    model->state.setPosition(vec3(1e16)); // far far away (shrek reference)
+    GameGlobals::Zone2Objectif = model->state.position;
 }

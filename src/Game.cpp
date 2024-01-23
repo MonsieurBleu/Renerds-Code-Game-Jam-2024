@@ -48,8 +48,6 @@ void Game::init(int paramSample)
             "shader/foward/basicInstance.vert",
             ""));
 
-    
-    
     std::vector<ShaderUniform> uniforms3D = globals.standartShaderUniform3D();
     uniforms3D.push_back(ShaderUniform(&effects.sunColor, 20));
     uniforms3D.push_back(ShaderUniform(&effects.z1lerp, 21));
@@ -426,26 +424,26 @@ void Game::mainloop()
         .setPosition(vec3(10, 0, 0));
     scene.add(maison);
 
-        ModelRef foxAlive = newModel(GameGlobals::PBR);
-        foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
-        foxAlive->state
-            .scaleScalar(0.009)
-            .setPosition(vec3(-10, 0, 0));
-        scene.add(foxAlive);
-/*
-        ModelRef foxDead = newModel(GameGlobals::PBR);
-        foxDead->loadFromFolder("ressources/models/fox/foxDead/");
-        foxDead->state
-            .scaleScalar(0.009)
-            .setPosition(vec3(-10, 0, 0));
-        scene.add(foxDead);
-*/
-        ModelRef fence = newModel(GameGlobals::PBRstencil);
-        fence->loadFromFolder("ressources/models/fence/");
-        fence->state
-            .scaleScalar(0.8)
-            .setPosition(vec3(-20, 0, 0));
-        scene.add(fence);
+    ModelRef foxAlive = newModel(GameGlobals::PBR);
+    foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
+    foxAlive->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 0));
+    scene.add(foxAlive);
+    /*
+            ModelRef foxDead = newModel(GameGlobals::PBR);
+            foxDead->loadFromFolder("ressources/models/fox/foxDead/");
+            foxDead->state
+                .scaleScalar(0.009)
+                .setPosition(vec3(-10, 0, 0));
+            scene.add(foxDead);
+    */
+    ModelRef fence = newModel(GameGlobals::PBRstencil);
+    fence->loadFromFolder("ressources/models/fence/");
+    fence->state
+        .scaleScalar(0.8)
+        .setPosition(vec3(-20, 0, 0));
+    scene.add(fence);
 
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
@@ -453,13 +451,12 @@ void Game::mainloop()
     GameGlobals::sun = sun;
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::zone2radius = 0.0;
+    GameGlobals::zone2radius = 60.0;
     GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
 
     GameGlobals::Zone1Center = vec3(100, 0, 0);
     GameGlobals::zone1radius = 60.0;
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
-
 
     GameGlobals::sun = sun;
 
@@ -468,6 +465,8 @@ void Game::mainloop()
     monster = Monster(lanterne);
     lanterne->state.hide = ModelStateHideStatus::HIDE;
     lanterne->state.setPosition(GameGlobals::Zone2Center);
+
+    GameGlobals::monster = &monster;
 
     monster.setMenu(menu);
 
