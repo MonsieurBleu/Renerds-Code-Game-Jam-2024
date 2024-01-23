@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "../Engine/include/FastUI.hpp"
 
 float Player::cursorXOld = 0.0f;
 float Player::cursorYOld = 0.0f;
