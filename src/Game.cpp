@@ -392,12 +392,7 @@ void Game::mainloop()
 
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
-    ModelRef lanterne = newModel(GameGlobals::PBR);
-    lanterne->loadFromFolder("ressources/models/lantern/");
-    lanterne->state
-        .scaleScalar(0.01)
-        .setPosition(vec3(2, 2, 0));
-    scene.add(lanterne);
+
 
     // Portail
     /*
@@ -424,27 +419,42 @@ void Game::mainloop()
         .setPosition(vec3(10, 0, 0));
     scene.add(maison);
 
-        ModelRef foxAlive = newModel(GameGlobals::PBR);
-        foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
-        foxAlive->state
-            .scaleScalar(0.009)
-            .setPosition(vec3(-10, 0, 0));
-        scene.add(foxAlive);
+    ModelRef foxAlive = newModel(GameGlobals::PBR);
+    foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
+    foxAlive->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 0));
+    scene.add(foxAlive);
 
-        ModelRef foxDead = newModel(GameGlobals::PBR);
-        foxDead->loadFromFolder("ressources/models/fox/foxDead/");
-        foxDead->state
-            .scaleScalar(0.009)
-            .setPosition(vec3(-20, 0, -20));
-        scene.add(foxDead);
+    ModelRef foxDead = newModel(GameGlobals::PBR);
+    foxDead->loadFromFolder("ressources/models/fox/foxDead/");
+    foxDead->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-20, 0, -20));
+    scene.add(foxDead);
 
-        ModelRef fence = newModel(GameGlobals::PBRstencil);
-        fence->loadFromFolder("ressources/models/fence/");
-        fence->state
-            .scaleScalar(0.8)
-            .setPosition(vec3(-20, 0, 0));
-        scene.add(fence);
+    ModelRef fence = newModel(GameGlobals::PBRstencil);
+    fence->loadFromFolder("ressources/models/fence/");
+    fence->state
+        .scaleScalar(0.8)
+        .setPosition(vec3(-20, 0, 0));
+    scene.add(fence);
 
+    ModelRef shadowMonster = newModel(GameGlobals::PBR);
+    shadowMonster->loadFromFolder("ressources/models/shadow/");
+    shadowMonster->state
+        .scaleScalar(0.8)
+        .setPosition(vec3(-30, 0, 0));
+    scene.add(shadowMonster);
+
+
+
+    ModelRef lanterne = newModel(GameGlobals::PBR);
+    lanterne->loadFromFolder("ressources/models/lantern/");
+    lanterne->state
+        .scaleScalar(0.01)
+        .setPosition(vec3(2, 2, 0));
+    scene.add(lanterne);
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
