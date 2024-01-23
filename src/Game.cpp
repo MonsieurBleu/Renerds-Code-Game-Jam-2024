@@ -315,6 +315,7 @@ void Game::mainloop()
     sun->setMenu(menu, U"Sun");
     effects.setMenu(menu);
     GameGlobals::setMenu(menu);
+    player->setMenu(menu);
 
     menu.batch();
     scene2D.updateAllObjects();
@@ -342,25 +343,23 @@ void Game::mainloop()
         .setPosition(vec3(2, 2, 0));
     scene.add(lanterne);
 
- 
- //Portail 
-/*
-    ModelRef portailOuvert = newModel(GameGlobals::PBR);
-    portailOuvert->loadFromFolder("ressources/models/gate/gateOpen/");
-    portailOuvert->state
-        .scaleScalar(200)
-        .setPosition(vec3(0, 0, 0));
-    scene.add(portailOuvert);
+    // Portail
+    /*
+        ModelRef portailOuvert = newModel(GameGlobals::PBR);
+        portailOuvert->loadFromFolder("ressources/models/gate/gateOpen/");
+        portailOuvert->state
+            .scaleScalar(200)
+            .setPosition(vec3(0, 0, 0));
+        scene.add(portailOuvert);
 
-    
-    ModelRef portailFerme = newModel(GameGlobals::PBR);
-    portailFerme->loadFromFolder("ressources/models/gate/gateClose/");
-    portailFerme->state
-        .scaleScalar(200)
-        .setPosition(vec3(10, 0, 0));
-    scene.add(portailFerme);
-*/
 
+        ModelRef portailFerme = newModel(GameGlobals::PBR);
+        portailFerme->loadFromFolder("ressources/models/gate/gateClose/");
+        portailFerme->state
+            .scaleScalar(200)
+            .setPosition(vec3(10, 0, 0));
+        scene.add(portailFerme);
+    */
 
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
@@ -439,7 +438,7 @@ void Game::mainloop()
         /* Final Screen Composition */
         glViewport(0, 0, globals.windowWidth(), globals.windowHeight());
         finalProcessingStage.activate();
-        
+
         mat4 cipm = inverse(camera.getProjectionMatrix());
         ShaderUniform(&cipm, 3).activate();
 
