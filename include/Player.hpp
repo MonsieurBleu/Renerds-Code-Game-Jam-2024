@@ -107,4 +107,11 @@ public:
 
     static bool canDie;
     static float deathAnimationProgress;
+
+    static vec3 deathLookDir;
+
+    static bool reviveAnimation;
+    static float reviveAnimationStart;
+    static float reviveAnimationLength;
+    static float reviveAnimationProgress;
 };
