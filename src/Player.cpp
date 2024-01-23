@@ -46,7 +46,7 @@ vec3 Player::deathLookDir = vec3(0.0f);
 
 bool Player::reviveAnimation = false;
 float Player::reviveAnimationStart = 0.0f;
-float Player::reviveAnimationLength = 1.5f;
+float Player::reviveAnimationLength = 1.0f;
 float Player::reviveAnimationProgress = 0.0f;
 
 std::vector<RigidBodyRef>
@@ -138,9 +138,12 @@ void Player::update(float deltaTime)
         else
         {
             reviveAnimationProgress = (globals.appTime.getElapsedTime() - reviveAnimationStart) / reviveAnimationLength;
-            vec3 camDir = lerp(vec3(0.0f, 1.0f, 0.0f), vec3(0.0f, -1.0f, 0.0f), min(reviveAnimationProgress * 1.5f, 1.0f));
+            vec3 camDir = lerp(deathLookDir, vec3(1, 0, 0), reviveAnimationProgress);
             globals.currentCamera->setDirection(camDir);
         }
+
+        globals.currentCamera->setPosition(body->getPosition());
+        return;
     }
 
     if (W)
@@ -281,6 +284,7 @@ void Player::setMenu(FastUI_valueMenu &menu)
                                       FastUI_value(&stressFactor, U"Stress Factor\t"),
                                       FastUI_value(&stressSmoothing, U"Stress Smoothing\t"),
                                       FastUI_value(&deathAnimationProgress, U"Death Animation Progress\t"),
+                                      FastUI_value(&reviveAnimationProgress, U"Revive Animation Progress\t"),
 
                                   })});
 }
@@ -555,11 +559,17 @@ void Player::respawn()
     ((SphereCollider *)body->getCollider())->setRadius(2.0f);
     body->setVelocity(vec3(0.0f));
     body->setPosition(respawnPoint + vec3(0.0f, 2.0f, 0.0f));
+    GameGlobals::playerPosition = respawnPoint;
     dead = false;
     deathAnimationProgress = 0.0f;
     deathTime = globals.appTime.getElapsedTime();
     canDie = true;
     GameGlobals::monster->activated = true;
+
+    reviveAnimation = true;
+    reviveAnimationStart = globals.appTime.getElapsedTime();
+
+    deathLookDir = globals.currentCamera->getDirection();
 }
 
 bool Player::isInShadow()
