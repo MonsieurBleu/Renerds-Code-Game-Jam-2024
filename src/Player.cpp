@@ -122,11 +122,11 @@ void Player::update(float deltaTime)
 
             vec3 camDir = lerp(deathLookDir, finalLookDir, min(deathAnimationProgress * 1.5f, 1.0f));
             globals.currentCamera->setDirection(camDir);
+            return;
         }
 
         globals.currentCamera->setPosition(body->getPosition());
-        return;
-    }
+        }
 
     if (reviveAnimation)
     {
