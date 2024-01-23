@@ -202,6 +202,9 @@ void Game::mainloop()
 
     Texture2D skyboxNightTexture = Texture2D().
         loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
+    
+    Texture2D skyboxReflectTexture = Texture2D().
+        loadFromFile("ressources/models/skybox/reflect.png");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
@@ -534,6 +537,7 @@ void Game::mainloop()
         /* 3D Render */
         skybox->bindMap(0, 4);
         skyboxNightTexture.bind(5);
+        skyboxReflectTexture.bind(6);
         scene.genLightBuffer();
         scene.draw();
         renderBuffer.deactivate();

@@ -4,7 +4,7 @@
 
 layout (binding = 4) uniform sampler2D bSkyTexture;
 layout (binding = 5) uniform sampler2D bSkyTexture2;
-
+layout (binding = 6) uniform sampler2D bSkyTexture3;
 
 
 // Reinhard tone mapping
@@ -13,9 +13,16 @@ vec3 toneMapReinhard(vec3 color, float exposure, float whitePoint) {
     return color / (color + vec3(1.0)) * whitePoint;
 }
 
-vec3 getSkyColor(vec2 uv)
+vec3 getSkyColor(vec2 uv
+//, float noReflect = true
+)
 {
     vec3 c = texture(bSkyTexture, uv).rgb;
+
+    /*if(noReflect)
+    {
+
+    }*/
 
     if(zone1Lerp > 0.0)
     {
