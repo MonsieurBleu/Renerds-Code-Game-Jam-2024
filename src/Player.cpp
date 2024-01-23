@@ -34,6 +34,14 @@ bool Player::hasTeddyBear = false;
 float Player::stressDecreaseRate = 50.0f;
 float Player::stressIncreaseRate = 35.0f;
 
+float Player::deathAnimationProgress = 0.0f;
+
+bool Player::dead = false;
+float Player::deathTime = 0.0f;
+float Player::respawnDelay = 3.0f;
+bool Player::canDie = true;
+vec3 Player::respawnPoint = vec3(0.0f);
+
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
 
@@ -74,6 +82,21 @@ void Player::update(float deltaTime)
 
     float forward = 0.0f;
     float side = 0.0f;
+
+    if (dead)
+    {
+        if (deathTime + respawnDelay < globals.appTime.getElapsedTime())
+        {
+            respawn();
+        }
+        else
+        {
+            deathAnimationProgress = (globals.appTime.getElapsedTime() - deathTime) / respawnDelay;
+        }
+
+        globals.currentCamera->setPosition(body->getPosition());
+        return;
+    }
 
     if (W)
         forward += forwardSpeed * (running ? 2.0f : 1.0f) * (invertedControls ? -1 : 1);
@@ -212,6 +235,7 @@ void Player::setMenu(FastUI_valueMenu &menu)
                                       FastUI_value(&stressIncreaseRate, U"Stress Increase Rate\t"),
                                       FastUI_value(&stressFactor, U"Stress Factor\t"),
                                       FastUI_value(&stressSmoothing, U"Stress Smoothing\t"),
+                                      FastUI_value(&deathAnimationProgress, U"Death Animation Progress\t"),
 
                                   })});
 }
@@ -351,9 +375,15 @@ void Player::move(float fmove, float smove, float deltaTime)
 
     if (GameGlobals::isPlayerinZone1())
     {
-        if (isInShadow())
+        if (!isInShadow())
         {
             stress += stressIncreaseRate * deltaTime;
+
+            if (stress > 100.0f)
+            {
+                die();
+                stress = 0.0f;
+            }
         }
         else
         {
@@ -459,6 +489,26 @@ void Player::mouseLook()
     // // std::cout << "camera position: " << camera->getPosition().x << ", " << camera->getPosition().y << ", " << camera->getPosition().z << "\n";
     // vec3 rot = eulerAngles(newRotation);
     // globals.currentCamera->setDirection(rot);
+}
+
+void Player::die()
+{
+    // death animation
+    ((SphereCollider *)body->getCollider())->setRadius(0.5f);
+    body->setVelocity(vec3(0.0f));
+    dead = true;
+    deathTime = globals.appTime.getElapsedTime();
+}
+
+void Player::respawn()
+{
+    // respawn animation
+    ((SphereCollider *)body->getCollider())->setRadius(2.0f);
+    body->setVelocity(vec3(0.0f));
+    body->setPosition(respawnPoint + vec3(0.0f, 2.0f, 0.0f));
+    dead = false;
+    deathAnimationProgress = 0.0f;
+    deathTime = globals.appTime.getElapsedTime();
 }
 
 bool Player::isInShadow()

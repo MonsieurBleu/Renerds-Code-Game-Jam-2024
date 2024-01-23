@@ -31,6 +31,9 @@ private:
 
     void mouseLook();
 
+    void die();
+    void respawn();
+
 public:
     Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs);
     ~Player();
@@ -97,4 +100,11 @@ public:
     static bool hasTeddyBear;
 
     static vec3 respawnPoint;
+
+    static bool dead;
+    static float deathTime;
+    static float respawnDelay;
+
+    static bool canDie;
+    static float deathAnimationProgress;
 };
