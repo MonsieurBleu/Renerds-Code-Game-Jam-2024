@@ -223,8 +223,8 @@ void Game::mainloop()
 
     int gridSize = 16;
     int gridScale = 10;
-    for (int i = -gridSize; i < gridSize; i++)
-        for (int j = -gridSize; j < gridSize; j++)
+    for (int i = 0; i < gridSize; i++)
+        for (int j = 0; j < gridSize; j++)
         {
             ModelRef f = floor->copyWithSharedMesh();
             f->state
