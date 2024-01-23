@@ -146,27 +146,24 @@ vec3 blur(sampler2D screenTexture, vec2 texCoords) {
     return result;
 }
 
-vec3 calculateViewPosition(vec2 textureCoordinate, float depth)
-{
-    vec4 clipSpacePos = vec4(18.f*(textureCoordinate * 1.0 - 0.5), depth, 1.0);
+vec3 calculateViewPosition(vec2 textureCoordinate, float depth) {
+    vec4 clipSpacePos = vec4(18. * (textureCoordinate * 1.0 - 0.5), depth, 1.0);
     vec4 position = clipSpacePos * _cameraiProjectionMatrix;
     position.z = 1.0 - position.z;
     position.xyz /= -position.w;
     position.z = -abs(position.z);
 
-    position = _cameraiViewMatrix*position;
+    position = _cameraiViewMatrix * position;
 
     return position.xyz;
 }
 
-
-
-layout (location = 16) uniform float _pixelSize;
-layout (location = 17) uniform float mistIntensity;
-layout (location = 18) uniform vec3 mistColor1;
-layout (location = 19) uniform vec3 mistColor2;
-layout (location = 20) uniform float playerDeath;
-layout (location = 21) uniform float playerRevive;
+layout(location = 16) uniform float _pixelSize;
+layout(location = 17) uniform float mistIntensity;
+layout(location = 18) uniform vec3 mistColor1;
+layout(location = 19) uniform vec3 mistColor2;
+layout(location = 20) uniform float playerDeath;
+layout(location = 21) uniform float playerRevive;
 
 // const float mistIntensity = 0.05;
 // const vec3 mistColor2 = vec3(0.8);
@@ -177,23 +174,21 @@ void main() {
     float aspectRatio = float(iResolution.y) / float(iResolution.x);
 
     // Pixel art effect 
-    if(_pixelSize > 0.0000001)
-    {
+    if(_pixelSize > 0.0000001) {
         /* Additionnal depth based resolution change */
         float pixelSize = _pixelSize;
-        float d = texture(bDepth, uv).r*2.0;
+        float d = texture(bDepth, uv).r * 2.0;
         d = min(d, 0.05);
         d = d - mod(d, 0.005);
         pixelSize = 300.0 * pixelSize * (0.001 + pow(d, 2.0));
 
         uv = uv * vec2(1.0, aspectRatio);
-        uv = uv - mod(uv, vec2(pixelSize)) + pixelSize*0.5;
+        uv = uv - mod(uv, vec2(pixelSize)) + pixelSize * 0.5;
         uv = uv / vec2(1.0, aspectRatio);
     }
     //////////////////
 
     vec4 color = texture(bColor, uv);
-
 
     float chromaticAberation = 0.0 / float(iResolution.y);
     vec2 rUv = max(uv - chromaticAberation, 0.0);
@@ -216,8 +211,8 @@ void main() {
     float gamma = 2.2;
 
     vec3 bloom = texture(bEmmisive, uv).rgb;
-    if(bloomEnable != 0) 
-        _fragColor.rgb += exposure * 0.25 * pow(bloom, vec3(2 - 1 / exposure));
+    if(bloomEnable != 0)
+        _fragColor.rgb += exposure * 0.25 * pow(bloom, vec3(2.0 - (1.0 / exposure)));
 
     // exposure tone mapping
     vec3 mapped = vec3(1.0) - exp(-_fragColor.rgb * exposure);
@@ -259,17 +254,17 @@ void main() {
 
         float d = texture(bDepth, uv).r;
 
-        vec3 mistColor = mix(mistColor1, mistColor2, min(d*400, 1));
+        vec3 mistColor = mix(mistColor1, mistColor2, min(d * 400, 1));
 
         vec3 vp = calculateViewPosition(uv, d);
 
         float mistAlpha = smoothstep(mistMaxDist + mistIntensity, mistMaxDist, d);
         mistAlpha = pow(mistAlpha, 25.0);
 
-        float heightFactor = max(((vp.y-10.0)/3.0)*d, 0.0);
+        float heightFactor = max(((vp.y - 10.0) / 3.0) * d, 0.0);
         mistAlpha *= max(1.0 - heightFactor, 0.0);
 
-        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);
+        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha * 0.95);
 
     }
     //////////////////
@@ -280,27 +275,27 @@ void main() {
 
     /* Player Death Animation */
 
-        float pa = playerDeath;
-        if(playerRevive >= 0.00001f)
-            pa = 1.0 - playerRevive;
+    float pa = playerDeath;
+    if(playerRevive >= 0.00001f)
+        pa = 1.0 - playerRevive;
 
-        pa *= 3.0;
+    pa *= 3.0;
 
-        float u;
+    float u;
 
-        if(uv.y < 0.5)
-            u = uv.y;
-        else
-            u = 1.0-uv.y;
+    if(uv.y < 0.5)
+        u = uv.y;
+    else
+        u = 1.0 - uv.y;
 
         //u = pow(u, 1.0 - 2.0*distance(uv.x, 0.5));
 
-        float eye = distance(uv.x, 0.5);
-        u -= pow(eye, 30.0);
+    float eye = distance(uv.x, 0.5);
+    u -= pow(eye, 30.0);
 
-        float alpha = smoothstep(pa+0.1, pa-1.0, u);
+    float alpha = smoothstep(pa + 0.1, pa - 1.0, u);
 
-        _fragColor.rgb = mix(_fragColor.rgb, vec3(0), alpha);
+    _fragColor.rgb = mix(_fragColor.rgb, vec3(0), alpha);
 
     ////////////////
 }

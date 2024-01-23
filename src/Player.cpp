@@ -47,7 +47,7 @@ vec3 Player::deathLookDir = vec3(0.0f);
 bool Player::reviveAnimation = false;
 float Player::reviveAnimationStart = 0.0f;
 float Player::reviveAnimationLength = 1.0f;
-float Player::reviveAnimationProgress = 0.0f;
+float Player::reviveAnimationProgress = 0.000f;
 
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
@@ -99,7 +99,6 @@ void Player::update(float deltaTime)
         if (!hasTeddyBear)
         {
             if (canDie)
-
                 die();
         }
 
@@ -122,11 +121,11 @@ void Player::update(float deltaTime)
 
             vec3 camDir = lerp(deathLookDir, finalLookDir, min(deathAnimationProgress * 1.5f, 1.0f));
             globals.currentCamera->setDirection(camDir);
-            return;
         }
 
         globals.currentCamera->setPosition(body->getPosition());
-        }
+        return;
+    }
 
     if (reviveAnimation)
     {
@@ -568,6 +567,7 @@ void Player::respawn()
 
     reviveAnimation = true;
     reviveAnimationStart = globals.appTime.getElapsedTime();
+    reviveAnimationProgress = 0.001f;
 
     deathLookDir = globals.currentCamera->getDirection();
 }
