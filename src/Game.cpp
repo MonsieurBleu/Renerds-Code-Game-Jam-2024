@@ -373,6 +373,7 @@ void Game::mainloop()
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
     GameGlobals::Zone2Objectif = vec3(80, 0, 5);
+    GameGlobals::sun = sun;
     
 
     lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
