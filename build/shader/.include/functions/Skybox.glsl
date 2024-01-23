@@ -19,7 +19,16 @@ vec3 getSkyColor(vec2 uv)
 
     if(zone1Lerp > 0.0)
     {
+        //vec2 uv2 = uv - mod(uv, vec2(0.00075));
+
         vec3 c2 = texture(bSkyTexture2, uv).rgb;
+
+        //c2 = c2*step(vec3(0.05), c2);
+        c2 = rgb2hsv(c2);
+        c2.b *= 0.35;
+        c2.g *= 1.25;
+        c2 = hsv2rgb(c2);
+
         c = mix(c, c2, pow(zone1Lerp, 0.25));
 
         c *= mix(vec3(1.0), sunColor, zone1Lerp);

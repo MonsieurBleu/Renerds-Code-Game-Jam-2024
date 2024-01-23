@@ -456,12 +456,7 @@ void Game::mainloop()
     GameGlobals::Zone1Center = vec3(100, 0, 0);
     GameGlobals::zone1radius = 60.0;
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
-    
 
-    GameGlobals::Zone1Center = vec3(0, 0, 80);
-    GameGlobals::Zone1Objectif = vec3(0, 0, 80);
-
-    GameGlobals::zone1radius = 70.0f;
 
     GameGlobals::sun = sun;
 
