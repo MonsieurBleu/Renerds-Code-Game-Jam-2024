@@ -2,10 +2,10 @@
 #include "ObjectGroup.hpp"
 #include <FenceGenerator.hpp>
 
-#define FENCE_SIZE 512
+#define FENCE_SIZE 256
 
 void generateFence(ModelRef fenceSample, Scene &scene) {
-  int fenceSegmentSize;
+  float fenceSegmentSize = fenceSample->getVao()->getAABBMax().x - fenceSample->getVao()->getAABBMin().x;
   ObjectGroupRef fence = newObjectGroup();
   vec3 pos(0, 0, 0);
   vec3 increment(fenceSegmentSize, 0, 0);
@@ -27,5 +27,5 @@ void generateFence(ModelRef fenceSample, Scene &scene) {
       fence->add(fenceSegment);
     increment = cross(increment, vec3(0, 1, 0));
   }
-
+  scene.add(fence);
 }
