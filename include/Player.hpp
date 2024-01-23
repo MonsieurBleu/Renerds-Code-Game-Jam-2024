@@ -33,6 +33,8 @@ public:
     void accelerate(vec3 wishDirection, float wishSpeed, float accel, float deltaTime);
 
     void jump(float deltaTime);
+    void fly(float deltaTime);
+    void flyUp(float deltaTime);
 
     void mouseLook();
 
@@ -79,4 +81,6 @@ public:
     static float stress;
     static float stressFactor;
     static float stressSmoothing;
+
+    bool flying = false;
 };

@@ -25,7 +25,7 @@ void EffectHandler::setDefaultPixel()
 void EffectHandler::setMenu(FastUI_valueMenu &menu)
 {
     menu.push_back(
-        {FastUI_menuTitle(menu.ui, U"Effects"), FastUI_valueTab(menu.ui, {FastUI_value(&z2MinDist, U"Zone2 Size\t"),
+        {FastUI_menuTitle(menu.ui, U"Effects"), FastUI_valueTab(menu.ui, {FastUI_value(&(GameGlobals::zone2radius), U"Zone2 Size\t"),
                                                                           FastUI_value(&z2Transition, U"Zone2 Transition Distance\t"),
                                                                           FastUI_value(&o2MinDist, U"Objectif2 Distance\t"),
                                                                           FastUI_value(&o2Transition, U"Objectif2 Transition Distance\t")})});
@@ -39,8 +39,8 @@ void EffectHandler::update()
     float zone2dist = distance(GameGlobals::playerPosition, GameGlobals::Zone2Center);
 
     /* Update Mist for Zone 2 */
-    const float z2MaxDist = z2MinDist + z2Transition;
-    float z2lerp = (max(zone2dist - z2MinDist, 0.f)) / (z2MaxDist - z2MinDist);
+    const float z2MaxDist = GameGlobals::zone2radius + z2Transition;
+    float z2lerp = (max(zone2dist - GameGlobals::zone2radius, 0.f)) / (z2MaxDist - GameGlobals::zone2radius);
     z2lerp = clamp(1.f - z2lerp, 0.f, 1.f);
     mistEffectItensity = mix(mistEffectItensity, 0.05f, z2lerp);
     mistEffectColor1 = mix(mistEffectColor1, vec3(0.8), z2lerp);

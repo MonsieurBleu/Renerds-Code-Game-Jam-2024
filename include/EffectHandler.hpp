@@ -6,28 +6,26 @@ class FastUI_valueMenu;
 
 class EffectHandler
 {
-    private :
-        float pixelEffectSize;
-        float mistEffectItensity;
-        vec3  mistEffectColor1;
-        vec3  mistEffectColor2;
+private:
+    float pixelEffectSize;
+    float mistEffectItensity;
+    vec3 mistEffectColor1;
+    vec3 mistEffectColor2;
 
-        float z2MinDist = 5.0;
-        float z2Transition = 50.0;
+    float z2Transition = 50.0;
 
-        float o2MinDist = 5.0;
-        float o2Transition = 60.0;
+    float o2MinDist = 5.0;
+    float o2Transition = 60.0;
 
-    public :
+public:
+    EffectHandler();
 
-        EffectHandler();
+    void setDefaultMist();
+    void setDefaultPixel();
 
-        void setDefaultMist();
-        void setDefaultPixel();
+    void update();
 
-        void update();
-        
-        ShaderUniformGroup finalComposingUniforms;
+    ShaderUniformGroup finalComposingUniforms;
 
-        void setMenu(FastUI_valueMenu &menu);
+    void setMenu(FastUI_valueMenu &menu);
 };

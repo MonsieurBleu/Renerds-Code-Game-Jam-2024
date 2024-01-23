@@ -18,6 +18,8 @@ public:
     static vec3 Zone1Objectif;
     static vec3 Zone2Objectif;
 
+    static float zone2radius;
+
     static vec3 playerPosition;
 
     static void setMenu(FastUI_valueMenu &menu);

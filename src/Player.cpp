@@ -74,65 +74,83 @@ void Player::update(float deltaTime)
     if (D)
         side += sideSpeed * (running ? 2.0f : 1.0f);
 
-    move(forward, side, deltaTime);
-
-    // grounded test
-    Ray ray{body->getPosition() + vec3(0, -1.95, 0), vec3(0.0f, -1.0f, 0.0f)};
-    float t;
-    RigidBodyRef bodyIntersect;
-    grounded = raycast(ray, thingsYouCanStandOn, 0.2f, t, bodyIntersect);
-    if (!grounded)
-        lockJump = false;
-
-    if (doJump && !lockJump)
+    if (flying && !W && !S && !A && !D)
     {
-        jump(deltaTime);
+        body->setVelocity(vec3(0.0f));
     }
 
-    vec3 pos = body->getPosition();
-
-    // head bobbing
-    float bob = sin(globals.simulationTime.getElapsedTime() * 10.0f * (running ? 2.0 : 1.0)) * 0.1f;
-    float speed = length(vec2(body->getVelocity().x, body->getVelocity().z));
-    if (speed > 0)
-        pos.y += bob;
-
-    float diffBias = 0.0001;
-    vec3 diff = globals.currentCamera->getPosition() - pos;
-    if (dot(diff, diff) > diffBias)
+    if (!flying)
     {
-        globals.currentCamera->setPosition(pos);
-        GameGlobals::playerPosition = pos * vec3(1, 0, 1);
-    }
+        move(forward, side, deltaTime);
 
-    if (running)
-    {
-        // drain stamina by staminaDrain per second
-        stamina -= staminaDrain * deltaTime;
-        if (stamina <= 0.0f)
+        // grounded test
+        Ray ray{body->getPosition() + vec3(0, -1.95, 0), vec3(0.0f, -1.0f, 0.0f)};
+        float t;
+        RigidBodyRef bodyIntersect;
+        grounded = raycast(ray, thingsYouCanStandOn, 0.2f, t, bodyIntersect);
+        if (!grounded)
+            lockJump = false;
+
+        if (doJump && !lockJump)
         {
-            stamina = 0.0f;
-            running = false;
+            jump(deltaTime);
         }
 
-        // adjust fov
-        CameraState state = globals.currentCamera->getState();
-        state.FOV = startFOV + 0.05f;
-        globals.currentCamera->setState(state);
+        vec3 pos = body->getPosition();
+
+        // head bobbing
+        float bob = sin(globals.simulationTime.getElapsedTime() * 10.0f * (running ? 2.0 : 1.0)) * 0.1f;
+        float speed = length(vec2(body->getVelocity().x, body->getVelocity().z));
+        if (speed > 0)
+            pos.y += bob;
+
+        float diffBias = 0.0001;
+        vec3 diff = globals.currentCamera->getPosition() - pos;
+        if (dot(diff, diff) > diffBias)
+        {
+            globals.currentCamera->setPosition(pos);
+            GameGlobals::playerPosition = pos * vec3(1, 0, 1);
+        }
+
+        if (running)
+        {
+            // drain stamina by staminaDrain per second
+            stamina -= staminaDrain * deltaTime;
+            if (stamina <= 0.0f)
+            {
+                stamina = 0.0f;
+                running = false;
+            }
+
+            // adjust fov
+            CameraState state = globals.currentCamera->getState();
+            state.FOV = startFOV + 0.05f;
+            globals.currentCamera->setState(state);
+        }
+        else
+        {
+            // regen stamina by staminaRegen per second
+            stamina += staminaRegen * deltaTime;
+            if (stamina > 100.0f)
+            {
+                stamina = 100.0f;
+            }
+
+            // adjust fov
+            CameraState state = globals.currentCamera->getState();
+            state.FOV = startFOV;
+            globals.currentCamera->setState(state);
+        }
     }
     else
     {
-        // regen stamina by staminaRegen per second
-        stamina += staminaRegen * deltaTime;
-        if (stamina > 100.0f)
-        {
-            stamina = 100.0f;
-        }
+        if (W)
+            fly(deltaTime);
 
-        // adjust fov
-        CameraState state = globals.currentCamera->getState();
-        state.FOV = startFOV;
-        globals.currentCamera->setState(state);
+        if (doJump)
+            flyUp(deltaTime);
+
+        globals.currentCamera->setPosition(body->getPosition());
     }
 
     if (stress >= 20.0f)
@@ -214,6 +232,14 @@ void Player::doInputs(GLFWKeyInfo &input)
             running = true;
         else if (input.action == GLFW_RELEASE)
             running = false;
+    }
+    if (input.key == GLFW_KEY_F12)
+    {
+        if (input.action == GLFW_PRESS)
+        {
+            flying = !flying;
+            body->setGravity(!body->getGravity());
+        }
     }
 }
 
@@ -323,6 +349,22 @@ void Player::jump(float deltaTime)
     doJump = false;
 }
 
+void Player::fly(float deltatime)
+{
+    vec3 pos = body->getPosition();
+
+    std::cout << "pos: " << pos.x << ", " << pos.y << ", " << pos.z << "\n";
+
+    body->setPosition(pos + globals.currentCamera->getDirection() * 10.0f * deltatime);
+}
+
+void Player::flyUp(float deltatime)
+{
+    vec3 pos = body->getPosition();
+
+    body->setPosition(pos + vec3(0.0f, 1.0f, 0.0f) * 10.0f * deltatime);
+}
+
 void Player::mouseLook()
 {
     // float xoffset = cursorXOld - cursorXNew;
@@ -355,14 +397,13 @@ bool Player::isInShadow(SceneDirectionalLight sun)
     sun->bindShadowMap();
     float d;
     glReadPixels(
-        0, 
-        0, 
+        0,
+        0,
         1,
         1,
         GL_DEPTH_COMPONENT,
         GL_FLOAT,
-        &d
-    );
+        &d);
 
     std::cout << d << "\n";
 }
