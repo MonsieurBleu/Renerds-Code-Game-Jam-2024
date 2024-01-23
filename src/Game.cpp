@@ -439,20 +439,33 @@ void Game::mainloop()
         .scaleScalar(0.8);
     generateFence(fence, scene, physicsEngine);
 
+//Peluche sur la souche
     ModelRef foxTeddy = newModel(GameGlobals::PBR);
     foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
     foxTeddy->state
         .scaleScalar(7)
-        .setPosition(vec3(-10, 0, 10));
+        .setPosition(vec3(-10, 0.69, 10));
     scene.add(foxTeddy);
+    ModelRef stumpTeddy = newModel(GameGlobals::PBR);
+    stumpTeddy->loadFromFolder("ressources/models/stump/");
+    stumpTeddy->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 10));
+    scene.add(stumpTeddy);
 
-
+//Livre sur la souche
     ModelRef bookFox = newModel(GameGlobals::PBR);
     bookFox->loadFromFolder("ressources/models/book/");
     bookFox->state
-        .scaleScalar(0.05)
-        .setPosition(vec3(-10, 0, 5));
+        .scaleScalar(0.025)
+        .setPosition(vec3(-10, 0.69, 5));
     scene.add(bookFox);
+    ModelRef stumpBook = newModel(GameGlobals::PBR);
+    stumpBook->loadFromFolder("ressources/models/stump/");
+    stumpBook->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 5));
+    scene.add(stumpBook);
 
     /*
         ModelRef lanterne = newModel(GameGlobals::PBR);
