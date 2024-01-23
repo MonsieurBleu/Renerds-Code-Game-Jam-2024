@@ -1,3 +1,6 @@
 #include "Scene.hpp"
+#include "../Engine/include/PhysicsEngine.hpp"
 
-void generateFence(ModelRef fence, Scene &scene);
+#define FENCE_SIZE 512
+
+void generateFence(ModelRef fence, Scene &scene, PhysicsEngine &physicsEngine);

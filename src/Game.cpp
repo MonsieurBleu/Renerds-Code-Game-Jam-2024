@@ -200,12 +200,11 @@ void Game::mainloop()
     ModelRef skybox = newModel(skyboxMaterial);
     skybox->loadFromFolder("ressources/models/skybox/", true, false);
 
-    Texture2D skyboxNightTexture = Texture2D().
-        loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
-    
+    Texture2D skyboxNightTexture = Texture2D().loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
+
     Texture2D skyboxReflectTexture = Texture2D().
-        // loadFromFile("ressources/models/skybox/reflect.png");
-        loadFromFileKTX("ressources/models/skybox/reflect.ktx");
+                                     // loadFromFile("ressources/models/skybox/reflect.png");
+                                     loadFromFileKTX("ressources/models/skybox/reflect.ktx");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
@@ -343,8 +342,8 @@ void Game::mainloop()
 
     physicsEngine.addObject(FloorBody);
 
-    GameObject FloorGameObject(newObjectGroup(), FloorBody);
-    FloorGameObject.getGroup()->add(floor);
+    // GameObject FloorGameObject(newObjectGroup(), FloorBody);
+    // FloorGameObject.getGroup()->add(floor);
 
     SphereCollider playerCollider = SphereCollider(2.0);
     RigidBodyRef playerBody = newRigidBody(
@@ -395,8 +394,6 @@ void Game::mainloop()
 
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
-
-
     // Portail
     /*
         ModelRef portailOuvert = newModel(GameGlobals::PBR);
@@ -440,7 +437,7 @@ void Game::mainloop()
     fence->loadFromFolder("ressources/models/fence/");
     fence->state
         .scaleScalar(0.8);
-    generateFence(fence, scene); 
+    generateFence(fence, scene, physicsEngine);
 
     ModelRef foxTeddy = newModel(GameGlobals::PBR);
     foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
@@ -449,19 +446,17 @@ void Game::mainloop()
         .setPosition(vec3(-15, 0, 0));
     scene.add(foxTeddy);
 
-
-/*
-    ModelRef lanterne = newModel(GameGlobals::PBR);
-    lanterne->loadFromFolder("ressources/models/lantern/");
-    lanterne->state
-        .scaleScalar(0.01)
-        .setPosition(vec3(2, 2, 0));
-    scene.add(lanterne);
-    handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
-    scene.add(handItems);
-*/
+    /*
+        ModelRef lanterne = newModel(GameGlobals::PBR);
+        lanterne->loadFromFolder("ressources/models/lantern/");
+        lanterne->state
+            .scaleScalar(0.01)
+            .setPosition(vec3(2, 2, 0));
+        scene.add(lanterne);
+        handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
+        scene.add(handItems);
+    */
     // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
-
 
     ModelRef shadowMonster = newModel(GameGlobals::PBR);
     shadowMonster->loadFromFolder("ressources/models/shadow/");
@@ -480,8 +475,7 @@ void Game::mainloop()
     GameGlobals::zone1radius = 0.0;
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
 
-    GameGlobals::sun = sun; 
-
+    GameGlobals::sun = sun;
 
     monster = Monster(shadowMonster);
     shadowMonster->state.hide = ModelStateHideStatus::HIDE;
@@ -526,7 +520,7 @@ void Game::mainloop()
         {
             // physicsEngine.update(delta);
             player->update(delta);
-            FloorGameObject.update(delta);
+            // FloorGameObject.update(delta);
 
             monster.update(delta);
         }
