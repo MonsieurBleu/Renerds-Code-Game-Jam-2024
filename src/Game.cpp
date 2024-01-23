@@ -399,6 +399,14 @@ void Game::mainloop()
         scene.add(portailFerme);
     */
 
+        ModelRef maison = newModel(GameGlobals::PBR);
+        maison->loadFromFolder("ressources/models/house/");
+        maison->state
+            .scaleScalar(1.5)
+            .setPosition(vec3(10, 0, 0));
+        scene.add(maison);
+
+
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
