@@ -4,6 +4,7 @@
 #include <CompilingOptions.hpp>
 #include <MathsUtils.hpp>
 #include <Audio.hpp>
+#include <TreeMapGenerator.hpp>
 
 #include <thread>
 
@@ -217,6 +218,9 @@ void Game::mainloop()
     ModelRef trunk = newModel(GameGlobals::PBR);
     trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunk, leaves);
+
+    /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
         for (int j = -forestSize; j < forestSize; j++)
         {
@@ -231,6 +235,9 @@ void Game::mainloop()
 
             scene.add(tree);
         }
+
+    */
+
 
     /* Instanced Mesh example */
     // InstancedModelRef trunk = newInstancedModel();
@@ -366,6 +373,7 @@ void Game::mainloop()
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
     GameGlobals::Zone2Objectif = vec3(80, 0, 5);
+    GameGlobals::sun = sun;
     
 
     lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));

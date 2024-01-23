@@ -2,6 +2,7 @@
 
 #include <Mesh.hpp>
 #include <random>
+#include <Light.hpp>
 
 class FastUI_valueMenu;
 
@@ -32,6 +33,8 @@ public:
 
     // random float between -1 and 1
     static std::uniform_real_distribution<float> randomFloatDist11;
+
+    static SceneDirectionalLight sun;
 
     static float randomFloat01();
 

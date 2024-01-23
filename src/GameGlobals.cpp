@@ -14,6 +14,7 @@ vec3 GameGlobals::Zone1Objectif;
 vec3 GameGlobals::Zone2Objectif;
 
 float GameGlobals::zone2radius = 50.0f;
+SceneDirectionalLight GameGlobals::sun;
 
 void GameGlobals::setMenu(FastUI_valueMenu &menu)
 {
