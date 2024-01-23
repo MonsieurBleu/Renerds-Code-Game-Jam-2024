@@ -40,8 +40,9 @@ void generateTreeAtSpot(float x, float y, int val, ModelRef trunk,
   if (val > THRESHOLD) {
     ModelRef trunkToPlace = trunk->copyWithSharedMesh();
     ModelRef leavesToPlace = leaves->copyWithSharedMesh();
-    trunkToPlace->state.setPosition(vec3(x, 0, y)).scaleScalar(5.0);;
+    trunkToPlace->state.setPosition(vec3(x, 0, y)).scaleScalar(5.0);
     leavesToPlace->state.setPosition(vec3(x, 0, y)).scaleScalar(5.0);
+    leavesToPlace->noBackFaceCulling = true;
     forest->add(trunkToPlace);
     forest->add(leavesToPlace);
   }

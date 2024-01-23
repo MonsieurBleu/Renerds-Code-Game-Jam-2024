@@ -219,7 +219,7 @@ void Game::mainloop()
     trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
 
-
+//Models Oak
     Texture2D leafTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/CE.ktx");
     Texture2D leafTextureMat = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/NRM.ktx");
     Texture2D trunkTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/trunc/CE.ktx");
