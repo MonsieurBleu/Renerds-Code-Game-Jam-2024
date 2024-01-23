@@ -83,7 +83,7 @@ void Monster::update(float deltaTime)
     }
 
     GameGlobals::Zone2Objectif = model->state.position;
-    GameGlobals::Zone2Center = model->state.position;
+    // GameGlobals::Zone2Center = model->state.position;
 }
 
 bool Monster::isPlayerInZone()
