@@ -3,6 +3,7 @@
 #include "../Engine/include/PhysicsEngine.hpp"
 #include "../Engine/include/Camera.hpp"
 #include "../Engine/include/Inputs.hpp"
+#include "../Engine/include/FastUI.hpp"
 
 #include <iostream>
 #include <vector>
@@ -34,6 +35,8 @@ public:
 
     void mouseLook();
 
+    void setMenu(FastUI_valueMenu &menu);
+
     static constexpr float maxSpeed = 12.0f;
     static constexpr float maxSpeedRunning = 15.0f;
     static constexpr float stopSpeed = 15.0f;
@@ -54,7 +57,7 @@ public:
     static bool lockJump;
 
     static bool running;
-    float stamina = 100.0f;
+    static float stamina;
     static constexpr float staminaDrain = 50.0f;
     static constexpr float staminaRegen = 50.0f;
 
@@ -70,4 +73,8 @@ public:
     static constexpr float jumpForce = 0.0f;
 
     static float startFOV;
+
+    static float stress;
+    static float stressFactor;
+    static float stressSmoothing;
 };

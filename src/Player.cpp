@@ -17,7 +17,14 @@ bool Player::running = false;
 
 float Player::startFOV = 1.0f;
 
-std::vector<RigidBodyRef> Player::thingsYouCanStandOn;
+float Player::stress = 0.0f;
+float Player::stressFactor = 1.0f;
+float Player::stressSmoothing = 0.7f;
+
+float Player::stamina = 100.0f;
+
+std::vector<RigidBodyRef>
+    Player::thingsYouCanStandOn;
 
 Player::Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs)
 {
@@ -94,7 +101,7 @@ void Player::update(float deltaTime)
     if (dot(diff, diff) > diffBias)
     {
         globals.currentCamera->setPosition(pos);
-        GameGlobals::playerPosition = pos*vec3(1, 0, 1);
+        GameGlobals::playerPosition = pos * vec3(1, 0, 1);
     }
 
     if (running)
@@ -127,7 +134,40 @@ void Player::update(float deltaTime)
         globals.currentCamera->setState(state);
     }
 
+    if (stress >= 20.0f)
+    {
+        // camera drift
+        vec3 camDir = globals.currentCamera->getDirection();
+        vec3 camRight = normalize(cross(camDir, vec3(0.0f, 1.0f, 0.0f)));
+        vec3 camUp = normalize(cross(camRight, camDir));
+
+        float randomFloatX = GameGlobals::randomFloat11() * ((stress - 20.0f) / 80.0f) * stressFactor;
+        float randomFloatY = GameGlobals::randomFloat11() * ((stress - 20.0f) / 80.0f) * stressFactor;
+
+        vec3 randomDir = camRight * randomFloatX + camUp * randomFloatY;
+
+        vec3 newDir = camDir + randomDir * 0.01f;
+
+        // smoothing
+        newDir = normalize(newDir * (1.0f - stressSmoothing) + camDir * stressSmoothing);
+
+        globals.currentCamera->setDirection(newDir);
+    }
+
     // std::cout << "stamina: " << stamina << "\n";
+}
+
+void Player::setMenu(FastUI_valueMenu &menu)
+{
+    menu.push_back(
+        {FastUI_menuTitle(menu.ui, U"Player"),
+         FastUI_valueTab(menu.ui, {
+                                      FastUI_value((const float *)(&stamina), U"Stamina\t"),
+                                      FastUI_value(&stress, U"Stress\t"),
+                                      FastUI_value(&stressFactor, U"Stress Factor\t"),
+                                      FastUI_value(&stressSmoothing, U"Stress Smoothing\t"),
+
+                                  })});
 }
 
 void Player::doInputs(GLFWKeyInfo &input)
