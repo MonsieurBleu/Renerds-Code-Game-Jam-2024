@@ -92,6 +92,16 @@ void Player::update(float deltaTime)
         else
         {
             deathAnimationProgress = (globals.appTime.getElapsedTime() - deathTime) / respawnDelay;
+
+            const float maxAngle = 90.0f;
+            const float maxAngleRad = maxAngle * 3.14159265358979323846f / 180.0f;
+
+            const float animSpeed = 1.5f;
+            float angle = maxAngleRad * min(deathAnimationProgress * animSpeed, 1.0f);
+
+            vec3 camRot = globals.currentCamera->getDirection();
+            camRot.y = angle;
+            globals.currentCamera->setDirection(camRot);
         }
 
         globals.currentCamera->setPosition(body->getPosition());
