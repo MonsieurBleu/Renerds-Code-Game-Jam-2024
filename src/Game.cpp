@@ -248,7 +248,17 @@ void Game::mainloop()
     mediumTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
     smallTrunk->setMap(trunkTexture, 0).setMap(trunkTextureMat, 1);
 
-    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", largeTrunk, largeLeaf);
+    treeSizes trunkSizes;
+    trunkSizes.t0 = smallTrunk;
+    trunkSizes.t1 = mediumTrunk;
+    trunkSizes.t2 = largeTrunk;
+
+    treeSizes leavesSizes;
+    leavesSizes.t0 = smallLeaf;
+    leavesSizes.t1 = mediumLeaf;
+    leavesSizes.t2 = largeLeaf;
+
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunkSizes, leavesSizes);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
