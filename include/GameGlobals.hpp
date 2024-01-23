@@ -20,6 +20,7 @@ public:
     static vec3 Zone2Objectif;
 
     static float zone2radius;
+    static float zone1radius;
 
     static vec3 playerPosition;
 

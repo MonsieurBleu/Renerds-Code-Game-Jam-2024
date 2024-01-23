@@ -48,19 +48,26 @@ void Game::init(int paramSample)
             "shader/foward/basicInstance.vert",
             ""));
 
+    
+    
+    std::vector<ShaderUniform> uniforms3D = globals.standartShaderUniform3D();
+    uniforms3D.push_back(ShaderUniform(&effects.sunColor, 20));
+    uniforms3D.push_back(ShaderUniform(&effects.z1lerp, 21));
+    uniforms3D.push_back(ShaderUniform(&effects.o1lerp, 22));
+
     GameGlobals::PBR = MeshMaterial(
         new ShaderProgram(
             "shader/foward/PBR.frag",
             "shader/foward/basic.vert",
             "",
-            globals.standartShaderUniform3D()));
+            uniforms3D));
 
     GameGlobals::PBRstencil = MeshMaterial(
         new ShaderProgram(
             "shader/foward/PBR.frag",
             "shader/foward/basic.vert",
             "",
-            globals.standartShaderUniform3D()));
+            uniforms3D));
 
     GameGlobals::PBRinstanced = MeshMaterial(
         new ShaderProgram(
@@ -74,11 +81,17 @@ void Game::init(int paramSample)
             "shader/foward/Skybox.frag",
             "shader/foward/basic.vert",
             "",
-            globals.standartShaderUniform3D()));
+            uniforms3D));
 
     GameGlobals::PBRstencil.depthOnly = depthOnlyStencilMaterial;
     GameGlobals::PBRinstanced.depthOnly = depthOnlyInstancedMaterial;
     scene.depthOnlyMaterial = depthOnlyMaterial;
+
+    // GameGlobals::PBR->addUniform(ShaderUniform(&effects.sunColor, 20));
+    // GameGlobals::PBR->addUniform(ShaderUniform(&effects.z1lerp, 21));
+
+    // GameGlobals::PBRstencil->addUniform(ShaderUniform(&effects.sunColor, 20));
+    // GameGlobals::PBRstencil->addUniform(ShaderUniform(&effects.z1lerp, 21));
 
     /* UI */
     FUIfont = FontRef(new FontUFT8);
@@ -186,6 +199,9 @@ void Game::mainloop()
     /* Loading Models and setting up the scene */
     ModelRef skybox = newModel(skyboxMaterial);
     skybox->loadFromFolder("ressources/models/skybox/", true, false);
+
+    Texture2D skyboxNightTexture = Texture2D().
+        loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
@@ -371,9 +387,15 @@ void Game::mainloop()
     handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
     scene.add(handItems);
 
-    GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::Zone2Objectif = vec3(80, 0, 5);
     GameGlobals::sun = sun;
+
+    GameGlobals::Zone2Center = vec3(-80, 0, 5);
+    GameGlobals::zone2radius = 0.0;
+    GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
+
+    GameGlobals::Zone1Center = vec3(100, 0, 0);
+    GameGlobals::zone1radius = 60.0;
+    GameGlobals::Zone1Objectif = vec3(100, 0, 0);
     
 
     lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
@@ -434,6 +456,7 @@ void Game::mainloop()
 
         /* 3D Render */
         skybox->bindMap(0, 4);
+        skyboxNightTexture.bind(5);
         scene.genLightBuffer();
         scene.draw();
         renderBuffer.deactivate();

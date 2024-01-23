@@ -1,11 +1,10 @@
 #ifndef FNCT_SKYBOX_GLSL
 #define FNCT_SKYBOX_GLSL
 
-#ifdef CUBEMAP_SKYBOX
-    layout (binding = 4) uniform samplerCube bSkyTexture; 
-#else
-    layout (binding = 4) uniform sampler2D bSkyTexture;
-#endif
+
+layout (binding = 4) uniform sampler2D bSkyTexture;
+layout (binding = 5) uniform sampler2D bSkyTexture2;
+
 
 
 // Reinhard tone mapping
@@ -18,20 +17,14 @@ vec3 getSkyColor(vec2 uv)
 {
     vec3 c = texture(bSkyTexture, uv).rgb;
 
-    float exposure = 0.5;
-    float gamma = 2.0;
+    if(zone1Lerp > 0.0)
+    {
+        vec3 c2 = texture(bSkyTexture2, uv).rgb;
+        c = mix(c, c2, pow(zone1Lerp, 0.25));
 
-    // float brightMax = 0.1;
-    // exposure = exposure * (exposure/brightMax + 1.0) / (exposure + 1.0);
-    
-    // c = vec3(1.0) - exp(-c*exposure);
-
-    // c *= pow(2.0, exposure);
-    // c = toneMapReinhard(c, exposure, 0.1);
-
-    // c *= exposure;
-
-    // c = pow(c, vec3(1.0/gamma));
+        c *= mix(vec3(1.0), sunColor, zone1Lerp);
+        //c += sunColor;
+    }
 
     return c;
 }
