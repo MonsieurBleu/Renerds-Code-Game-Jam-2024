@@ -289,7 +289,8 @@ void main() {
 
         //u = pow(u, 1.0 - 2.0*distance(uv.x, 0.5));
 
-        u -= 2.0*distance(uv.x, 0.5);
+        float eye = distance(uv.x, 0.5);
+        u -= pow(eye, 30.0);
 
         float alpha = smoothstep(pa+0.1, pa-1.0, u);
 
