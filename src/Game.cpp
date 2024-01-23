@@ -479,6 +479,14 @@ void Game::mainloop()
         .setPosition(vec3(-10, 0, 5));
     scene.add(stumpBook);
 
+    ModelRef car = newModel(GameGlobals::PBR);
+    car->loadFromFolder("ressources/models/car/");
+    car->state
+        .scaleScalar(0.012)
+        .setPosition(vec3(104, 0, 111));
+    scene.add(car);
+
+
     /*
         ModelRef lanterne = newModel(GameGlobals::PBR);
         lanterne->loadFromFolder("ressources/models/lantern/");
