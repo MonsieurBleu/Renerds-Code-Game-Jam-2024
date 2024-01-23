@@ -442,7 +442,12 @@ void Game::mainloop()
         .scaleScalar(0.8);
     generateFence(fence, scene); 
 
-
+    ModelRef teddyBear = newModel(GameGlobals::PBR);
+    teddyBear->loadFromFolder("ressources/models/teddy/");
+    teddyBear->state
+        .scaleScalar(0.025)
+        .setPosition(vec3(-15, 0, 0));
+    scene.add(teddyBear);
 
 
 /*
