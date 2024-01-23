@@ -31,6 +31,9 @@ bool Player::invertedControls = false;
 float Player::invertStart = 0.0f;
 bool Player::hasTeddyBear = false;
 
+float Player::stressDecreaseRate = 50.0f;
+float Player::stressIncreaseRate = 35.0f;
+
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
 
@@ -205,6 +208,8 @@ void Player::setMenu(FastUI_valueMenu &menu)
          FastUI_valueTab(menu.ui, {
                                       FastUI_value((const float *)(&stamina), U"Stamina\t"),
                                       FastUI_value(&stress, U"Stress\t"),
+                                      FastUI_value(&stressDecreaseRate, U"Stress Decrease Rate\t"),
+                                      FastUI_value(&stressIncreaseRate, U"Stress Increase Rate\t"),
                                       FastUI_value(&stressFactor, U"Stress Factor\t"),
                                       FastUI_value(&stressSmoothing, U"Stress Smoothing\t"),
 
@@ -342,6 +347,26 @@ void Player::move(float fmove, float smove, float deltaTime)
             vel.y = body->getVelocity().y;
             body->setVelocity(vel);
         }
+    }
+
+    if (GameGlobals::isPlayerinZone1())
+    {
+        if (isInShadow())
+        {
+            stress += stressIncreaseRate * deltaTime;
+        }
+        else
+        {
+            stress -= stressDecreaseRate * deltaTime;
+            if (stress < 0.0f)
+                stress = 0.0f;
+        }
+    }
+    else
+    {
+        stress -= stressDecreaseRate * deltaTime;
+        if (stress < 0.0f)
+            stress = 0.0f;
     }
 }
 

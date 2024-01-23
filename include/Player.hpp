@@ -68,6 +68,9 @@ public:
     static constexpr float staminaDrain = 50.0f;
     static constexpr float staminaRegen = 50.0f;
 
+    static float stressIncreaseRate;
+    static float stressDecreaseRate;
+
     // probably should have a better name
     static std::vector<RigidBodyRef> thingsYouCanStandOn;
 
