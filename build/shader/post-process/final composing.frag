@@ -164,6 +164,7 @@ layout(location = 18) uniform vec3 mistColor1;
 layout(location = 19) uniform vec3 mistColor2;
 layout(location = 20) uniform float playerDeath;
 layout(location = 21) uniform float playerRevive;
+layout(location = 22) uniform float playerStressLevel;
 
 // const float mistIntensity = 0.05;
 // const vec3 mistColor2 = vec3(0.8);
@@ -210,6 +211,9 @@ void main() {
     float exposure = 2.0;
     float gamma = 2.2;
 
+    //gamma = 1.0;
+    //exposure = 0.2;
+
     vec3 bloom = texture(bEmmisive, uv).rgb;
     if(bloomEnable != 0)
         _fragColor.rgb += exposure * 0.25 * pow(bloom, vec3(2.0 - (1.0 / exposure)));
@@ -225,7 +229,7 @@ void main() {
         // _fragColor.rgb = vec3(1.0 - pow(1.0 - depth, 50.0));
     ////////
 
-// #define SHOW_SHADOWMAP
+    //#define SHOW_SHADOWMAP
     #ifdef SHOW_SHADOWMAP
     vec2 SSMuv = uvScreen * vec2(iResolution) * 1 / 900.0;
     if(SSMuv.x >= 0. && SSMuv.x <= 1.0 && SSMuv.y >= 0. && SSMuv.y <= 1.0) {
@@ -263,20 +267,32 @@ void main() {
 
         float heightFactor = max(((vp.y - 10.0) / 3.0) * d, 0.0);
         mistAlpha *= max(1.0 - heightFactor, 0.0);
+        //mistAlpha = min(mistAlpha*2.0, 1.0);
 
-        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha * 0.95);
+        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);
 
     }
     //////////////////
+
+
+    float stress = playerStressLevel/100.f;
+    //stress = 0.5 + 0.5*cos(iTime);
+    stress = pow(stress, 2.0);
+    vec3 stressColor = pow(vec3(10), _fragColor.rgb)/2.25;
+    stressColor = vec3(0.25, 0.35, 1.0)*pow(stressColor, vec3(4.0));
+
+    _fragColor.rgb = mix(_fragColor.rgb, stressColor, stress);
 
     vec4 ui = texture(bUI, uvScreen);
     _fragColor.rgb = mix(_fragColor.rgb, ui.rgb, ui.a);
     _fragColor.a = 1.0;
 
+
+
     /* Player Death Animation */
 
     float pa = playerDeath;
-    if(playerRevive > 0.)
+    if(playerRevive >= 0.00001f)
         pa = 1.0 - playerRevive;
 
     pa *= 3.0;

@@ -21,7 +21,7 @@ vec3 getSkyColor(vec2 uv
     #ifdef NO_REFLECT_TEXTURE
     vec3 c = texture(bSkyTexture, uv).rgb;
     #else
-    vec3 c = texture(bSkyTexture, uv).rgb;
+    vec3 c = texture(bSkyTexture3, uv).rgb;
     #endif
     if(zone1Lerp > 0.0)
     {

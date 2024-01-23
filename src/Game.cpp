@@ -202,7 +202,9 @@ void Game::mainloop()
 
     Texture2D skyboxNightTexture = Texture2D().loadFromFileKTX("ressources/models/skybox/8k_starsCE.ktx");
 
-    Texture2D skyboxReflectTexture = Texture2D().loadFromFile("ressources/models/skybox/reflect.png");
+    Texture2D skyboxReflectTexture = Texture2D().
+                                     // loadFromFile("ressources/models/skybox/reflect.png");
+                                     loadFromFileKTX("ressources/models/skybox/reflect.ktx");
 
     // skybox->invertFaces = true;
     skybox->depthWrite = true;
@@ -437,18 +439,12 @@ void Game::mainloop()
         .scaleScalar(0.8);
     generateFence(fence, scene, physicsEngine);
 
-    // AABBCollider wall1Collider = AABBCollider(vec3(-3), vec3(0));
-    // RigidBodyRef wall1 = newRigidBody(
-    //     vec3(0, 0.0, 0),
-    //     vec3(0.0, 0.0, 0.0),
-    //     quat(0.0, 0.0, 0.0, 1.0),
-    //     vec3(0.0, 0.0, 0.0),
-    //     &wall1Collider,
-    //     PhysicsMaterial(),
-    //     0.0,
-    //     false);
-
-    // physicsEngine.addObject(wall1);
+    ModelRef foxTeddy = newModel(GameGlobals::PBR);
+    foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
+    foxTeddy->state
+        .scaleScalar(7)
+        .setPosition(vec3(-15, 0, 0));
+    scene.add(foxTeddy);
 
     /*
         ModelRef lanterne = newModel(GameGlobals::PBR);
@@ -472,11 +468,11 @@ void Game::mainloop()
     GameGlobals::sun = sun;
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::zone2radius = 60.0;
+    GameGlobals::zone2radius = 0.0;
     GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
 
     GameGlobals::Zone1Center = vec3(100, 0, 0);
-    GameGlobals::zone1radius = 60.0;
+    GameGlobals::zone1radius = 0.0;
     GameGlobals::Zone1Objectif = vec3(100, 0, 0);
 
     GameGlobals::sun = sun;

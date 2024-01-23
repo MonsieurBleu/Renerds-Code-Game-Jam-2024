@@ -5,8 +5,9 @@
 #include <stb/stb_image.h>
 #include <string>
 
-#define GRID_SIZE 256
-#define GRID_SQUARE_SIZE 10
+#define GRID_SIZE 512
+//256
+#define GRID_SQUARE_SIZE 8
 #define MAX_OFFSET 5
 
 unsigned char getValue(unsigned char *tex, int texH, int texW, int x, int y) {

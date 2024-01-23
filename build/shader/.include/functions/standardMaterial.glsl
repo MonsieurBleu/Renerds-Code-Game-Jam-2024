@@ -141,7 +141,7 @@ Material getMultiLightPBR()
         case 1:
             lightResult = getBRDF(light.direction.xyz, light.color.rgb);
             factor = light.color.a;
-            factor *= (light.stencil.b % 2) == 0 ? 1. : getShadow(bShadowMaps[light.stencil.r], light._rShadowMatrix);
+            factor *= (light.stencil.b % 2) == 0 ? 1.0 : getShadow(bShadowMaps[light.stencil.r], light._rShadowMatrix);
             break;
 
         case 2:
