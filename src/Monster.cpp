@@ -39,7 +39,7 @@ void Monster::initSounds()
     this->screamSource = new AudioSource();
     this->screamSource
         ->setBuffer(scream.getHandle());
-    step1.loadOGG("../build/ressources/Audio/step1.ogg");
+    step1.loadOGG("../build/ressources/Audio/FootstepsStoneDirt1.ogg");
     this->stepSource = new AudioSource();
     this->stepSource->setBuffer(step1.getHandle());
 
