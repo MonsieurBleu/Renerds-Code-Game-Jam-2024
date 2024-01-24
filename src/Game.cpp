@@ -542,7 +542,7 @@ void Game::mainloop()
     GameGlobals::sun = sun;
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::zone2radius = 0.0;
+    GameGlobals::zone2radius = 60.0;
     GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
 
     GameGlobals::Zone1Center = vec3(100, 0, 0);
@@ -588,8 +588,8 @@ void Game::mainloop()
     AudioSource musicSource;
     musicSource
         .setBuffer(music.getHandle())
-        .loop(true)
-        .play();
+        .loop(true);
+    // .play();
 
     /* Main Loop */
     while (state != AppState::quit)

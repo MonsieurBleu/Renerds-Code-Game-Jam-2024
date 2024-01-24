@@ -120,9 +120,9 @@ public:
 
     static bool locked;
 
-    // static std::shared_ptr<AudioSource> heartbeat;
-    // static std::shared_ptr<AudioSource> step1;
-    // static std::shared_ptr<AudioSource> step2;
-    // static std::shared_ptr<AudioSource> step3;
-    // static std::shared_ptr<AudioSource> step4;
+    // static AudioSource heartbeat;
+    // static AudioSource step1;
+    // static AudioSource step2;
+    // static AudioSource step3;
+    // static AudioSource step4;
 };

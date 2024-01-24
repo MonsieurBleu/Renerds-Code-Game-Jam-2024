@@ -20,11 +20,11 @@ SceneDirectionalLight GameGlobals::sun;
 
 Monster *GameGlobals::monster;
 
-Player* GameGlobals::player; 
+Player *GameGlobals::player;
 
 ModelRef GameGlobals::foxAlive;
 ModelRef GameGlobals::foxDead;
-Scene*   GameGlobals::scene;
+Scene *GameGlobals::scene;
 
 bool GameGlobals::E = false;
 
