@@ -410,16 +410,6 @@ void Game::mainloop()
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
 
-    /* Music ! */
-    AudioFile music1;
-    music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
-
-    AudioSource musicSource;
-    musicSource
-        .setBuffer(music1.getHandle())
-        .setPosition(vec3(0, 0, 3))
-        .play();
-
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
     // Portail
@@ -604,6 +594,33 @@ void Game::mainloop()
         .setBuffer(music.getHandle())
         .loop(true)
         .play();
+
+    AudioFile step1File;
+    step1File.loadOGG("ressources/Audio/FootstepsStoneDirt1.ogg");
+
+    AudioFile step2File;
+    step2File.loadOGG("ressources/Audio/FootstepsStoneDirt2.ogg");
+
+    AudioFile step3File;
+    step3File.loadOGG("ressources/Audio/FootstepsStoneDirt3.ogg");
+
+    AudioFile step4File;
+    step4File.loadOGG("ressources/Audio/FootstepsStoneDirt4.ogg");
+
+    // AudioFile heartbeatFile;
+    // heartbeatFile.loadOGG("ressources/Audio/heartbeat.ogg");
+
+    Player::heartbeat = new AudioSource();
+    Player::step4 = new AudioSource();
+    Player::step3 = new AudioSource();
+    Player::step2 = new AudioSource();
+    Player::step1 = new AudioSource();
+
+    Player::step1->setBuffer(step1File.getHandle()).setGain(0.3f);
+    Player::step2->setBuffer(step2File.getHandle()).setGain(0.3f);
+    Player::step3->setBuffer(step3File.getHandle()).setGain(0.3f);
+    Player::step4->setBuffer(step4File.getHandle()).setGain(0.3f);
+    // Player::heartbeat.setBuffer(heartbeatFile.getHandle()).loop(true);
 
     /* Main Loop */
     while (state != AppState::quit)
