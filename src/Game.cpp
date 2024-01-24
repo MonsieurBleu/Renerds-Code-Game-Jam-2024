@@ -62,6 +62,13 @@ void Game::init(int paramSample)
             "",
             uniforms3D));
 
+    GameGlobals::PBRground = MeshMaterial(
+        new ShaderProgram(
+            "shader/foward/PBRground.frag",
+            "shader/foward/basic.vert",
+            "",
+            uniforms3D));
+
     GameGlobals::PBRstencil = MeshMaterial(
         new ShaderProgram(
             "shader/foward/PBR.frag",
@@ -171,6 +178,7 @@ bool Game::userInput(GLFWKeyInfo input)
             SSAO.getShader().reset();
             depthOnlyMaterial->reset();
             GameGlobals::PBR->reset();
+            GameGlobals::PBRground->reset();
             GameGlobals::PBRstencil->reset();
             skyboxMaterial->reset();
             break;
@@ -218,13 +226,20 @@ void Game::mainloop()
     skybox->state.scaleScalar(1E6);
     scene.add(skybox);
 
-    ModelRef floor = newModel(GameGlobals::PBR);
+    ModelRef floor = newModel(GameGlobals::PBRground);
     floor->loadFromFolder("ressources/models/ground/");
+    floor->setMap(Texture2D()
+        .loadFromFile("ressources/treeMap.png")
+        .setFormat(GL_RGBA)
+        .setInternalFormat(GL_RGBA)
+        .generate(), 
+        7);
+    //floor->setMap(Texture2D().loadFromFile("ressources/treeMap.png"), 8);
 
     int gridSize = 16;
     int gridScale = 10;
-    for (int i = 0; i < gridSize; i++)
-        for (int j = 0; j < gridSize; j++)
+    for (int i = -gridSize; i < gridSize; i++)
+        for (int j = -gridSize; j < gridSize; j++)
         {
             ModelRef f = floor->copyWithSharedMesh();
             f->state
@@ -283,7 +298,7 @@ void Game::mainloop()
     leavesSizes.t1 = mediumLeaf;
     leavesSizes.t2 = largeLeaf;
 
-    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunkSizes, leavesSizes);
+    generateTreesFromHeatMap(scene, "ressources/treeMap.png", trunkSizes, leavesSizes);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
@@ -572,6 +587,8 @@ void Game::mainloop()
 
         for (GLFWKeyInfo input; inputs.pull(input); userInput(input))
             ;
+
+        cullTreeBodiesBasedOnDistance(GameGlobals::playerPosition);
 
         float delta = min(globals.simulationTime.getDelta(), 0.05f);
         if (globals.windowHasFocus() && delta > 0.00001f)

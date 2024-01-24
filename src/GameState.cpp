@@ -1,6 +1,8 @@
 #include "GameState.hpp"
 #include <Player.hpp>
 
+ScenePointLight lightFoxAlive;
+
 void GameStateManager::update(float deltatime)
 {
     int result = currentState->update(deltatime);
@@ -68,13 +70,25 @@ bool StartState::update(float deltaTime)
 void StartState::onEnter()
 {
     //globals.currentCamera->setPosition(vec3(126, 1, 136));
-    Player::respawnPoint = vec3(126, 1, 136);
+    Player::respawnPoint = vec3(0, 1, 0);
     GameGlobals::player->respawn();
     //GameGlobals::player->teleport(vec3(126, 1, 136));
 
 
     GameGlobals::foxAlive->state.setPosition(vec3(110, 0, 126));
     GameGlobals::scene->add(GameGlobals::foxAlive);
+
+
+    lightFoxAlive = newPointLight();
+    lightFoxAlive->setPosition(
+            GameGlobals::foxAlive->state.position
+            +vec3(0, 2, 0))
+        .setIntensity(15.0)
+        .setRadius(3.0)
+        .setColor(vec3(0.0, 0.1, 1.0))
+        ;
+    
+    GameGlobals::scene->add(lightFoxAlive);
 }
 
 void StartState::onExit()
@@ -90,9 +104,9 @@ bool FoxState::update(float deltaTime)
 
     float t = timer.getElapsedTime();
 
-    float i = 0.5 + 0.5*sin(t*1.5);
+    float i = 0.5 + 0.5*cos(t*1.5 - M_PI);
 
-    l->setRadius(3.0 + i*5.f);
+    lightFoxAlive->setRadius(3.0 + i*5.f);
 
     // std::cout << i << "\n";
 
@@ -110,17 +124,6 @@ bool FoxState::update(float deltaTime)
 void FoxState::onEnter()
 {
     timer.start();
-
-    l = newPointLight();
-    l->setPosition(
-            GameGlobals::foxAlive->state.position
-            +vec3(0, 2, 0))
-        .setIntensity(15.0)
-        // .setRadius(5.0)
-        .setColor(vec3(0.0, 0.1, 1.0))
-        ;
-    
-    GameGlobals::scene->add(l);
 
     globals.currentCamera->setForceLookAtPoint(true);
     // globals.currentCamera->lookAt(

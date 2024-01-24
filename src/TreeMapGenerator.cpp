@@ -5,13 +5,17 @@
 #include <iterator>
 #include <stb/stb_image.h>
 #include <string>
+#include <glm/glm.hpp>
 
-#define GRID_SIZE 1024
+using namespace glm;
+
+#define GRID_SIZE ((int)(1024/1.5))
 //256
 #define GRID_SQUARE_SIZE 8
-#define MAX_OFFSET 5
+#define MAX_OFFSET 3
 
-unsigned char getValue(unsigned char *tex, int texH, int texW, int x, int y) {
+unsigned char getValue(unsigned char *tex, int texH, int texW, int x, int y)
+{
   x = clamp(x, 0, texH - 1);
   y = clamp(y, 0, texW - 1);
   int c = (texW * x + y);
@@ -19,7 +23,8 @@ unsigned char getValue(unsigned char *tex, int texH, int texW, int x, int y) {
   return tex[c];
 }
 
-int getPixel(unsigned char *tex, int texH, int texW, vec2 uv) {
+int getPixel(unsigned char *tex, int texH, int texW, vec2 uv)
+{
   if (!tex)
     return 0;
 
@@ -38,23 +43,25 @@ int getPixel(unsigned char *tex, int texH, int texW, vec2 uv) {
   return r;
 }
 
-void addTree(float x, float y, treeSizes trunkModels, treeSizes leavesModels, int size, ObjectGroupRef forest) {
+void addTree(float x, float y, treeSizes trunkModels, treeSizes leavesModels, int size, ObjectGroupRef forest, PhysicsEngine &physicsEngine)
+{
   ModelRef trunk;
   ModelRef leaves;
-  vec3 rot(0, radians(GameGlobals::randomFloat01()*180), 0);
+  vec3 rot(0, radians(GameGlobals::randomFloat01() * 180), 0);
 
-  switch (size) {
-    case 0:
-    trunk = trunkModels.t0 -> copyWithSharedMesh();
-    leaves = leavesModels.t0 -> copyWithSharedMesh();
+  switch (size)
+  {
+  case 0:
+    trunk = trunkModels.t0->copyWithSharedMesh();
+    leaves = leavesModels.t0->copyWithSharedMesh();
     break;
-    case 1:
-    trunk = trunkModels.t1 -> copyWithSharedMesh();
-    leaves = leavesModels.t1 -> copyWithSharedMesh();
+  case 1:
+    trunk = trunkModels.t1->copyWithSharedMesh();
+    leaves = leavesModels.t1->copyWithSharedMesh();
     break;
-    default:
-    trunk = trunkModels.t2 -> copyWithSharedMesh();
-    leaves = leavesModels.t2 -> copyWithSharedMesh();  
+  default:
+    trunk = trunkModels.t2->copyWithSharedMesh();
+    leaves = leavesModels.t2->copyWithSharedMesh();
   }
   trunk->state.setPosition(vec3(x, 0, y)).scaleScalar(5.0);
   trunk->state.setRotation(rot);
@@ -64,9 +71,42 @@ void addTree(float x, float y, treeSizes trunkModels, treeSizes leavesModels, in
   leaves->noBackFaceCulling = true;
   forest->add(trunk);
   forest->add(leaves);
+
+  // add collider
+  // vec3 trunkColliderSize = vec3(1.0, 5.0, 1.0);
+
+  // AABBCollider *trunkCollider = new AABBCollider(-trunkColliderSize, vec3(0));
+  // RigidBodyRef trunkRigidBody = newRigidBody(
+  //     vec3(x, 0.0, y),
+  //     vec3(0.0, 0.0, 0.0),
+  //     quat(0.0, 0.0, 0.0, 1.0),
+  //     vec3(0.0, 0.0, 0.0),
+  //     trunkCollider,
+  //     PhysicsMaterial(),
+  //     0.0,
+  //     false);
+
+  // physicsEngine.addObject(trunkRigidBody);
+  // treeBodies.push_back(trunkRigidBody);
 }
 
-void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeSizes &leavesModels, ObjectGroupRef forest) {
+void cullTreeBodiesBasedOnDistance(vec3 cameraPosition)
+{
+  // for (int i = 0; i < treeBodies.size(); i++)
+  // {
+  //   if (distance(cameraPosition, treeBodies[i]->getPosition()) > 0.5)
+  //   {
+  //     treeBodies[i]->enabled = false;
+  //   }
+  //   else
+  //   {
+  //     treeBodies[i]->enabled = true;
+  //   }
+  // }
+}
+
+void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeSizes &leavesModels, ObjectGroupRef forest, PhysicsEngine &physicsEngine)
+{
   /* if val == 0 : 100% no tree
    * if val <= 0x55 : 70% small tree, 30% no tree
    * if 0x55 < val <= 0x80 : 33% small tree, 66% medium tree
@@ -74,60 +114,83 @@ void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeS
    * if 0xAA < val <= 0XFE: 50% medium, 50% large
    * if val == 0x255: 20% medium, 80% large
    * */
-   ModelRef trunk;
-   ModelRef leaves;
-   int size;
-   float rand;
+  ModelRef trunk;
+  ModelRef leaves;
+  int size;
+  float rand;
 
-   if (val == 0 ) return;
-   rand = GameGlobals::randomFloat01();
-   if (val < 0x55) {
-     if (rand < 0.7) addTree(x, y, trunkModels, leavesModels, 0, forest);
-   }
-   else if (val < 0x80) {
-     if (rand < 0.33) {
-       addTree(x, y, trunkModels, leavesModels, 0, forest);
-     } else {
-       addTree(x, y, trunkModels, leavesModels, 1, forest);
-     }
-   }
-   else if (val < 0xAA) {
-     if (rand < 0.33) {
-       addTree(x, y, trunkModels, leavesModels, 0, forest);
-     } else if (rand < 0.66) {
-       addTree(x, y, trunkModels, leavesModels, 1, forest);
-     } else {
-       addTree(x, y, trunkModels, leavesModels, 2, forest);
-     }
-   } else if (val < 0xFE) {
-     if (rand < 0.5) {
-       addTree(x, y, trunkModels, leavesModels, 1, forest);
-     } else {
-       addTree(x, y, trunkModels, leavesModels, 2, forest);
-     }
-   } else {
-     addTree(x, y, trunkModels, leavesModels, 2, forest);
-   }
+  if (val < 64)
+    return;
+  rand = GameGlobals::randomFloat01();
+  if (val < 0x55)
+  {
+    if (rand < 0.7)
+      addTree(x, y, trunkModels, leavesModels, 0, forest, physicsEngine);
+  }
+  else if (val < 0x80)
+  {
+    if (rand < 0.33)
+    {
+      addTree(x, y, trunkModels, leavesModels, 0, forest, physicsEngine);
+    }
+    else
+    {
+      addTree(x, y, trunkModels, leavesModels, 1, forest, physicsEngine);
+    }
+  }
+  else if (val < 0xAA)
+  {
+    if (rand < 0.33)
+    {
+      addTree(x, y, trunkModels, leavesModels, 0, forest, physicsEngine);
+    }
+    else if (rand < 0.66)
+    {
+      addTree(x, y, trunkModels, leavesModels, 1, forest, physicsEngine);
+    }
+    else
+    {
+      addTree(x, y, trunkModels, leavesModels, 2, forest, physicsEngine);
+    }
+  }
+  else if (val < 0xFE)
+  {
+    if (rand < 0.5)
+    {
+      addTree(x, y, trunkModels, leavesModels, 1, forest, physicsEngine);
+    }
+    else
+    {
+      addTree(x, y, trunkModels, leavesModels, 2, forest, physicsEngine);
+    }
+  }
+  else
+  {
+    addTree(x, y, trunkModels, leavesModels, 2, forest, physicsEngine);
+  }
 }
 
+std::vector<RigidBodyRef> treeBodies;
+
 void generateTreesFromHeatMap(Scene &scene, std::string path, treeSizes trunks,
-                              treeSizes leaves) {
+                              treeSizes leaves, PhysicsEngine &physicsEngine)
+{
   int mapWidth, mapHeight, n;
   float offsetx, offesty;
 
   stbi_uc *tex = stbi_load(path.c_str(), &mapWidth, &mapHeight, &n, 1);
   ObjectGroupRef forest = newObjectGroup();
 
-  for (int x = 0; x < GRID_SIZE; x += GRID_SQUARE_SIZE) {
-    for (int y = 0; y < GRID_SIZE; y += GRID_SQUARE_SIZE) {
-      float xOnMap = ((float)x / GRID_SIZE);
-      float yOnMap = ((float)y / GRID_SIZE);
+  for (int x = -GRID_SIZE/2; x < GRID_SIZE/2; x += GRID_SQUARE_SIZE) {
+    for (int y = -GRID_SIZE/2; y < GRID_SIZE/2; y += GRID_SQUARE_SIZE) {
+      float xOnMap = 0.5 + ((float)x / GRID_SIZE);
+      float yOnMap = 0.5 + ((float)y / GRID_SIZE);
   
-      offsetx = -100 + MAX_OFFSET * GameGlobals::randomFloat11();
-      offesty = -100 + MAX_OFFSET * GameGlobals::randomFloat11();
+      offsetx = MAX_OFFSET * GameGlobals::randomFloat11();
+      offesty = MAX_OFFSET * GameGlobals::randomFloat11();
 
       vec2 uv(xOnMap, yOnMap);
-      generateTreeAtSpot(x + offsetx, y + offesty, getPixel(tex, mapWidth, mapHeight, uv), trunks, leaves, forest);
+      generateTreeAtSpot(x + offsetx, y + offesty, getPixel(tex, mapWidth, mapHeight, uv), trunks, leaves, forest, physicsEngine);
     }
   }
   scene.add(forest);
