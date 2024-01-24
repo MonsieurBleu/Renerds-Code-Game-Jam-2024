@@ -32,9 +32,9 @@ private:
     void mouseLook();
 
     void die();
-    void respawn();
 
 public:
+    void respawn();
     Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs);
     ~Player();
 
@@ -44,6 +44,8 @@ public:
 
     bool isInShadow();
     void setMenu(FastUI_valueMenu &menu);
+
+    void teleport(vec3 position){body->setPosition(position);};
 
     static constexpr float maxSpeed = 12.0f;
     static constexpr float maxSpeedRunning = 15.0f;
@@ -114,4 +116,6 @@ public:
     static float reviveAnimationStart;
     static float reviveAnimationLength;
     static float reviveAnimationProgress;
+
+    static bool locked;
 };

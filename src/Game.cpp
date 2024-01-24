@@ -135,12 +135,18 @@ bool Game::userInput(GLFWKeyInfo input)
 
     handItems->inputs(input);
 
+    GameGlobals::E = false;
+
     if (input.action == GLFW_PRESS)
     {
         switch (input.key)
         {
         case GLFW_KEY_ESCAPE:
             state = quit;
+            break;
+        
+        case GLFW_KEY_E :
+            GameGlobals::E = true;
             break;
 
         case GLFW_KEY_F2:
@@ -216,9 +222,9 @@ void Game::mainloop()
     floor->loadFromFolder("ressources/models/ground/");
 
     int gridSize = 16;
-    int gridScale = 20;
-    for (int i = -gridSize; i < gridSize; i++)
-        for (int j = -gridSize; j < gridSize; j++)
+    int gridScale = 10;
+    for (int i = 0; i < gridSize; i++)
+        for (int j = 0; j < gridSize; j++)
         {
             ModelRef f = floor->copyWithSharedMesh();
             f->state
@@ -362,6 +368,8 @@ void Game::mainloop()
         std::make_shared<Player>(window, playerBody, &camera, &inputs);
     Player::thingsYouCanStandOn.push_back(FloorBody);
 
+    GameGlobals::player = player.get();
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
     glLineWidth(3.0);
@@ -374,7 +382,7 @@ void Game::mainloop()
     // globals.appTime.setMenuConst(menu);
     // globals.cpuTime.setMenu(menu);
     // globals.gpuTime.setMenu(menu);
-    // globals.fpsLimiter.setMenu(menu);
+    globals.fpsLimiter.setMenu(menu);
     // physicsTicks.setMenu(menu);
 
     sun->setMenu(menu, U"Sun");
@@ -416,7 +424,7 @@ void Game::mainloop()
     maison->loadFromFolder("ressources/models/house/");
     maison->state
         .scaleScalar(1.5)
-        .setPosition(vec3(10, 0, 0));
+        .setPosition(vec3(135, 0, 135));
     scene.add(maison);
 
     ModelRef foxAlive = newModel(GameGlobals::PBR);
@@ -424,14 +432,18 @@ void Game::mainloop()
     foxAlive->state
         .scaleScalar(0.009)
         .setPosition(vec3(-10, 0, 0));
-    scene.add(foxAlive);
+    // scene.add(foxAlive);
 
     ModelRef foxDead = newModel(GameGlobals::PBR);
     foxDead->loadFromFolder("ressources/models/fox/foxDead/");
     foxDead->state
         .scaleScalar(0.009)
         .setPosition(vec3(-20, 0, -20));
-    scene.add(foxDead);
+    // scene.add(foxDead);
+
+    GameGlobals::scene = &scene;
+    GameGlobals::foxAlive = foxAlive;
+    GameGlobals::foxDead = foxDead;
 
     ModelRef fence = newModel(GameGlobals::PBRstencil);
     fence->loadFromFolder("ressources/models/fence/");
@@ -439,12 +451,48 @@ void Game::mainloop()
         .scaleScalar(0.8);
     generateFence(fence, scene, physicsEngine);
 
+//Peluche sur la souche
     ModelRef foxTeddy = newModel(GameGlobals::PBR);
     foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
     foxTeddy->state
         .scaleScalar(7)
-        .setPosition(vec3(-15, 0, 0));
+        .setPosition(vec3(-10, 0.69, 10));
     scene.add(foxTeddy);
+    ModelRef stumpTeddy = newModel(GameGlobals::PBR);
+    stumpTeddy->loadFromFolder("ressources/models/stump/");
+    stumpTeddy->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 10));
+    scene.add(stumpTeddy);
+
+//Livre sur la souche
+    ModelRef bookFox = newModel(GameGlobals::PBR);
+    bookFox->loadFromFolder("ressources/models/book/");
+    bookFox->state
+        .scaleScalar(0.025)
+        .setPosition(vec3(-10, 0.69, 5));
+    scene.add(bookFox);
+    ModelRef stumpBook = newModel(GameGlobals::PBR);
+    stumpBook->loadFromFolder("ressources/models/stump/");
+    stumpBook->state
+        .scaleScalar(0.009)
+        .setPosition(vec3(-10, 0, 5));
+    scene.add(stumpBook);
+
+    ModelRef car = newModel(GameGlobals::PBR);
+    car->loadFromFolder("ressources/models/car/");
+    car->state
+        .scaleScalar(0.012)
+        .setPosition(vec3(104, 0, 111));
+    scene.add(car);
+
+
+    ModelRef signPost = newModel(GameGlobals::PBR);
+    signPost->loadFromFolder("ressources/models/signpost/");
+    signPost->state
+        .scaleScalar(1)
+        .setPosition(vec3(134, 0, 111));
+    scene.add(signPost);
 
     /*
         ModelRef lanterne = newModel(GameGlobals::PBR);
@@ -506,6 +554,8 @@ void Game::mainloop()
 
     state = AppState::run;
     std::thread physicsThreads(&Game::physicsLoop, this);
+
+
 
     /* Main Loop */
     while (state != AppState::quit)

@@ -19,6 +19,14 @@ SceneDirectionalLight GameGlobals::sun;
 
 Monster *GameGlobals::monster;
 
+Player* GameGlobals::player; 
+
+ModelRef GameGlobals::foxAlive;
+ModelRef GameGlobals::foxDead;
+Scene*   GameGlobals::scene;
+
+bool GameGlobals::E = false;
+
 void GameGlobals::setMenu(FastUI_valueMenu &menu)
 {
     menu.push_back(

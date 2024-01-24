@@ -2,13 +2,14 @@
 #include "ObjectGroup.hpp"
 #include <GameGlobals.hpp>
 #include <TreeMapGenerator.hpp>
+#include <iterator>
 #include <stb/stb_image.h>
 #include <string>
 #include <glm/glm.hpp>
 
 using namespace glm;
 
-#define GRID_SIZE 512
+#define GRID_SIZE 1024
 // 256
 #define GRID_SQUARE_SIZE 8
 #define MAX_OFFSET 5
@@ -107,8 +108,8 @@ void cullTreeBodiesBasedOnDistance(vec3 cameraPosition)
 void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeSizes &leavesModels, ObjectGroupRef forest, PhysicsEngine &physicsEngine)
 {
   /* if val == 0 : 100% no tree
-   * if val <= 0x55 : 50% small tree, 50% no tree
-   * if 0x55 < val <= 0x80 : 60% small tree, 40% medium tree
+   * if val <= 0x55 : 70% small tree, 30% no tree
+   * if 0x55 < val <= 0x80 : 33% small tree, 66% medium tree
    * if 0x80 < val <= 0xAA: 33% small, 33% medium, 33% large
    * if 0xAA < val <= 0XFE: 50% medium, 50% large
    * if val == 0x255: 20% medium, 80% large
@@ -123,12 +124,12 @@ void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeS
   rand = GameGlobals::randomFloat01();
   if (val < 0x55)
   {
-    if (rand > 0.5)
+    if (rand < 0.7)
       addTree(x, y, trunkModels, leavesModels, 0, forest, physicsEngine);
   }
   else if (val < 0x80)
   {
-    if (rand < 0.6)
+    if (rand < 0.33)
     {
       addTree(x, y, trunkModels, leavesModels, 0, forest, physicsEngine);
     }
@@ -180,17 +181,15 @@ void generateTreesFromHeatMap(Scene &scene, std::string path, treeSizes trunks,
   stbi_uc *tex = stbi_load(path.c_str(), &mapWidth, &mapHeight, &n, 1);
   ObjectGroupRef forest = newObjectGroup();
 
-  treeBodies.reserve(GRID_SIZE * GRID_SIZE);
-
-  for (float x = 0; x < GRID_SIZE; x += GRID_SQUARE_SIZE)
+  for (int x = 0; x < GRID_SIZE; x += GRID_SQUARE_SIZE)
   {
-    for (float y = 0; y < GRID_SIZE; y += GRID_SQUARE_SIZE)
+    for (int y = 0; y < GRID_SIZE; y += GRID_SQUARE_SIZE)
     {
-      float xOnMap = (x / GRID_SIZE);
-      float yOnMap = (y / GRID_SIZE);
+      float xOnMap = ((float)x / GRID_SIZE);
+      float yOnMap = ((float)y / GRID_SIZE);
 
-      offsetx = MAX_OFFSET * GameGlobals::randomFloat11();
-      offesty = MAX_OFFSET * GameGlobals::randomFloat11();
+      offsetx = -100 + MAX_OFFSET * GameGlobals::randomFloat11();
+      offesty = -100 + MAX_OFFSET * GameGlobals::randomFloat11();
 
       vec2 uv(xOnMap, yOnMap);
       generateTreeAtSpot(x + offsetx, y + offesty, getPixel(tex, mapWidth, mapHeight, uv), trunks, leaves, forest, physicsEngine);

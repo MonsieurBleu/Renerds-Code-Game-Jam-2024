@@ -52,6 +52,8 @@ float Player::reviveAnimationProgress = 0.000f;
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
 
+bool Player::locked = false;
+
 Player::Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs)
 {
     this->body = body;
@@ -85,6 +87,8 @@ Player::~Player()
 
 void Player::update(float deltaTime)
 {
+    if(locked) return;
+    
     mouseLook();
 
     float forward = 0.0f;
@@ -225,13 +229,13 @@ void Player::update(float deltaTime)
     else
     {
         if (W)
-            flyForward((running ? 2.0f : 1.0f), deltaTime);
+            flyForward((running ? 20.0f : 1.0f), deltaTime);
         if (S)
-            flyForward(-(running ? 2.0f : 1.0f), deltaTime);
+            flyForward(-(running ? 20.0f : 1.0f), deltaTime);
         if (A)
-            flySide(-(running ? 2.0f : 1.0f), deltaTime);
+            flySide(-(running ? 20.0f : 1.0f), deltaTime);
         if (D)
-            flySide((running ? 2.0f : 1.0f), deltaTime);
+            flySide((running ? 20.0f : 1.0f), deltaTime);
         if (Q)
             flyUp(-(running ? 2.0f : 1.0f), deltaTime);
         if (E)
