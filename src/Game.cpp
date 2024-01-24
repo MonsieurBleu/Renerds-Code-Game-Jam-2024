@@ -409,17 +409,6 @@ void Game::mainloop()
     effects.setMenu(menu);
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
-
-    /* Music ! */
-    AudioFile music1;
-    music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
-
-    AudioSource musicSource;
-    musicSource
-        .setBuffer(music1.getHandle())
-        .setPosition(vec3(0, 0, 3))
-        .play();
-
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
     // Portail
@@ -596,12 +585,19 @@ void Game::mainloop()
     state = AppState::run;
     std::thread physicsThreads(&Game::physicsLoop, this);
 
-    AudioFile music;
-    music.loadOGG("ressources/musics/calm_loop stereo.ogg");
+    AudioFile music, birds;
+    music.loadOGG("../build/ressources/musics/calm_loop stereo.ogg");
+    birds.loadOGG("../build/ressources/musics/birds.ogg");
 
     AudioSource musicSource;
     musicSource
         .setBuffer(music.getHandle())
+        .loop(true)
+        .play();
+
+    AudioSource birdsSource;
+    birdsSource
+        .setBuffer(birds.getHandle())
         .loop(true)
         .play();
 
