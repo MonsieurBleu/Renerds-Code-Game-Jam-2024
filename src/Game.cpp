@@ -277,7 +277,7 @@ void Game::mainloop()
     leavesSizes.t1 = mediumLeaf;
     leavesSizes.t2 = largeLeaf;
 
-    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunkSizes, leavesSizes);
+    generateTreesFromHeatMap(scene, "../build/ressources/treeMap.png", trunkSizes, leavesSizes, physicsEngine);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
@@ -514,6 +514,8 @@ void Game::mainloop()
 
         for (GLFWKeyInfo input; inputs.pull(input); userInput(input))
             ;
+
+        cullTreeBodiesBasedOnDistance(GameGlobals::playerPosition);
 
         float delta = min(globals.simulationTime.getDelta(), 0.05f);
         if (globals.windowHasFocus() && delta > 0.00001f)

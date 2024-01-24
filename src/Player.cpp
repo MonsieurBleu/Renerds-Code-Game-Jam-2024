@@ -181,7 +181,7 @@ void Player::update(float deltaTime)
         // head bobbing
         float bob = sin(globals.simulationTime.getElapsedTime() * 10.0f * (running ? 2.0 : 1.0)) * 0.1f;
         float speed = length(vec2(body->getVelocity().x, body->getVelocity().z));
-        if (speed > 0)
+        if (speed > 0.01)
             pos.y += bob;
 
         float diffBias = 0.0001;
