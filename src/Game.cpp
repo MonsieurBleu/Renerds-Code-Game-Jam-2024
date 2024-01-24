@@ -409,7 +409,6 @@ void Game::mainloop()
     effects.setMenu(menu);
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
-
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
     // Portail
@@ -586,8 +585,9 @@ void Game::mainloop()
     state = AppState::run;
     std::thread physicsThreads(&Game::physicsLoop, this);
 
-    AudioFile music;
-    music.loadOGG("ressources/musics/calm_loop stereo.ogg");
+    AudioFile music, birds;
+    music.loadOGG("../build/ressources/musics/calm_loop stereo.ogg");
+    birds.loadOGG("../build/ressources/musics/birds.ogg");
 
     AudioSource musicSource;
     musicSource
@@ -621,6 +621,11 @@ void Game::mainloop()
     Player::step3->setBuffer(step3File.getHandle()).setGain(0.3f);
     Player::step4->setBuffer(step4File.getHandle()).setGain(0.3f);
     // Player::heartbeat.setBuffer(heartbeatFile.getHandle()).loop(true);
+    AudioSource birdsSource;
+    birdsSource
+        .setBuffer(birds.getHandle())
+        .loop(true)
+        .play();
 
     /* Main Loop */
     while (state != AppState::quit)
