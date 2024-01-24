@@ -49,8 +49,11 @@ float Player::reviveAnimationStart = 0.0f;
 float Player::reviveAnimationLength = 1.0f;
 float Player::reviveAnimationProgress = 0.000f;
 
-// AudioSource Player::heartbeat;
-// AudioSource Player::step1;
+AudioSource *Player::heartbeat;
+AudioSource *Player::step1;
+AudioSource *Player::step2;
+AudioSource *Player::step3;
+AudioSource *Player::step4;
 
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
@@ -187,10 +190,42 @@ void Player::update(float deltaTime)
         vec3 pos = body->getPosition();
 
         // head bobbing
+        static float lastBob = 0.0f;
+        static bool rising = false;
         float bob = sin(globals.simulationTime.getElapsedTime() * 10.0f * (running ? 2.0 : 1.0)) * 0.1f;
         float speed = length(vec2(body->getVelocity().x, body->getVelocity().z));
         if (speed > 0.01)
+        {
             pos.y += bob;
+
+            if (rising && bob < lastBob)
+            {
+                rising = false;
+                int r = rand() % 4;
+                switch (r)
+                {
+                case 0:
+                    step1->play();
+                    break;
+                case 1:
+                    step2->play();
+                    break;
+                case 2:
+                    step3->play();
+                    break;
+                case 3:
+                    step4->play();
+                    break;
+                }
+            }
+
+            if (!rising && bob > lastBob)
+            {
+                rising = true;
+            }
+        }
+
+        lastBob = bob;
 
         float diffBias = 0.0001;
         vec3 diff = globals.currentCamera->getPosition() - pos;

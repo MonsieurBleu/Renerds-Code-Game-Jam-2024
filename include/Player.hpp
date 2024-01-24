@@ -120,9 +120,9 @@ public:
 
     static bool locked;
 
-    // static AudioSource heartbeat;
-    // static AudioSource step1;
-    // static AudioSource step2;
-    // static AudioSource step3;
-    // static AudioSource step4;
+    static AudioSource *heartbeat;
+    static AudioSource *step1;
+    static AudioSource *step2;
+    static AudioSource *step3;
+    static AudioSource *step4;
 };

@@ -409,17 +409,6 @@ void Game::mainloop()
     effects.setMenu(menu);
     GameGlobals::setMenu(menu);
     player->setMenu(menu);
-
-    /* Music ! */
-    // AudioFile music1;
-    // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
-
-    // AudioSource musicSource;
-    // musicSource
-    //     .setBuffer(music1.getHandle())
-    //     .setPosition(vec3(0, 0, 3))
-    //     .play();
-
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
     // Portail
@@ -448,7 +437,6 @@ void Game::mainloop()
         .setPosition(vec3(12, 0, -179));
     scene.add(house);
 
-
     ModelRef foxAlive = newModel(GameGlobals::PBR);
     foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
     foxAlive->state
@@ -471,8 +459,6 @@ void Game::mainloop()
 
     GameGlobals::foxAlive = foxAlive;
     GameGlobals::foxDead = foxDead;
-
-
 
     ModelRef fence = newModel(GameGlobals::PBRstencil);
     fence->loadFromFolder("ressources/models/fence/");
@@ -508,7 +494,6 @@ void Game::mainloop()
         .setPosition(vec3(185, 0, 53));
     scene.add(stumpBook);
 
-  
     GameGlobals::foxTeddy = foxTeddy;
     GameGlobals::stumpTeddy = stumpTeddy;
     GameGlobals::bookFox = bookFox;
@@ -530,11 +515,10 @@ void Game::mainloop()
         .setPosition(vec3(-40, 0, -221));
     scene.add(carWithBlood);
 
-    
     GameGlobals::car = car;
     GameGlobals::carWithBlood = carWithBlood;
 
-   ModelRef signPost = newModel(GameGlobals::PBR);
+    ModelRef signPost = newModel(GameGlobals::PBR);
     signPost->loadFromFolder("ressources/models/signpost/");
     signPost->state
         .scaleScalar(1)
@@ -554,16 +538,12 @@ void Game::mainloop()
 
     ModelRef currentModel = foxAlive;
     menu.push_back(
-        {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {
-            FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle), 
-            FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle), 
-            FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
-            FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"), 
-            FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"), 
-            FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")
-        })}
-    );
-
+        {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+                                                                               FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+                                                                               FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+                                                                               FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"),
+                                                                               FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"),
+                                                                               FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")})});
 
     GameGlobals::sun = sun;
 
@@ -572,7 +552,7 @@ void Game::mainloop()
     shadowMonster->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;
-    monster.playDrone();
+    monster.initSounds();
 
     std::vector<GameState *> states;
     states.push_back(new StartState());
@@ -598,14 +578,47 @@ void Game::mainloop()
     state = AppState::run;
     std::thread physicsThreads(&Game::physicsLoop, this);
 
-    AudioFile music;
-    music.loadOGG("ressources/musics/calm_loop stereo.ogg");
+    AudioFile music, birds;
+    music.loadOGG("../build/ressources/musics/calm_loop stereo.ogg");
+    birds.loadOGG("../build/ressources/musics/birds.ogg");
 
     AudioSource musicSource;
     musicSource
         .setBuffer(music.getHandle())
-        .loop(true);
-    // .play();
+        .loop(true)
+        .play();
+
+    AudioFile step1File;
+    step1File.loadOGG("ressources/Audio/FootstepsStoneDirt1.ogg");
+
+    AudioFile step2File;
+    step2File.loadOGG("ressources/Audio/FootstepsStoneDirt2.ogg");
+
+    AudioFile step3File;
+    step3File.loadOGG("ressources/Audio/FootstepsStoneDirt3.ogg");
+
+    AudioFile step4File;
+    step4File.loadOGG("ressources/Audio/FootstepsStoneDirt4.ogg");
+
+    // AudioFile heartbeatFile;
+    // heartbeatFile.loadOGG("ressources/Audio/heartbeat.ogg");
+
+    Player::heartbeat = new AudioSource();
+    Player::step4 = new AudioSource();
+    Player::step3 = new AudioSource();
+    Player::step2 = new AudioSource();
+    Player::step1 = new AudioSource();
+
+    Player::step1->setBuffer(step1File.getHandle()).setGain(0.3f);
+    Player::step2->setBuffer(step2File.getHandle()).setGain(0.3f);
+    Player::step3->setBuffer(step3File.getHandle()).setGain(0.3f);
+    Player::step4->setBuffer(step4File.getHandle()).setGain(0.3f);
+    // Player::heartbeat.setBuffer(heartbeatFile.getHandle()).loop(true);
+    AudioSource birdsSource;
+    birdsSource
+        .setBuffer(birds.getHandle())
+        .loop(true)
+        .play();
 
     /* Main Loop */
     while (state != AppState::quit)

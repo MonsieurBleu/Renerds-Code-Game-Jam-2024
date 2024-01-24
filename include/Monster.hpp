@@ -23,7 +23,8 @@ private:
     static bool enabled;
 
 public:
-    AudioSource *audioSource = nullptr;
+    AudioSource *droneSource = nullptr;
+    AudioSource *screamSource = nullptr;
     Monster(ModelRef monster);
     Monster();
     ~Monster();
@@ -38,7 +39,7 @@ public:
 
     void setMenu(FastUI_valueMenu &menu);
 
-    void playDrone();
+    void initSounds();
 
     static float maxSpeed;
     static float speed;

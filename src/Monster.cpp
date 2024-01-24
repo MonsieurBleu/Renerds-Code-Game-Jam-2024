@@ -27,17 +27,23 @@ Monster::~Monster()
 {
 }
 
-void Monster::playDrone()
+void Monster::initSounds()
 {
-    AudioFile drone;
+    AudioFile drone, scream;
     drone.loadOGG("../build/ressources/Audio/drone.ogg");
-    this->audioSource = new AudioSource();
-    this->audioSource
+    this->droneSource = new AudioSource();
+    this->droneSource
         ->setBuffer(drone.getHandle())
         .loop(true);
+    scream.loadOGG("../build/ressources/Audio/scream.ogg");
+    this->screamSource = new AudioSource();
+    this->droneSource
+      ->setBuffer(scream.getHandle());
 
-    alSource3f(audioSource->getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
-    alSourcef(audioSource->getHandle(), AL_REFERENCE_DISTANCE, 2.0);
+    alSource3f(droneSource->getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
+    alSourcef(droneSource->getHandle(), AL_REFERENCE_DISTANCE, 2.0);
+    alSource3f(screamSource->getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
+    alSourcef(screamSource->getHandle(), AL_REFERENCE_DISTANCE, 2.0);
 }
 
 void Monster::update(float deltaTime)
@@ -72,10 +78,10 @@ void Monster::update(float deltaTime)
             model->state.setPosition(monsterPosition + direction * speed);
             // audioSource->setPosition( - GameGlobals::playerPosition);
 
-            audioSource->pause();
+            droneSource->pause();
             vec3 pos = (monsterPosition + direction * speed);
-            audioSource->setPosition(vec3(-pos.x, pos.y, -pos.z));
-            audioSource->play();
+            droneSource->setPosition(vec3(-pos.x, pos.y, -pos.z));
+            droneSource->play();
         }
 
         if ((lastScreamTime + screamCooldown < globals.appTime.getElapsedTime()) && distance > screamMinDist - (Player::hasTeddyBear ? 10.0f : 0.0f))
@@ -86,6 +92,7 @@ void Monster::update(float deltaTime)
                 std::cout << "scream" << std::endl;
                 Player::invertedControls = true;
                 Player::invertStart = globals.appTime.getElapsedTime();
+                screamSource->play();
             }
         }
     }
@@ -122,7 +129,7 @@ void Monster::enable()
     model->state.setPosition(GameGlobals::Zone2Center);
     model->state.hide = ModelStateHideStatus::SHOW;
 
-    audioSource->play();
+    droneSource->play();
 }
 
 void Monster::disable()
