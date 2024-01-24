@@ -131,7 +131,6 @@ void StartState::onEnter()
     textRenard->setFont(GameGlobals::FUIfont);
     textRenard->text = U"Il est magnifique ! Je devrais aller chercher mon appareil photo dans à la maison!";
     textRenard->batchText();
-die(
     textRenard->state
         .scaleScalar(1.75)
         .setPosition(vec3(-0.85, -0.25, 0))
@@ -223,6 +222,7 @@ bool monsterIsGone = false;
 
 bool PlayState::update(float deltaTime)
 {
+    static BenchTimer pelucheTimer;
 
     if(
         GameGlobals::foxAlive->state.hide != ModelStateHideStatus::HIDE
@@ -275,8 +275,10 @@ bool PlayState::update(float deltaTime)
             EpourInteragir->state.hide = ModelStateHideStatus::SHOW;
             if(GameGlobals::E)
             {
+                pelucheTimer.start();
                 Player::hasTeddyBear = true;
                 GameGlobals::foxTeddy->state.hide = ModelStateHideStatus::HIDE;
+                textPeluche->state.hide = ModelStateHideStatus::SHOW;
             }
         }
     }
@@ -300,6 +302,19 @@ bool PlayState::update(float deltaTime)
             }
         }
     }
+
+    
+    if(Player::hasTeddyBear)
+    {
+        pelucheTimer.end();
+        pelucheTimer.start();
+
+        if(pelucheTimer.getElapsedTime() > 5.0)
+        {
+            textPeluche->state.hide = ModelStateHideStatus::HIDE;
+        }
+    }
+
 
     return false;
 }
