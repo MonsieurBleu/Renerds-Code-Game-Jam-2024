@@ -6,7 +6,7 @@
 #include <../Engine/include/FastUI.hpp>
 
 float Monster::speed = 0.0f;
-float Monster::maxSpeed = 70.0f;
+float Monster::maxSpeed = 50.0f;
 bool Monster::enabled = false;
 
 float Monster::lastScreamTime = -Monster::screamCooldown;
@@ -122,6 +122,8 @@ void Monster::update(float deltaTime)
     }
 
     GameGlobals::Zone2Objectif = model->state.position;
+    model->state.frustumCulled = false;
+    model->state.hide = SHOW;
     // GameGlobals::Zone2Center = model->state.position;
 }
 

@@ -121,7 +121,7 @@ void StartState::onEnter()
     textRenard = std::make_shared<SingleStringBatch>();
     textRenard->setMaterial(GameGlobals::defaultFontMaterial);
     textRenard->setFont(GameGlobals::FUIfont);
-    textRenard->text = U"Il est magnifique ! Je devrais aller chercher mon appareil photo dans à la maison!";
+    textRenard->text = U"Il est magnifique ! Je devrais aller chercher mon appareil photo dans la maison !";
     textRenard->batchText();
     textRenard->state
         .scaleScalar(1.75)
@@ -141,8 +141,6 @@ void StartState::onEnter()
 
     textPeluche->state.hide = ModelStateHideStatus::HIDE;
 
-
-
     textLivre = std::make_shared<SingleStringBatch>();
     textLivre->setMaterial(GameGlobals::defaultFontMaterial);
     textLivre->setFont(GameGlobals::FUIfont);
@@ -151,8 +149,7 @@ void StartState::onEnter()
 
     textLivre->state
         .scaleScalar(1.75)
-        .setPosition(vec3(-0.85, -0.25, 0))
-        ;
+        .setPosition(vec3(-0.85, -0.25, 0));
 
     textLivre->state.hide = ModelStateHideStatus::HIDE;
 
@@ -164,11 +161,9 @@ void StartState::onEnter()
 
     textFin->state
         .scaleScalar(1.75)
-        .setPosition(vec3(-0.85, -0.15, 0))
-        ;
+        .setPosition(vec3(-0.85, -0.15, 0));
 
     textFin->state.hide = ModelStateHideStatus::HIDE;
-
 
     GameGlobals::scene2D->add(EpourInteragir);
     GameGlobals::scene2D->add(textRenard);
@@ -237,9 +232,8 @@ BenchTimer livreTimer;
 
 bool PlayState::update(float deltaTime)
 {
-    if(
-        GameGlobals::foxAlive->state.hide != ModelStateHideStatus::HIDE
-    && !GameGlobals::foxAlive->cull())
+    if (
+        GameGlobals::foxAlive->state.hide != ModelStateHideStatus::HIDE && !GameGlobals::foxAlive->cull())
     {
         GameGlobals::foxAlive->state.hide = ModelStateHideStatus::HIDE;
     }
@@ -261,12 +255,12 @@ bool PlayState::update(float deltaTime)
 
     EpourInteragir->state.hide = ModelStateHideStatus::HIDE;
 
-    if(monsterIsGone && playerHasBook)
+    if (monsterIsGone && playerHasBook)
     {
         return true;
     }
 
-    if(!monsterIsGone && Player::hasTeddyBear)
+    if (!monsterIsGone && Player::hasTeddyBear)
     {
         float d = distance(
             GameGlobals::Zone2Objectif,
@@ -331,12 +325,12 @@ bool PlayState::update(float deltaTime)
         }
     }
 
-    if(playerHasBook)
+    if (playerHasBook)
     {
         livreTimer.end();
         livreTimer.start();
 
-        if(livreTimer.getElapsedTime() > 5.0)
+        if (livreTimer.getElapsedTime() > 5.0)
         {
             textLivre->state.hide = ModelStateHideStatus::HIDE;
         }
@@ -375,7 +369,7 @@ bool EndState::update(float deltaTime)
     pelucheTimer.end();
     pelucheTimer.start();
 
-    if(pelucheTimer.getElapsedTime() > 5.0)
+    if (pelucheTimer.getElapsedTime() > 5.0)
     {
         textPeluche->state.hide = ModelStateHideStatus::HIDE;
     }
@@ -383,7 +377,7 @@ bool EndState::update(float deltaTime)
     livreTimer.end();
     livreTimer.start();
 
-    if(livreTimer.getElapsedTime() > 5.0)
+    if (livreTimer.getElapsedTime() > 5.0)
     {
         textLivre->state.hide = ModelStateHideStatus::HIDE;
     }
@@ -391,28 +385,26 @@ bool EndState::update(float deltaTime)
     textFinTimer.end();
     textFinTimer.start();
 
-    if(textFinTimer.getElapsedTime() > 10.0)
+    if (textFinTimer.getElapsedTime() > 10.0)
     {
         textFin->state.hide = ModelStateHideStatus::HIDE;
     }
-    
+
     float d = distance(
-            GameGlobals::foxDead->state.position,
-            GameGlobals::playerPosition
-        );
-    
+        GameGlobals::foxDead->state.position,
+        GameGlobals::playerPosition);
+
     EpourInteragir->state.hide = ModelStateHideStatus::HIDE;
 
-    if(d < 6.0)
+    if (d < 6.0)
     {
         EpourInteragir->state.hide = ModelStateHideStatus::SHOW;
-        if(GameGlobals::E)
+        if (GameGlobals::E)
         {
             EpourInteragir->state.hide = ModelStateHideStatus::HIDE;
             return true;
         }
     }
-
 
     return false;
 }
@@ -425,12 +417,10 @@ void EndState::onEnter()
 
     lightFoxDead = newPointLight();
     lightFoxDead->setPosition(
-            GameGlobals::foxDead->state.position
-            +vec3(0, 2, 0))
+                    GameGlobals::foxDead->state.position + vec3(0, 2, 0))
         .setIntensity(15.0)
         .setRadius(6.0)
-        .setColor(vec3(1.0, 0.1, 0.0))
-        ;
+        .setColor(vec3(1.0, 0.1, 0.0));
 
     GameGlobals::scene->add(lightFoxDead);
 }
@@ -451,21 +441,19 @@ bool EndFoxState::update(float deltaTime)
 
     float t = textFinFoxTimer.getElapsedTime();
 
-    float i = 0.5 + 0.5*cos(t*1.5 - M_PI);
+    float i = 0.5 + 0.5 * cos(t * 1.5 - M_PI);
 
     globals.currentCamera->lookAt(
         mix(
             lp,
             GameGlobals::foxDead->state.position,
-            min(t, 1.f)
-        )
-    );
+            min(t, 1.f)));
 
-    lightFoxDead->setRadius(3.0 + i*5.f);
+    lightFoxDead->setRadius(3.0 + i * 5.f);
 
     // static bool tmp = false;
     // std::cout << t << "\n";
-    if(t > 5.0)
+    if (t > 5.0)
     {
         // if(!tmp)
         // {
@@ -473,14 +461,14 @@ bool EndFoxState::update(float deltaTime)
         //     tmp = true;
         // }
 
-        Player::deathAnimationProgress += deltaTime/Player::respawnDelay;
+        Player::deathAnimationProgress += deltaTime / Player::respawnDelay;
 
         // GameGlobals::player->die();
         // std::cout << "DOIE \n";
         // tmp = true;
     }
 
-    if(Player::deathAnimationProgress >= 0.999)
+    if (Player::deathAnimationProgress >= 0.999)
     {
         // return true;
         Player::deathAnimationProgress = 1.0;
