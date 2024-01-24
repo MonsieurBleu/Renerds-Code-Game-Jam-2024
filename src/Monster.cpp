@@ -1,4 +1,5 @@
 #include "Monster.hpp"
+#include "Audio.hpp"
 #include "GameGlobals.hpp"
 #include "Player.hpp"
 
@@ -24,6 +25,19 @@ Monster::Monster()
 
 Monster::~Monster()
 {
+}
+
+void Monster::playDrone()
+{
+    AudioFile drone;
+    drone.loadOGG("../build/ressources/Audio/drone.ogg");
+    this->audioSource = new AudioSource();
+    this->audioSource
+        ->setBuffer(drone.getHandle())
+        .loop(true);
+
+    alSource3f(audioSource->getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
+    alSourcef(audioSource->getHandle(), AL_REFERENCE_DISTANCE, 2.0);
 }
 
 void Monster::update(float deltaTime)
@@ -56,6 +70,12 @@ void Monster::update(float deltaTime)
             speed = actualSpeed * deltaTime;
 
             model->state.setPosition(monsterPosition + direction * speed);
+            // audioSource->setPosition( - GameGlobals::playerPosition);
+
+            audioSource->pause();
+            vec3 pos = (monsterPosition + direction * speed);
+            audioSource->setPosition(vec3(-pos.x, pos.y, -pos.z));
+            audioSource->play();
         }
 
         if ((lastScreamTime + screamCooldown < globals.appTime.getElapsedTime()) && distance > screamMinDist - (Player::hasTeddyBear ? 10.0f : 0.0f))
@@ -101,6 +121,8 @@ void Monster::enable()
     // spawn the monster at the center of the zone
     model->state.setPosition(GameGlobals::Zone2Center);
     model->state.hide = ModelStateHideStatus::SHOW;
+
+    audioSource->play();
 }
 
 void Monster::disable()

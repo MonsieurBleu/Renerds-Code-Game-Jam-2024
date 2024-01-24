@@ -4,6 +4,7 @@
 #include "../Engine/include/GameObject.hpp"
 #include "../Engine/include/Camera.hpp"
 #include "../Engine/include/Inputs.hpp"
+#include "Audio.hpp"
 
 #include <iostream>
 #include <vector>
@@ -22,6 +23,7 @@ private:
     static bool enabled;
 
 public:
+    AudioSource *audioSource = nullptr;
     Monster(ModelRef monster);
     Monster();
     ~Monster();
@@ -35,6 +37,8 @@ public:
     void update(float deltaTime);
 
     void setMenu(FastUI_valueMenu &menu);
+
+    void playDrone();
 
     static float maxSpeed;
     static float speed;

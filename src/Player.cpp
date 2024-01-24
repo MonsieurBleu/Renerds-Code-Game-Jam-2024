@@ -49,6 +49,9 @@ float Player::reviveAnimationStart = 0.0f;
 float Player::reviveAnimationLength = 1.0f;
 float Player::reviveAnimationProgress = 0.000f;
 
+// AudioSource Player::heartbeat;
+// AudioSource Player::step1;
+
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
 
@@ -87,8 +90,9 @@ Player::~Player()
 
 void Player::update(float deltaTime)
 {
-    if(locked) return;
-    
+    if (locked)
+        return;
+
     mouseLook();
 
     float forward = 0.0f;

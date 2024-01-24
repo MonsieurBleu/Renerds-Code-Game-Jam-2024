@@ -20,7 +20,7 @@ SceneDirectionalLight GameGlobals::sun;
 
 Monster *GameGlobals::monster;
 
-Player* GameGlobals::player; 
+Player *GameGlobals::player;
 
 
 ModelRef GameGlobals::house;

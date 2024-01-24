@@ -1,3 +1,4 @@
+#include "GameGlobals.hpp"
 #include <Game.hpp>
 #include <../Engine/include/Globals.hpp>
 #include <GameObject.hpp>
@@ -151,8 +152,8 @@ bool Game::userInput(GLFWKeyInfo input)
         case GLFW_KEY_ESCAPE:
             state = quit;
             break;
-        
-        case GLFW_KEY_E :
+
+        case GLFW_KEY_E:
             GameGlobals::E = true;
             break;
 
@@ -229,16 +230,16 @@ void Game::mainloop()
     ModelRef floor = newModel(GameGlobals::PBRground);
     floor->loadFromFolder("ressources/models/ground/");
     floor->setMap(Texture2D()
-        .loadFromFile("ressources/treeMap.png")
-        .setFormat(GL_RGBA)
-        .setInternalFormat(GL_RGBA)
-        .generate(), 
-        7);
+                      .loadFromFile("ressources/treeMap.png")
+                      .setFormat(GL_RGBA)
+                      .setInternalFormat(GL_RGBA)
+                      .generate(),
+                  7);
     floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/CEpath.ktx"), 8);
     floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/NRMpath.ktx"), 9);
     floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/CEroad.ktx"), 10);
     floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/NRMroad.ktx"), 11);
-    //floor->setMap(Texture2D().loadFromFile("ressources/treeMap.png"), 8);
+    // floor->setMap(Texture2D().loadFromFile("ressources/treeMap.png"), 8);
 
     int gridSize = 16;
     int gridScale = 10;
@@ -477,7 +478,7 @@ void Game::mainloop()
         .scaleScalar(0.8);
     generateFence(fence, scene, physicsEngine);
 
-//Peluche sur la souche
+    // Peluche sur la souche
     ModelRef foxTeddy = newModel(GameGlobals::PBR);
     foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
     foxTeddy->state
@@ -491,7 +492,7 @@ void Game::mainloop()
         .setPosition(vec3(-165, 0, 96));
     scene.add(stumpTeddy);
 
-//Livre sur la souche
+    // Livre sur la souche
     ModelRef bookFox = newModel(GameGlobals::PBR);
     bookFox->loadFromFolder("ressources/models/book/");
     bookFox->state
@@ -565,7 +566,7 @@ void Game::mainloop()
     GameGlobals::sun = sun;
 
     GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::zone2radius = 0.0;
+    GameGlobals::zone2radius = 60.0;
     GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
 
     GameGlobals::Zone1Center = vec3(100, 0, 0);
@@ -579,6 +580,7 @@ void Game::mainloop()
     shadowMonster->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;
+    monster.playDrone();
 
     std::vector<GameState *> states;
     states.push_back(new StartState());
@@ -604,7 +606,14 @@ void Game::mainloop()
     state = AppState::run;
     std::thread physicsThreads(&Game::physicsLoop, this);
 
+    AudioFile music;
+    music.loadOGG("ressources/musics/calm_loop stereo.ogg");
 
+    AudioSource musicSource;
+    musicSource
+        .setBuffer(music.getHandle())
+        .loop(true);
+    // .play();
 
     /* Main Loop */
     while (state != AppState::quit)
