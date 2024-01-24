@@ -9,7 +9,7 @@ void generateFence(ModelRef fenceSample, Scene &scene, PhysicsEngine &physicsEng
     float fenceSegmentSize = fenceSample->getVao()->getAABBMax().x - fenceSample->getVao()->getAABBMin().x;
     float fenceHeight = fenceSample->getVao()->getAABBMax().y - fenceSample->getVao()->getAABBMin().y;
     ObjectGroupRef fence = newObjectGroup();
-    vec3 pos((-FENCE_SIZE) / 2.0, 0, (-FENCE_SIZE) / 2.0);
+    vec3 pos((-FENCE_SIZE) / 2.0, -4, (-FENCE_SIZE) / 2.0);
     vec3 increment(fenceSegmentSize, 0, 0);
 
     for (int i = 0; i < 4; i++)

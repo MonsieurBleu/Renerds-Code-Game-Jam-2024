@@ -12,6 +12,10 @@ layout (binding = 0) uniform sampler2D bColor;
 layout (binding = 1) uniform sampler2D bMaterial;
 
 layout (binding = 7) uniform sampler2D bForest;
+layout (binding = 8) uniform sampler2D bColorPath;
+layout (binding = 9) uniform sampler2D bMaterialPath;
+layout (binding = 10) uniform sampler2D bColorRoad;
+layout (binding = 11) uniform sampler2D bMaterialRoad;
 
 #include globals/Fragment3DInputs.glsl
 #include globals/Fragment3DOutputs.glsl
@@ -21,26 +25,41 @@ layout (binding = 7) uniform sampler2D bForest;
 #include functions/NormalMap.glsl
 
 void main() {
-    vec4 CE = texture(bColor, uv);
-    vec4 NRM = texture(bMaterial, uv);
+    vec2 uv2 = uv*2.0;
+    vec4 CE = texture(bColor, uv2);
+    vec4 NRM = texture(bMaterial, uv2);
 
     if(NRM.x <= 0.01 && NRM.y <= 0.01)
         discard;
 
     mEmmisive = 1.0 - CE.a;
+    color = CE.rgb;
+
+
+    vec2 uvForest = 0.5 + 0.5*position.xz/(512.0/1.5);
+    vec4 map = texture(bForest, uvForest);
+
+    vec3 colorForest = texture(bColorPath, uv2).rgb;
+    vec4 normalForest = texture(bMaterialPath, uv2);
+
+    float forest = smoothstep(0.0, 0.1, map.x);
+
+    color = mix(colorForest, color, forest);
+    NRM = mix(normalForest, NRM, forest);
+
+    color = mix(color, texture(bColorRoad, uv2).rgb, distance(map.r, map.b));
+    NRM = mix(NRM, texture(bMaterialRoad, uv2), distance(map.r, map.b));
+
     mMetallic = 1.0 - NRM.a;
     mMetallic = 0.0;
     mRoughness = NRM.b;
     mRoughness2 = mRoughness * mRoughness;
-    color = CE.rgb;
-    normalComposed = perturbNormal(normal, viewVector, NRM.xy, uv);
+
+    normalComposed = perturbNormal(normal, viewVector, NRM.xy, uv2);
     viewDir = normalize(_cameraPosition - position);
 
+    //color = map.xyz;
 
-    vec2 uvForest = 0.5 + 0.5*position.xz/(512.0/1.5);
-    vec3 colorForest = vec3(0.5);
-    float forest = texture(bForest, uvForest).r;
-    color = mix(colorForest, color, smoothstep(0.0, 0.1, forest));
 
     normalComposed = gl_FrontFacing ? normalComposed : -normalComposed;
 

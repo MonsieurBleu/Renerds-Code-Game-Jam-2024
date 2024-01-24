@@ -234,6 +234,10 @@ void Game::mainloop()
         .setInternalFormat(GL_RGBA)
         .generate(), 
         7);
+    floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/CEpath.ktx"), 8);
+    floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/NRMpath.ktx"), 9);
+    floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/CEroad.ktx"), 10);
+    floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/NRMroad.ktx"), 11);
     //floor->setMap(Texture2D().loadFromFile("ressources/treeMap.png"), 8);
 
     int gridSize = 16;
@@ -298,7 +302,7 @@ void Game::mainloop()
     leavesSizes.t1 = mediumLeaf;
     leavesSizes.t2 = largeLeaf;
 
-    generateTreesFromHeatMap(scene, "ressources/treeMap.png", trunkSizes, leavesSizes);
+    generateTreesFromHeatMap(scene, "ressources/treeMap.png", trunkSizes, leavesSizes, physicsEngine);
 
     /* old tree gen
     for (int i = -forestSize; i < forestSize; i++)
