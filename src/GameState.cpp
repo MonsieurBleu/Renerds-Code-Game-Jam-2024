@@ -238,9 +238,8 @@ bool PlayState::update(float deltaTime)
         GameGlobals::house->state.hide = ModelStateHideStatus::SHOW;
         if(GameGlobals::house->cull())
         {
-            /*
-                SHOCK EFFECT !!!
-            */
+          GameGlobals::gameBirds->pause();
+          GameGlobals::gameMusic->pause();
 
            shockEffect = true;
         }
