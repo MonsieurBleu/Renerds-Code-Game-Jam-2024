@@ -6,7 +6,6 @@ ScenePointLight lightFoxAlive;
 
 SingleStringBatchRef EpourInteragir;
 SingleStringBatchRef textRenard;
-SingleStringBatchRef textPeluche;
 
 void GameStateManager::update(float deltatime)
 {
@@ -41,14 +40,13 @@ bool StartState::update(float deltaTime)
 
     float d = distance(
         GameGlobals::playerPosition,
-        GameGlobals::foxAlive->state.position
-    );
+        GameGlobals::foxAlive->state.position);
 
     EpourInteragir->state.hide = ModelStateHideStatus::HIDE;
-    if(d < 12.0)
+    if (d < 12.0)
     {
         EpourInteragir->state.hide = ModelStateHideStatus::SHOW;
-        if(GameGlobals::E)
+        if (GameGlobals::E)
         {
             // GameGlobals::foxAlive->state
             //     .scaleScalar(
@@ -63,13 +61,12 @@ bool StartState::update(float deltaTime)
             //     .setRadius(10.0)
             //     .setColor(vec3(0.2, 0.5, 1.0))
             //     ;
-            
+
             // GameGlobals::scene->add(l);
 
             return true;
         }
     }
-
 
     return false;
 }
@@ -84,31 +81,26 @@ void StartState::onEnter()
     GameGlobals::Zone1Center = vec3(1E8);
     GameGlobals::Zone2Center = vec3(1E8);
 
-    GameGlobals::zone2radius = 200/1.5;
-    GameGlobals::zone1radius = 240/1.5;
+    GameGlobals::zone2radius = 200 / 1.5;
+    GameGlobals::zone1radius = 240 / 1.5;
 
-    Player::reviveAnimationLength = 0.1; //5.0
+    Player::reviveAnimationLength = 0.1; // 5.0
     globals.currentCamera->setDirection(vec3(0, 0, 1));
-    
+
     Player::respawnPoint = vec3(11.5, 1, -188);
     GameGlobals::player->respawn();
     // Player::deathLookDir = vec3(0, 0, -1);
-    //GameGlobals::player->teleport(vec3(126, 1, 136));
-
+    // GameGlobals::player->teleport(vec3(126, 1, 136));
 
     // GameGlobals::foxAlive->state.setPosition(vec3(110, 0, 126));
     // GameGlobals::scene->add(GameGlobals::foxAlive);
 
-
     lightFoxAlive = newPointLight();
     lightFoxAlive->setPosition(
-            GameGlobals::foxAlive->state.position
-            +vec3(0, 2, 0))
+                     GameGlobals::foxAlive->state.position + vec3(0, 2, 0))
         .setIntensity(15.0)
         .setRadius(6.0)
-        .setColor(vec3(0.0, 0.1, 1.0))
-        ;
-
+        .setColor(vec3(0.0, 0.1, 1.0));
 
     EpourInteragir = std::make_shared<SingleStringBatch>();
     EpourInteragir->setMaterial(GameGlobals::defaultFontMaterial);
@@ -118,53 +110,29 @@ void StartState::onEnter()
 
     EpourInteragir->state
         .scaleScalar(2.0)
-        .setPosition(vec3(-0.85, -0.35, 0))
-        ;
+        .setPosition(vec3(-0.85, -0.35, 0));
 
     EpourInteragir->state.hide = ModelStateHideStatus::HIDE;
-
-
-
 
     textRenard = std::make_shared<SingleStringBatch>();
     textRenard->setMaterial(GameGlobals::defaultFontMaterial);
     textRenard->setFont(GameGlobals::FUIfont);
     textRenard->text = U"Il est magnifique ! Je devrais aller chercher mon appareil photo dans à la maison!";
     textRenard->batchText();
-die(
+
     textRenard->state
         .scaleScalar(1.75)
-        .setPosition(vec3(-0.85, -0.25, 0))
-        ;
+        .setPosition(vec3(-0.85, -0.25, 0));
 
     textRenard->state.hide = ModelStateHideStatus::HIDE;
-
-
-
-    textPeluche = std::make_shared<SingleStringBatch>();
-    textPeluche->setMaterial(GameGlobals::defaultFontMaterial);
-    textPeluche->setFont(GameGlobals::FUIfont);
-    textPeluche->text = U"Quelqu'un a dû perdre ça...";
-    textPeluche->batchText();
-
-    textPeluche->state
-        .scaleScalar(1.75)
-        .setPosition(vec3(-0.85, -0.25, 0))
-        ;
-
-    textRenard->state.hide = ModelStateHideStatus::HIDE;
-
-
 
     GameGlobals::scene2D->add(EpourInteragir);
     GameGlobals::scene2D->add(textRenard);
-    GameGlobals::scene2D->add(textPeluche);
 }
 
 void StartState::onExit()
 {
     Player::reviveAnimationLength = 1.5;
-    
 }
 
 bool FoxState::update(float deltaTime)
@@ -176,9 +144,9 @@ bool FoxState::update(float deltaTime)
 
     float t = timer.getElapsedTime();
 
-    float i = 0.5 + 0.5*cos(t*1.5 - M_PI);
+    float i = 0.5 + 0.5 * cos(t * 1.5 - M_PI);
 
-    lightFoxAlive->setRadius(3.0 + i*5.f);
+    lightFoxAlive->setRadius(3.0 + i * 5.f);
 
     // std::cout << i << "\n";
 
@@ -186,9 +154,7 @@ bool FoxState::update(float deltaTime)
         mix(
             lp,
             GameGlobals::foxAlive->state.position,
-            min(t, 1.f)
-        )
-    );
+            min(t, 1.f)));
 
     return t > 0.5;
 }
@@ -215,90 +181,31 @@ void FoxState::onExit()
     Player::locked = false;
     GameGlobals::scene->remove(lightFoxAlive);
     textRenard->state.hide = ModelStateHideStatus::HIDE;
-    
 }
-
-bool playerHasBook = false;
-bool monsterIsGone = false;
 
 bool PlayState::update(float deltaTime)
 {
 
-    if(
-        GameGlobals::foxAlive->state.hide != ModelStateHideStatus::HIDE
-    && !GameGlobals::foxAlive->cull())
+    if (
+        GameGlobals::foxAlive->state.hide != ModelStateHideStatus::HIDE && !GameGlobals::foxAlive->cull())
     {
         GameGlobals::foxAlive->state.hide = ModelStateHideStatus::HIDE;
     }
 
     static bool shockEffect = false;
 
-    if(!shockEffect)
+    if (!shockEffect)
     {
         GameGlobals::house->state.hide = ModelStateHideStatus::SHOW;
-        if(GameGlobals::house->cull())
+        if (GameGlobals::house->cull())
         {
-          GameGlobals::gameBirds->pause();
-          GameGlobals::gameMusic->pause();
+            /*
+                SHOCK EFFECT !!!
+            */
 
-           shockEffect = true;
+            shockEffect = true;
         }
         GameGlobals::house->state.hide = ModelStateHideStatus::HIDE;
-    }
-
-    EpourInteragir->state.hide = ModelStateHideStatus::HIDE;
-
-    if(!monsterIsGone && Player::hasTeddyBear)
-    {
-        float d = distance(
-            GameGlobals::Zone2Objectif,
-            GameGlobals::playerPosition
-        );
-
-        if(d < 3.0)
-        {
-            GameGlobals::Zone2Center = vec3(1E8);
-            monsterIsGone = true;
-            GameGlobals::monster->disable();
-        }
-    }
-
-    if(!Player::hasTeddyBear)
-    {
-        float dTeddy = distance(
-            GameGlobals::foxTeddy->state.position,
-            GameGlobals::playerPosition
-        );
-
-        if(dTeddy < 6.0)
-        {
-            EpourInteragir->state.hide = ModelStateHideStatus::SHOW;
-            if(GameGlobals::E)
-            {
-                Player::hasTeddyBear = true;
-                GameGlobals::foxTeddy->state.hide = ModelStateHideStatus::HIDE;
-            }
-        }
-    }
-
-    if(!playerHasBook)
-    {
-        float dBook = distance(
-            GameGlobals::bookFox->state.position,
-            GameGlobals::playerPosition
-        );
-
-        if(dBook < 6.0)
-        {
-            EpourInteragir->state.hide = ModelStateHideStatus::SHOW;
-            if(GameGlobals::E)
-            {
-                playerHasBook = true;
-                GameGlobals::Zone1Center = vec3(1E8);
-                GameGlobals::Zone1Objectif = vec3(1E8);
-                GameGlobals::bookFox->state.hide = ModelStateHideStatus::HIDE;
-            }
-        }
     }
 
     return false;
@@ -316,10 +223,6 @@ void PlayState::onEnter()
 
     GameGlobals::Zone1Objectif = vec3(185, 0, 53);
     GameGlobals::PeluchePosition = vec3(-165, 0, 96);
-
-
-    GameGlobals::foxTeddy->state.hide = ModelStateHideStatus::SHOW;
-    GameGlobals::bookFox->state.hide = ModelStateHideStatus::SHOW;
 }
 
 void PlayState::onExit()
