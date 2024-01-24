@@ -626,6 +626,19 @@ void Game::mainloop()
         .play();
     GameGlobals::gameBirds = &birdsSource;
 
+    // AABBCollider houseCollider(house->getVao()->getAABBMin(), house->getVao()->getAABBMax());
+    // RigidBodyRef houseBody = newRigidBody(
+    //     house->state.position,
+    //     vec3(0.0, 0.0, 0.0),
+    //     quat(0.0, 0.0, 0.0, 1.0),
+    //     vec3(0.0, 0.0, 0.0),
+    //     &houseCollider,
+    //     PhysicsMaterial(),
+    //     0.0,
+    //     false);
+
+    // physicsEngine.addObject(houseBody);
+
     /* Main Loop */
     while (state != AppState::quit)
     {

@@ -2,7 +2,7 @@
 #include "ObjectGroup.hpp"
 #include <FenceGenerator.hpp>
 
-#define FENCE_SIZE ((int)(720/1.5))
+#define FENCE_SIZE ((int)(720 / 1.5))
 
 void generateFence(ModelRef fenceSample, Scene &scene, PhysicsEngine &physicsEngine)
 {
@@ -10,6 +10,7 @@ void generateFence(ModelRef fenceSample, Scene &scene, PhysicsEngine &physicsEng
     float fenceHeight = fenceSample->getVao()->getAABBMax().y - fenceSample->getVao()->getAABBMin().y;
     ObjectGroupRef fence = newObjectGroup();
     vec3 pos((-FENCE_SIZE) / 2.0, -4, (-FENCE_SIZE) / 2.0);
+    const vec3 startPos = pos;
     vec3 increment(fenceSegmentSize, 0, 0);
 
     for (int i = 0; i < 4; i++)
@@ -40,13 +41,13 @@ void generateFence(ModelRef fenceSample, Scene &scene, PhysicsEngine &physicsEng
     const float wallThickness = 0.1f;
     vec3 v1 = vec3(FENCE_SIZE + 10, fenceHeight, wallThickness);
     vec3 v2 = vec3(wallThickness, fenceHeight, FENCE_SIZE + 10);
-    AABBCollider *wall1Collider = new AABBCollider(-v1, vec3(0));
+    AABBCollider *wall1Collider = new AABBCollider(-v1, vec3(startPos.x, 0.0, startPos.z));
     AABBCollider *wall2Collider = new AABBCollider(-v2, vec3(0));
     AABBCollider *wall3Collider = new AABBCollider(-v1, vec3(0));
     AABBCollider *wall4Collider = new AABBCollider(-v2, vec3(0));
 
     RigidBodyRef wall1 = newRigidBody(
-        vec3(offset, 0.0, offset),
+        vec3(0.0, 0.0, 0.0),
         vec3(0.0, 0.0, 0.0),
         quat(0.0, 0.0, 0.0, 1.0),
         vec3(0.0, 0.0, 0.0),
@@ -85,7 +86,7 @@ void generateFence(ModelRef fenceSample, Scene &scene, PhysicsEngine &physicsEng
         0.0,
         false);
 
-    // physicsEngine.addObject(wall1);
+    physicsEngine.addObject(wall1);
     // physicsEngine.addObject(wall2);
     // physicsEngine.addObject(wall3);
     // physicsEngine.addObject(wall4);
