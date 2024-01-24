@@ -93,7 +93,7 @@ void EffectHandler::update()
             o1lerp);
 
     float sunIntensity = mix(3.0f, 1.f, z1lerp);
-    sunIntensity = mix(sunIntensity, 4.f, o1lerp);
+    sunIntensity = mix(sunIntensity, 3.f, o1lerp);
 
     GameGlobals::sun->
         setColor(sunColor)

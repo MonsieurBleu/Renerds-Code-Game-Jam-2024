@@ -20,8 +20,6 @@ private:
     MeshMaterial depthOnlyInstancedMaterial;
 
     /* Fast-UI */
-    FontRef FUIfont;
-    MeshMaterial defaultFontMaterial;
     MeshMaterial defaultSUIMaterial;
     SimpleUiTileBatchRef fuiBatch;
 

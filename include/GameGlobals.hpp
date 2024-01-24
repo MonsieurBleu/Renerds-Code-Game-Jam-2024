@@ -4,6 +4,7 @@
 #include <random>
 #include <Light.hpp>
 #include <Monster.hpp>
+#include <FastUI.hpp>
 
 class Player;
 
@@ -24,6 +25,8 @@ public:
     static vec3 Zone1Objectif;
     static vec3 Zone2Objectif;
 
+    static vec3 PeluchePosition;
+
     static float zone1radius;
     static float zone2radius;
 
@@ -42,6 +45,7 @@ public:
     static ModelRef stumpBook;
     static ModelRef signPost;
     static Scene* scene;
+    static Scene* scene2D;
 
     static void setMenu(FastUI_valueMenu &menu);
 
@@ -66,4 +70,7 @@ public:
     static bool isPlayerinZone2();
 
     static bool E;
+
+    static FontRef FUIfont;
+    static MeshMaterial defaultFontMaterial;
 };

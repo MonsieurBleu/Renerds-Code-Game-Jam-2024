@@ -1,6 +1,9 @@
 #include <GameGlobals.hpp>
 #include <FastUI.hpp>
 
+FontRef GameGlobals::FUIfont;
+MeshMaterial GameGlobals::defaultFontMaterial;
+
 MeshMaterial GameGlobals::PBR;
 MeshMaterial GameGlobals::PBRground;
 MeshMaterial GameGlobals::PBRinstanced;
@@ -10,6 +13,8 @@ vec3 GameGlobals::playerPosition;
 
 vec3 GameGlobals::Zone1Center;
 vec3 GameGlobals::Zone2Center;
+
+vec3 GameGlobals::PeluchePosition = vec3(1E8);
 
 vec3 GameGlobals::Zone1Objectif;
 vec3 GameGlobals::Zone2Objectif;
@@ -34,6 +39,7 @@ ModelRef GameGlobals::bookFox;
 ModelRef GameGlobals::stumpBook;
 ModelRef GameGlobals::signPost;
 Scene*   GameGlobals::scene;
+Scene*   GameGlobals::scene2D;
 
 bool GameGlobals::E = false;
 
@@ -62,7 +68,7 @@ void GameGlobals::setMenu(FastUI_valueMenu &menu)
                                                                                FastUI_value((const float *)&Zone2Objectif.z, U"\fx\t")})});
 }
 std::random_device GameGlobals::randomDevice = std::random_device();
-std::mt19937_64 GameGlobals::randomEngine = std::mt19937_64(randomDevice());
+std::mt19937_64 GameGlobals::randomEngine = std::mt19937_64(0);
 std::uniform_real_distribution<float> GameGlobals::randomFloatDist01 = std::uniform_real_distribution<float>(0.0f, 1.0f);
 std::uniform_real_distribution<float> GameGlobals::randomFloatDist11 = std::uniform_real_distribution<float>(-1.0f, 1.0f);
 
