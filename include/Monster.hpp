@@ -22,9 +22,8 @@ private:
 
     static bool enabled;
 
-    AudioSource audioSource;
-
 public:
+    AudioSource *audioSource = nullptr;
     Monster(ModelRef monster);
     Monster();
     ~Monster();

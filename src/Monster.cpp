@@ -31,7 +31,8 @@ void Monster::playDrone() {
   AudioFile drone;
   drone.loadOGG("../build/ressources/musics/drone.ogg");
   this->audioSource
-    .setBuffer(drone.getHandle())
+    ->setBuffer(drone.getHandle())
+    .loop(true)
     .play();
 }
 
@@ -65,7 +66,7 @@ void Monster::update(float deltaTime)
             speed = actualSpeed * deltaTime;
 
             model->state.setPosition(monsterPosition + direction * speed);
-            audioSource.setPosition(monsterPosition + direction * speed);
+            audioSource->setPosition(monsterPosition + direction * speed);
         }
 
         if ((lastScreamTime + screamCooldown < globals.appTime.getElapsedTime()) && distance > screamMinDist - (Player::hasTeddyBear ? 10.0f : 0.0f))

@@ -1,3 +1,4 @@
+#include "GameGlobals.hpp"
 #include <Game.hpp>
 #include <../Engine/include/Globals.hpp>
 #include <GameObject.hpp>
@@ -557,6 +558,7 @@ void Game::mainloop()
     shadowMonster->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;
+    monster.playDrone();
 
     std::vector<GameState *> states;
     states.push_back(new StartState());
