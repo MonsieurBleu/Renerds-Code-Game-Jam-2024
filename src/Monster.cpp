@@ -29,7 +29,7 @@ Monster::~Monster()
 
 void Monster::initSounds()
 {
-    AudioFile drone, scream;
+    AudioFile drone, scream, step1;
     drone.loadOGG("../build/ressources/Audio/drone.ogg");
     this->droneSource = new AudioSource();
     this->droneSource
@@ -37,8 +37,11 @@ void Monster::initSounds()
         .loop(true);
     scream.loadOGG("../build/ressources/Audio/scream.ogg");
     this->screamSource = new AudioSource();
-    this->droneSource
+    this->screamSource
         ->setBuffer(scream.getHandle());
+    step1.loadOGG("../build/ressources/Audio/step1.ogg");
+    this->stepSource = new AudioSource();
+    this->stepSource->setBuffer(step1.getHandle());
 
     alSource3f(droneSource->getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
     alSourcef(droneSource->getHandle(), AL_REFERENCE_DISTANCE, 2.0);
@@ -51,6 +54,15 @@ void Monster::update(float deltaTime)
     bool inZone = GameGlobals::isPlayerinZone2();
     if (inZone && enabled)
     {
+        if (GameGlobals::randomFloat01() < 0.01)
+        {
+            float offsetx = 5.0 * GameGlobals::randomFloat11();
+            float offsetz = 5.0 * GameGlobals::randomFloat11();
+            vec3 offset(offsetx, 0, offsetz);
+            stepSource->setPosition(GameGlobals::playerPosition + offset);
+            stepSource->play();
+        }
+
         vec3 playerPosition = GameGlobals::playerPosition;
         vec3 monsterPosition = model->state.position;
 

@@ -69,6 +69,10 @@ public:
     static bool isPlayerinZone1();
     static bool isPlayerinZone2();
 
+    static AudioSource* gameMusic;
+    static AudioSource* gameBirds;
+
+
     static bool E;
 
     static FontRef FUIfont;

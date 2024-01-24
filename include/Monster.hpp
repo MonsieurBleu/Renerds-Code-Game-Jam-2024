@@ -25,6 +25,7 @@ private:
 public:
     AudioSource *droneSource = nullptr;
     AudioSource *screamSource = nullptr;
+    AudioSource *stepSource = nullptr;
     Monster(ModelRef monster);
     Monster();
     ~Monster();

@@ -15,7 +15,7 @@
 int main()
 {
     Game *game = nullptr;
-    std::string winname =  "Vulpine Engine Game Demo";
+    std::string winname =  "Les bois de vulpiniac";
     int ret = launchGame(&game, winname, 5);
     if(game) delete game;
     return ret; 
