@@ -487,6 +487,13 @@ void Game::mainloop()
     scene.add(car);
 
 
+    ModelRef signPost = newModel(GameGlobals::PBR);
+    signPost->loadFromFolder("ressources/models/signpost/");
+    signPost->state
+        .scaleScalar(1)
+        .setPosition(vec3(134, 0, 111));
+    scene.add(signPost);
+
     /*
         ModelRef lanterne = newModel(GameGlobals::PBR);
         lanterne->loadFromFolder("ressources/models/lantern/");
