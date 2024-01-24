@@ -157,32 +157,32 @@ bool Game::userInput(GLFWKeyInfo input)
             GameGlobals::E = true;
             break;
 
-        // case GLFW_KEY_F2:
-        //     globals.currentCamera->toggleMouseFollow();
-        //     break;
+            // case GLFW_KEY_F2:
+            //     globals.currentCamera->toggleMouseFollow();
+            //     break;
 
-        // case GLFW_KEY_1:
-        //     Bloom.toggle();
-        //     break;
-        // case GLFW_KEY_2:
-        //     SSAO.toggle();
-        //     break;
+            // case GLFW_KEY_1:
+            //     Bloom.toggle();
+            //     break;
+            // case GLFW_KEY_2:
+            //     SSAO.toggle();
+            //     break;
 
-//         case GLFW_KEY_F5:
-// #ifdef _WIN32
-//             system("cls");
-// #else
-//             system("clear");
-// #endif
-//             finalProcessingStage.reset();
-//             Bloom.getShader().reset();
-//             SSAO.getShader().reset();
-//             depthOnlyMaterial->reset();
-//             GameGlobals::PBR->reset();
-//             GameGlobals::PBRground->reset();
-//             GameGlobals::PBRstencil->reset();
-//             skyboxMaterial->reset();
-//             break;
+            //         case GLFW_KEY_F5:
+            // #ifdef _WIN32
+            //             system("cls");
+            // #else
+            //             system("clear");
+            // #endif
+            //             finalProcessingStage.reset();
+            //             Bloom.getShader().reset();
+            //             SSAO.getShader().reset();
+            //             depthOnlyMaterial->reset();
+            //             GameGlobals::PBR->reset();
+            //             GameGlobals::PBRground->reset();
+            //             GameGlobals::PBRstencil->reset();
+            //             skyboxMaterial->reset();
+            //             break;
 
         default:
             break;
@@ -241,7 +241,7 @@ void Game::mainloop()
     floor->setMap(Texture2D().loadFromFileKTX("ressources/models/ground/NRMroad.ktx"), 11);
     // floor->setMap(Texture2D().loadFromFile("ressources/treeMap.png"), 8);
 
-    int gridSize = 16;
+    int gridSize = 20;
     int gridScale = 10;
     for (int i = -gridSize; i < gridSize; i++)
         for (int j = -gridSize; j < gridSize; j++)
@@ -408,7 +408,6 @@ void Game::mainloop()
     // sun->setMenu(menu, U"Sun");
     // effects.setMenu(menu);
     GameGlobals::setMenu(menu);
-
 
     camera.toggleMouseFollow();
 
