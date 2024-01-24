@@ -147,7 +147,7 @@ void Monster::enable()
 void Monster::disable()
 {
     enabled = false;
-    model->state.hide = ModelStateHideStatus::HIDE;
+    // model->state.hide = ModelStateHideStatus::HIDE;
 
     model->state.setPosition(vec3(1e16)); // far far away (shrek reference)
     GameGlobals::Zone2Objectif = model->state.position;
