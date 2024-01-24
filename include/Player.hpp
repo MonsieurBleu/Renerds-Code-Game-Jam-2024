@@ -3,6 +3,7 @@
 #include "../Engine/include/PhysicsEngine.hpp"
 #include "../Engine/include/Camera.hpp"
 #include "../Engine/include/Inputs.hpp"
+#include "../Engine/include/Audio.hpp"
 
 #include <iostream>
 #include <vector>
@@ -45,7 +46,7 @@ public:
     bool isInShadow();
     void setMenu(FastUI_valueMenu &menu);
 
-    void teleport(vec3 position){body->setPosition(position);};
+    void teleport(vec3 position) { body->setPosition(position); };
 
     static constexpr float maxSpeed = 12.0f;
     static constexpr float maxSpeedRunning = 15.0f;
@@ -118,4 +119,10 @@ public:
     static float reviveAnimationProgress;
 
     static bool locked;
+
+    // static std::shared_ptr<AudioSource> heartbeat;
+    // static std::shared_ptr<AudioSource> step1;
+    // static std::shared_ptr<AudioSource> step2;
+    // static std::shared_ptr<AudioSource> step3;
+    // static std::shared_ptr<AudioSource> step4;
 };
