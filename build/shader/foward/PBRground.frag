@@ -58,7 +58,7 @@ void main() {
     normalComposed = perturbNormal(normal, viewVector, NRM.xy, uv2);
     viewDir = normalize(_cameraPosition - position);
 
-    //color = map.xyz;
+    color = map.xyz;
 
 
     normalComposed = gl_FrontFacing ? normalComposed : -normalComposed;

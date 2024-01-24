@@ -31,8 +31,16 @@ public:
 
     static Player* player; 
 
+    static ModelRef house;
     static ModelRef foxAlive;
     static ModelRef foxDead;
+    static ModelRef car;
+    static ModelRef carWithBlood;
+    static ModelRef foxTeddy;
+    static ModelRef stumpTeddy;
+    static ModelRef bookFox;
+    static ModelRef stumpBook;
+    static ModelRef signPost;
     static Scene* scene;
 
     static void setMenu(FastUI_valueMenu &menu);

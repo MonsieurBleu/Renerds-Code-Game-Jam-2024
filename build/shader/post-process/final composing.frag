@@ -269,7 +269,7 @@ void main() {
         mistAlpha *= max(1.0 - heightFactor, 0.0);
         //mistAlpha = min(mistAlpha*2.0, 1.0);
 
-        _fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);
+        //_fragColor.rgb = mix(_fragColor.rgb, mistColor, mistAlpha*0.95);
 
     }
     //////////////////

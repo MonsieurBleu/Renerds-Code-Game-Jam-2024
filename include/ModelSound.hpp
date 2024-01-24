@@ -5,25 +5,13 @@
 
 class ModelSound : public ObjectGroup
 {
-    private :
-        AudioSource soundSource;
-
-        
     public :
+        AudioSource soundSource;
         virtual void update(bool forceUpdate = false);
 };
 
-void ModelSound::update(bool forceUpdate){
-
-    // AudioFile music1;
-    // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
-
-    // AudioSource musicSource;
-    // musicSource
-    //     .setBuffer(music1.getHandle())
-    //     .setPitch(0)
-    //     .play();
-
-
+void ModelSound::update(bool forceUpdate)
+{
+    soundSource.setPosition(state.position);
     ObjectGroup::update();
 }

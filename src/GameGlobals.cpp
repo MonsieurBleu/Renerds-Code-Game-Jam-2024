@@ -22,8 +22,17 @@ Monster *GameGlobals::monster;
 
 Player* GameGlobals::player; 
 
+
+ModelRef GameGlobals::house;
 ModelRef GameGlobals::foxAlive;
 ModelRef GameGlobals::foxDead;
+ModelRef GameGlobals::car;
+ModelRef GameGlobals::carWithBlood;
+ModelRef GameGlobals::foxTeddy;
+ModelRef GameGlobals::stumpTeddy;
+ModelRef GameGlobals::bookFox;
+ModelRef GameGlobals::stumpBook;
+ModelRef GameGlobals::signPost;
 Scene*   GameGlobals::scene;
 
 bool GameGlobals::E = false;

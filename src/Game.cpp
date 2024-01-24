@@ -410,14 +410,14 @@ void Game::mainloop()
     player->setMenu(menu);
 
     /* Music ! */
-    // AudioFile music1;
-    // music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
+    AudioFile music1;
+    music1.loadOGG("ressources/musics/Endless Space by GeorgeTantchev.ogg");
 
-    // AudioSource musicSource;
-    // musicSource
-    //     .setBuffer(music1.getHandle())
-    //     .setPosition(vec3(0, 0, 3))
-    //     .play();
+    AudioSource musicSource;
+    musicSource
+        .setBuffer(music1.getHandle())
+        .setPosition(vec3(0, 0, 3))
+        .play();
 
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
@@ -439,30 +439,37 @@ void Game::mainloop()
         scene.add(portailFerme);
     */
 
-    ModelRef maison = newModel(GameGlobals::PBR);
-    maison->loadFromFolder("ressources/models/house/");
-    maison->state
+    ModelRef house = newModel(GameGlobals::PBR);
+    house->loadFromFolder("ressources/models/house/");
+    house->state
         .scaleScalar(1.5)
-        .setPosition(vec3(135, 0, 135));
-    scene.add(maison);
+        .setRotation(vec3(radians(0.f), radians(180.f), radians(0.f)))
+        .setPosition(vec3(12, 0, -179));
+    scene.add(house);
+
 
     ModelRef foxAlive = newModel(GameGlobals::PBR);
     foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
     foxAlive->state
         .scaleScalar(0.009)
-        .setPosition(vec3(-10, 0, 0));
-    // scene.add(foxAlive);
+        .setPosition(vec3(15, 0, -204));
+    scene.add(foxAlive);
 
     ModelRef foxDead = newModel(GameGlobals::PBR);
     foxDead->loadFromFolder("ressources/models/fox/foxDead/");
     foxDead->state
         .scaleScalar(0.009)
-        .setPosition(vec3(-20, 0, -20));
-    // scene.add(foxDead);
+        .setRotation(vec3(radians(0.f), radians(95.f), radians(0.f)))
+        .setPosition(vec3(-74, 0, -225));
+    scene.add(foxDead);
 
     GameGlobals::scene = &scene;
+    GameGlobals::house = house;
+
     GameGlobals::foxAlive = foxAlive;
     GameGlobals::foxDead = foxDead;
+
+
 
     ModelRef fence = newModel(GameGlobals::PBRstencil);
     fence->loadFromFolder("ressources/models/fence/");
@@ -475,13 +482,13 @@ void Game::mainloop()
     foxTeddy->loadFromFolder("ressources/models/foxTeddy/");
     foxTeddy->state
         .scaleScalar(7)
-        .setPosition(vec3(-10, 0.69, 10));
+        .setPosition(vec3(-165, 0.69, 96));
     scene.add(foxTeddy);
     ModelRef stumpTeddy = newModel(GameGlobals::PBR);
     stumpTeddy->loadFromFolder("ressources/models/stump/");
     stumpTeddy->state
         .scaleScalar(0.009)
-        .setPosition(vec3(-10, 0, 10));
+        .setPosition(vec3(-165, 0, 96));
     scene.add(stumpTeddy);
 
 //Livre sur la souche
@@ -489,49 +496,50 @@ void Game::mainloop()
     bookFox->loadFromFolder("ressources/models/book/");
     bookFox->state
         .scaleScalar(0.025)
-        .setPosition(vec3(-10, 0.69, 5));
+        .setPosition(vec3(185, 0.69, 53));
     scene.add(bookFox);
     ModelRef stumpBook = newModel(GameGlobals::PBR);
     stumpBook->loadFromFolder("ressources/models/stump/");
     stumpBook->state
         .scaleScalar(0.009)
-        .setPosition(vec3(-10, 0, 5));
+        .setPosition(vec3(185, 0, 53));
     scene.add(stumpBook);
+
+  
+    GameGlobals::foxTeddy = foxTeddy;
+    GameGlobals::stumpTeddy = stumpTeddy;
+    GameGlobals::bookFox = bookFox;
+    GameGlobals::stumpBook = stumpBook;
 
     ModelRef car = newModel(GameGlobals::PBR);
     car->loadFromFolder("ressources/models/car/");
     car->state
         .scaleScalar(0.012)
-        .setPosition(vec3(104, 0, 111));
+        .setRotation(vec3(radians(0.f), radians(276.f), radians(0.f)))
+        .setPosition(vec3(-0.5, 0, -182));
     scene.add(car);
 
     ModelRef carWithBlood = newModel(GameGlobals::PBR);
     carWithBlood->loadFromFolder("ressources/models/car/carWithBlood/");
     carWithBlood->state
         .scaleScalar(0.012)
-        .setPosition(vec3(116, 0, 120));
+        .setRotation(vec3(radians(0.f), radians(165.f), radians(0.f)))
+        .setPosition(vec3(-40, 0, -221));
     scene.add(carWithBlood);
 
+    
+    GameGlobals::car = car;
+    GameGlobals::carWithBlood = carWithBlood;
 
-
-    ModelRef signPost = newModel(GameGlobals::PBR);
+   ModelRef signPost = newModel(GameGlobals::PBR);
     signPost->loadFromFolder("ressources/models/signpost/");
     signPost->state
         .scaleScalar(1)
-        .setPosition(vec3(134, 0, 111));
+        .setRotation(vec3(radians(0.f), radians(175.f), radians(0.f)))
+        .setPosition(vec3(-23, 0, 97));
     scene.add(signPost);
 
-    /*
-        ModelRef lanterne = newModel(GameGlobals::PBR);
-        lanterne->loadFromFolder("ressources/models/lantern/");
-        lanterne->state
-            .scaleScalar(0.01)
-            .setPosition(vec3(2, 2, 0));
-        scene.add(lanterne);
-        handItems->addItem(HandItemRef(new HandItem(HandItemType::lantern)));
-        scene.add(handItems);
-    */
-    // lanterne->state.setPosition(GameGlobals::Zone2Objectif + vec3(0, 2, 0));
+    GameGlobals::signPost = signPost;
 
     ModelRef shadowMonster = newModel(GameGlobals::PBR);
     shadowMonster->loadFromFolder("ressources/models/shadow/");
@@ -539,6 +547,20 @@ void Game::mainloop()
         .scaleScalar(0.75)
         .setPosition(vec3(-30, 0, 0));
     scene.add(shadowMonster);
+
+
+    ModelRef currentModel = signPost;
+    menu.push_back(
+        {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {
+            FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle), 
+            FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle), 
+            FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+            FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"), 
+            FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"), 
+            FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")
+        })}
+    );
+
 
     GameGlobals::sun = sun;
 
@@ -603,6 +625,8 @@ void Game::mainloop()
 
             monster.update(delta);
         }
+
+        currentModel->state.forceUpdate();
 
         stateManager.update(delta);
 
