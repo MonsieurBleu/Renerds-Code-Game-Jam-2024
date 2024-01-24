@@ -32,9 +32,9 @@ private:
 
     void mouseLook();
 
-    void die();
 
 public:
+    void die();
     void respawn();
     Player(GLFWwindow *window, RigidBodyRef body, Camera *camera, InputBuffer *inputs);
     ~Player();

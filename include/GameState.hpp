@@ -80,6 +80,19 @@ public:
     void onExit() override;
 };
 
+class EndFoxState final : public GameState
+{
+public:
+    EndFoxState() : GameState("End") {}
+    EndFoxState(GameState *nextState) : GameState("End", nextState) {}
+    ~EndFoxState() {}
+
+    bool update(float deltaTime) override;
+    void onEnter() override;
+    void onExit() override;
+};
+
+
 class GameStateManager
 {
 private:
