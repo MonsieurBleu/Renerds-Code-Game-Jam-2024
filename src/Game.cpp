@@ -602,8 +602,8 @@ void Game::mainloop()
     AudioSource musicSource;
     musicSource
         .setBuffer(music.getHandle())
-        .loop(true);
-    // .play();
+        .loop(true)
+        .play();
 
     /* Main Loop */
     while (state != AppState::quit)
