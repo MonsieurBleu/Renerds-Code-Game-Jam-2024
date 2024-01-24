@@ -1,3 +1,4 @@
+#include "Audio.hpp"
 #include <GameGlobals.hpp>
 #include <FastUI.hpp>
 
@@ -26,6 +27,9 @@ SceneDirectionalLight GameGlobals::sun;
 Monster *GameGlobals::monster;
 
 Player *GameGlobals::player;
+
+AudioSource* GameGlobals::gameMusic;
+AudioSource* GameGlobals::gameBirds;
 
 
 ModelRef GameGlobals::house;

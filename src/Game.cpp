@@ -587,6 +587,7 @@ void Game::mainloop()
         .setBuffer(music.getHandle())
         .loop(true)
         .play();
+    GameGlobals::gameMusic = &musicSource;
 
     AudioFile step1File;
     step1File.loadOGG("ressources/Audio/FootstepsStoneDirt1.ogg");
@@ -619,6 +620,7 @@ void Game::mainloop()
         .setBuffer(birds.getHandle())
         .loop(true)
         .play();
+    GameGlobals::gameBirds = &birdsSource;
 
     /* Main Loop */
     while (state != AppState::quit)
