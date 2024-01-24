@@ -253,15 +253,15 @@ void Game::mainloop()
             scene.add(f);
         }
 
-    int forestSize = 8;
-    float treeScale = 0.5;
+    // int forestSize = 8;
+    // float treeScale = 0.5;
 
-    ModelRef leaves = newModel(GameGlobals::PBRstencil);
-    leaves->loadFromFolder("ressources/models/fantasy tree/");
-    leaves->noBackFaceCulling = true;
+    // ModelRef leaves = newModel(GameGlobals::PBRstencil);
+    // leaves->loadFromFolder("ressources/models/fantasy tree/");
+    // leaves->noBackFaceCulling = true;
 
-    ModelRef trunk = newModel(GameGlobals::PBR);
-    trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
+    // ModelRef trunk = newModel(GameGlobals::PBR);
+    // trunk->loadFromFolder("ressources/models/fantasy tree/trunk/");
 
     // Models Oak
     Texture2D leafTexture = Texture2D().loadFromFileKTX("ressources/models/oak/textures/leaf/CE.ktx");

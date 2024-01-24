@@ -31,8 +31,8 @@ bool Player::invertedControls = false;
 float Player::invertStart = 0.0f;
 bool Player::hasTeddyBear = false;
 
-float Player::stressDecreaseRate = 50.0f;
-float Player::stressIncreaseRate = 35.0f;
+float Player::stressDecreaseRate = 75.0f;
+float Player::stressIncreaseRate = 25.0f;
 
 float Player::deathAnimationProgress = 0.0f;
 
