@@ -546,7 +546,7 @@ void Game::mainloop()
     GameGlobals::sun = sun;
 
     monster = Monster(shadowMonster);
-    shadowMonster->state.hide = ModelStateHideStatus::HIDE;
+    // shadowMonster->state.hide = ModelStateHideStatus::HIDE;
     shadowMonster->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;

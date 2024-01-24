@@ -28,9 +28,8 @@ Monster *GameGlobals::monster;
 
 Player *GameGlobals::player;
 
-AudioSource* GameGlobals::gameMusic;
-AudioSource* GameGlobals::gameBirds;
-
+AudioSource *GameGlobals::gameMusic;
+AudioSource *GameGlobals::gameBirds;
 
 ModelRef GameGlobals::house;
 ModelRef GameGlobals::foxAlive;
@@ -42,8 +41,8 @@ ModelRef GameGlobals::stumpTeddy;
 ModelRef GameGlobals::bookFox;
 ModelRef GameGlobals::stumpBook;
 ModelRef GameGlobals::signPost;
-Scene*   GameGlobals::scene;
-Scene*   GameGlobals::scene2D;
+Scene *GameGlobals::scene;
+Scene *GameGlobals::scene2D;
 
 bool GameGlobals::E = false;
 
@@ -93,6 +92,10 @@ bool GameGlobals::isPlayerinZone2()
     vec2 direction = playerPosition - vec2(GameGlobals::Zone2Center.x, GameGlobals::Zone2Center.z);
 
     float distance = length(direction);
+
+    // std::cout << "distance : " << distance << std::endl;
+    // std::cout << "zone2radius : " << GameGlobals::zone2radius << std::endl
+    //           << std::endl;
 
     return distance < GameGlobals::zone2radius;
 }

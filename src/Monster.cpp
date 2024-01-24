@@ -6,7 +6,7 @@
 #include <../Engine/include/FastUI.hpp>
 
 float Monster::speed = 0.0f;
-float Monster::maxSpeed = 50.0f;
+float Monster::maxSpeed = 70.0f;
 bool Monster::enabled = false;
 
 float Monster::lastScreamTime = -Monster::screamCooldown;
@@ -52,6 +52,8 @@ void Monster::initSounds()
 void Monster::update(float deltaTime)
 {
     bool inZone = GameGlobals::isPlayerinZone2();
+    // std::cout << "inZone " << inZone << std::endl;
+
     if (inZone && enabled)
     {
         if (GameGlobals::randomFloat01() < 0.01)
@@ -82,7 +84,7 @@ void Monster::update(float deltaTime)
                 actualSpeed = maxSpeed * (distance / (2.0f * GameGlobals::zone2radius));
             else
             {
-                actualSpeed = max(maxSpeed * (distance / (2.0f * GameGlobals::zone2radius)), 10.0f);
+                actualSpeed = max(maxSpeed * (distance / (2.0f * GameGlobals::zone2radius)), 8.0f);
             }
 
             speed = actualSpeed * deltaTime;
@@ -126,16 +128,21 @@ void Monster::update(float deltaTime)
 void Monster::setMenu(FastUI_valueMenu &menu)
 {
     menu.push_back(
-        {FastUI_menuTitle(menu.ui, U"Monster"), FastUI_valueTab(menu.ui, {FastUI_value((const float *)(&speed), U"speed\t"),
-                                                                          FastUI_value(&maxSpeed, U"maxSpeed\t"),
-                                                                          FastUI_value(&enabled, U"enabled\t"),
-                                                                          FastUI_value(&distance, U"distance\t")})});
+        {FastUI_menuTitle(menu.ui, U"Monster"), FastUI_valueTab(menu.ui, {
+                                                                             FastUI_value((const float *)(&speed), U"speed\t"),
+                                                                             FastUI_value(&maxSpeed, U"maxSpeed\t"),
+                                                                             FastUI_value(&enabled, U"enabled\t"),
+                                                                             FastUI_value(&distance, U"distance\t"),
+                                                                             FastUI_value(&activated, U"activated\t"),
+                                                                         })});
 }
 
 void Monster::enable()
 {
     if (!activated)
         return;
+
+    // std::cout << "monster enabled" << std::endl;
     enabled = true;
     // spawn the monster at the center of the zone
     model->state.setPosition(GameGlobals::Zone2Center);
@@ -147,7 +154,7 @@ void Monster::enable()
 void Monster::disable()
 {
     enabled = false;
-    model->state.hide = ModelStateHideStatus::HIDE;
+    // model->state.hide = ModelStateHideStatus::HIDE;
 
     model->state.setPosition(vec3(1e16)); // far far away (shrek reference)
     GameGlobals::Zone2Objectif = model->state.position;
