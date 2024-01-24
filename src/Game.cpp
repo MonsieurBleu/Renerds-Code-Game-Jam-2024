@@ -486,6 +486,14 @@ void Game::mainloop()
         .setPosition(vec3(104, 0, 111));
     scene.add(car);
 
+    ModelRef carWithBlood = newModel(GameGlobals::PBR);
+    carWithBlood->loadFromFolder("ressources/models/car/carWithBlood/");
+    carWithBlood->state
+        .scaleScalar(0.012)
+        .setPosition(vec3(116, 0, 120));
+    scene.add(carWithBlood);
+
+
 
     ModelRef signPost = newModel(GameGlobals::PBR);
     signPost->loadFromFolder("ressources/models/signpost/");
