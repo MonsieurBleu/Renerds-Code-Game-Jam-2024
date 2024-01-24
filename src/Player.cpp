@@ -307,6 +307,16 @@ void Player::update(float deltaTime)
         globals.currentCamera->setDirection(newDir);
     }
 
+    static bool over40 = false;
+    if (stress >= 40.0f && !over40) {
+      heartbeat->loop(true);
+      heartbeat->play();
+      over40 = true;
+    } else if (over40) {
+      over40 = false;
+      heartbeat->loop(false);
+    }
+
     if (invertedControls && (invertStart + invertLength < globals.appTime.getElapsedTime()))
     {
         invertedControls = false;
