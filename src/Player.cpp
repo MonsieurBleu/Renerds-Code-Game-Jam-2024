@@ -583,6 +583,7 @@ void Player::mouseLook()
 
 void Player::die()
 {
+    return;
     canDie = false;
     // death animation
     ((SphereCollider *)body->getCollider())->setRadius(0.5f);
