@@ -1,3 +1,6 @@
+
+Textures : 
+
 This work is based on "Chain Link Fence Low Poly Version" (https://sketchfab.com/3d-models/chain-link-fence-low-poly-version-f7d34687536a45108fac3bf1a1055ee2) by KainHunter1997 (https://sketchfab.com/KainHunterDesign) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 
 This work is based on "Fox" (https://sketchfab.com/3d-models/fox-4e37c303f8a241aaa2511bd9f3019273) by Alexei Ostapenko (https://sketchfab.com/alexanders823) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
@@ -6,7 +9,7 @@ This work is based on "Old Book" (https://sketchfab.com/3d-models/old-book-543d8
 
 This work is based on "Real Blood Splatter Photo PNG Transparent Background" (https://www.freeiconspng.com/img/44463) 
 
-This work is based on "" (https://fr.vecteezy.com/art-vectoriel/16804437-conception-de-couverture-de-bordure-de-cadre-arabe-couverture-de-livre-islamique) by Sabor Khan (https://fr.vecteezy.com/membres/sabirgraphix) on Vecteezy (https://fr.vecteezy.com/vecteur-libre/livre)
+This work is based on "Conception de couverture de bordure de cadre" (https://fr.vecteezy.com/art-vectoriel/16804437-conception-de-couverture-de-bordure-de-cadre-arabe-couverture-de-livre-islamique) by Sabor Khan (https://fr.vecteezy.com/membres/sabirgraphix) on Vecteezy (https://fr.vecteezy.com/vecteur-libre/livre)
 
 This work is based on "Renard roux, Renard, mammifère, formats de fichier image png" (https://www.pngegg.com/fr/png-bautr).
 
@@ -29,3 +32,16 @@ This work is based on "Evening Road 01 (Pure Sky)" (https://polyhaven.com/a/even
 This work is based on "British van - Low poly model" (https://skfb.ly/6XzCu) by Daniel Zhabotinsky is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
 This work is based on "Low-Poly Wooden Sign made of Three Angled Planks" (https://skfb.ly/oN7pw) by JeffK is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+
+This work is based on "Asphalt 01" (https://polyhaven.com/a/asphalt_01) by Charlotte Baglioni (Photography) and Dario Barresi (Processing), is licensed under CC0.
+
+This work is based on "rocky trail 02" (https://polyhaven.com/a/rocky_trail_02) by Amal Kumar, is licensed under CC0.
+
+
+
+Sound & music : 
+
+This work is based on "Raposa" (https://pixabay.com/sound-effects/raposa-80166/) by pixabay, is free for use.
+
+
+
