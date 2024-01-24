@@ -19,8 +19,8 @@ EffectHandler::EffectHandler()
 void EffectHandler::setDefaultMist()
 {
     mistEffectItensity = 0.03; //0.0075
-    mistEffectColor1 = vec3(0xf9, 0xb7, 0x2f) / 255.f;
-    mistEffectColor2 = vec3(0xa8, 0x5d, 0x2a) / 255.f;
+    mistEffectColor1 = vec3(0xf9, 0xdc, 0xc4) / 255.f;
+    mistEffectColor2 = vec3(0xfe, 0xc8, 0x9a) / 255.f;
 }
 
 void EffectHandler::setDefaultPixel()
@@ -52,7 +52,7 @@ void EffectHandler::update()
     const float z2MaxDist = GameGlobals::zone2radius + z2Transition;
     float z2lerp = (max(zone2dist - GameGlobals::zone2radius, 0.f)) / (z2MaxDist - GameGlobals::zone2radius);
     z2lerp = clamp(1.f - z2lerp, 0.f, 1.f);
-    mistEffectItensity = mix(mistEffectItensity, 0.05f, z2lerp);
+    mistEffectItensity = mix(mistEffectItensity, 0.1f, z2lerp);
     mistEffectColor1 = mix(mistEffectColor1, vec3(0.8), z2lerp);
     mistEffectColor2 = mix(mistEffectColor2, vec3(0.8), z2lerp);
     

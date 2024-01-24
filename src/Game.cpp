@@ -141,7 +141,7 @@ bool Game::userInput(GLFWKeyInfo input)
 
     player->doInputs(input);
 
-    handItems->inputs(input);
+    // handItems->inputs(input);
 
     GameGlobals::E = false;
 
@@ -157,32 +157,32 @@ bool Game::userInput(GLFWKeyInfo input)
             GameGlobals::E = true;
             break;
 
-        case GLFW_KEY_F2:
-            globals.currentCamera->toggleMouseFollow();
-            break;
+        // case GLFW_KEY_F2:
+        //     globals.currentCamera->toggleMouseFollow();
+        //     break;
 
-        case GLFW_KEY_1:
-            Bloom.toggle();
-            break;
-        case GLFW_KEY_2:
-            SSAO.toggle();
-            break;
+        // case GLFW_KEY_1:
+        //     Bloom.toggle();
+        //     break;
+        // case GLFW_KEY_2:
+        //     SSAO.toggle();
+        //     break;
 
-        case GLFW_KEY_F5:
-#ifdef _WIN32
-            system("cls");
-#else
-            system("clear");
-#endif
-            finalProcessingStage.reset();
-            Bloom.getShader().reset();
-            SSAO.getShader().reset();
-            depthOnlyMaterial->reset();
-            GameGlobals::PBR->reset();
-            GameGlobals::PBRground->reset();
-            GameGlobals::PBRstencil->reset();
-            skyboxMaterial->reset();
-            break;
+//         case GLFW_KEY_F5:
+// #ifdef _WIN32
+//             system("cls");
+// #else
+//             system("clear");
+// #endif
+//             finalProcessingStage.reset();
+//             Bloom.getShader().reset();
+//             SSAO.getShader().reset();
+//             depthOnlyMaterial->reset();
+//             GameGlobals::PBR->reset();
+//             GameGlobals::PBRground->reset();
+//             GameGlobals::PBRstencil->reset();
+//             skyboxMaterial->reset();
+//             break;
 
         default:
             break;
@@ -398,17 +398,21 @@ void Game::mainloop()
     FastUI_context ui(fuiBatch, GameGlobals::FUIfont, scene2D, GameGlobals::defaultFontMaterial);
     FastUI_valueMenu menu(ui, {});
 
-    menu->state.setPosition(vec3(-0.9, 0.5, 0)).scaleScalar(0.8);
+    menu->state.setPosition(vec3(1E9, 0.5, 0)).scaleScalar(0.8);
     // globals.appTime.setMenuConst(menu);
     // globals.cpuTime.setMenu(menu);
     // globals.gpuTime.setMenu(menu);
-    globals.fpsLimiter.setMenu(menu);
+    // globals.fpsLimiter.setMenu(menu);
     // physicsTicks.setMenu(menu);
 
-    sun->setMenu(menu, U"Sun");
-    effects.setMenu(menu);
+    // sun->setMenu(menu, U"Sun");
+    // effects.setMenu(menu);
     GameGlobals::setMenu(menu);
-    player->setMenu(menu);
+
+
+    camera.toggleMouseFollow();
+
+    // player->setMenu(menu);
     // alSource3f(musicSource.getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
 
     // Portail
@@ -535,13 +539,13 @@ void Game::mainloop()
     scene.add(shadowMonster);
 
     ModelRef currentModel = foxAlive;
-    menu.push_back(
-        {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
-                                                                               FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
-                                                                               FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
-                                                                               FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"),
-                                                                               FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"),
-                                                                               FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")})});
+    // menu.push_back(
+    //     {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+    //                                                                            FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+    //                                                                            FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+    //                                                                            FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"),
+    //                                                                            FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"),
+    //                                                                            FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")})});
 
     GameGlobals::sun = sun;
 
@@ -557,17 +561,19 @@ void Game::mainloop()
     states.push_back(new FoxState());
     states.push_back(new PlayState());
     states.push_back(new EndState());
+    states.push_back(new EndFoxState());
 
     states[0]->setNextState(states[1]);
     states[1]->setNextState(states[2]);
     states[2]->setNextState(states[3]);
+    states[3]->setNextState(states[4]);
 
     GameState *currentState = states[0];
 
     GameStateManager stateManager;
-    stateManager.setState(states[0]);
+    stateManager.setState(currentState);
 
-    monster.setMenu(menu);
+    // monster.setMenu(menu);
 
     menu.batch();
     scene2D.updateAllObjects();
@@ -647,8 +653,8 @@ void Game::mainloop()
         // float c = 0.5 + 0.5*cos(globals.appTime.getElapsedTime());
         // musicSource.setPitch(0.1 + c*2);
 
-        menu.trackCursor();
-        menu.updateText();
+        // menu.trackCursor();
+        // menu.updateText();
 
         effects.update();
 
