@@ -2,6 +2,7 @@
 #include <FastUI.hpp>
 
 MeshMaterial GameGlobals::PBR;
+MeshMaterial GameGlobals::PBRground;
 MeshMaterial GameGlobals::PBRinstanced;
 MeshMaterial GameGlobals::PBRstencil;
 

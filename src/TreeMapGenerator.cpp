@@ -6,10 +6,10 @@
 #include <stb/stb_image.h>
 #include <string>
 
-#define GRID_SIZE 1024
+#define GRID_SIZE ((int)(1024/1.5))
 //256
 #define GRID_SQUARE_SIZE 8
-#define MAX_OFFSET 5
+#define MAX_OFFSET 3
 
 unsigned char getValue(unsigned char *tex, int texH, int texW, int x, int y) {
   x = clamp(x, 0, texH - 1);
@@ -79,7 +79,7 @@ void generateTreeAtSpot(float x, float y, int val, treeSizes &trunkModels, treeS
    int size;
    float rand;
 
-   if (val == 0 ) return;
+   if (val < 64 ) return;
    rand = GameGlobals::randomFloat01();
    if (val < 0x55) {
      if (rand < 0.7) addTree(x, y, trunkModels, leavesModels, 0, forest);
@@ -118,13 +118,13 @@ void generateTreesFromHeatMap(Scene &scene, std::string path, treeSizes trunks,
   stbi_uc *tex = stbi_load(path.c_str(), &mapWidth, &mapHeight, &n, 1);
   ObjectGroupRef forest = newObjectGroup();
 
-  for (int x = 0; x < GRID_SIZE; x += GRID_SQUARE_SIZE) {
-    for (int y = 0; y < GRID_SIZE; y += GRID_SQUARE_SIZE) {
-      float xOnMap = ((float)x / GRID_SIZE);
-      float yOnMap = ((float)y / GRID_SIZE);
+  for (int x = -GRID_SIZE/2; x < GRID_SIZE/2; x += GRID_SQUARE_SIZE) {
+    for (int y = -GRID_SIZE/2; y < GRID_SIZE/2; y += GRID_SQUARE_SIZE) {
+      float xOnMap = 0.5 + ((float)x / GRID_SIZE);
+      float yOnMap = 0.5 + ((float)y / GRID_SIZE);
   
-      offsetx = -100 + MAX_OFFSET * GameGlobals::randomFloat11();
-      offesty = -100 + MAX_OFFSET * GameGlobals::randomFloat11();
+      offsetx = MAX_OFFSET * GameGlobals::randomFloat11();
+      offesty = MAX_OFFSET * GameGlobals::randomFloat11();
 
       vec2 uv(xOnMap, yOnMap);
       generateTreeAtSpot(x + offsetx, y + offesty, getPixel(tex, mapWidth, mapHeight, uv), trunks, leaves, forest);

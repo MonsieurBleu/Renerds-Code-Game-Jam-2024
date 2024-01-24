@@ -14,6 +14,7 @@ class GameGlobals
 {
 public:
     static MeshMaterial PBR;
+    static MeshMaterial PBRground;
     static MeshMaterial PBRstencil;
     static MeshMaterial PBRinstanced;
 

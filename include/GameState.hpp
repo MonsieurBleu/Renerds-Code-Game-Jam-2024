@@ -48,7 +48,7 @@ public:
     FoxState(GameState *nextState) : GameState("Fox", nextState) {}
     ~FoxState() {}
 
-    ScenePointLight l;
+    // ScenePointLight l;
     BenchTimer timer;
 
     bool update(float deltaTime) override;
