@@ -531,10 +531,8 @@ void Game::mainloop()
     ModelRef shadowMonster = newModel(GameGlobals::PBR);
     shadowMonster->loadFromFolder("ressources/models/shadow/");
     shadowMonster->state
-        .scaleScalar(0.75)
-        .setPosition(vec3(-30, 0, 0));
+        .scaleScalar(0.75);
     scene.add(shadowMonster);
-
 
     ModelRef currentModel = foxAlive;
     menu.push_back(

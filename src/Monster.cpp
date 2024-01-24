@@ -38,7 +38,7 @@ void Monster::initSounds()
     scream.loadOGG("../build/ressources/Audio/scream.ogg");
     this->screamSource = new AudioSource();
     this->droneSource
-      ->setBuffer(scream.getHandle());
+        ->setBuffer(scream.getHandle());
 
     alSource3f(droneSource->getHandle(), AL_DIRECTION, 0.0, 0.0, 0.0);
     alSourcef(droneSource->getHandle(), AL_REFERENCE_DISTANCE, 2.0);
