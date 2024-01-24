@@ -102,10 +102,10 @@ void Game::init(int paramSample)
     // GameGlobals::PBRstencil->addUniform(ShaderUniform(&effects.z1lerp, 21));
 
     /* UI */
-    FUIfont = FontRef(new FontUFT8);
-    FUIfont->readCSV("ressources/fonts/Roboto/out.csv");
-    FUIfont->setAtlas(Texture2D().loadFromFileKTX("ressources/fonts/Roboto/out.ktx"));
-    defaultFontMaterial = MeshMaterial(
+    GameGlobals::FUIfont = FontRef(new FontUFT8);
+    GameGlobals::FUIfont->readCSV("ressources/fonts/Roboto/out.csv");
+    GameGlobals::FUIfont->setAtlas(Texture2D().loadFromFileKTX("ressources/fonts/Roboto/out.ktx"));
+    GameGlobals::defaultFontMaterial = MeshMaterial(
         new ShaderProgram(
             "shader/2D/sprite.frag",
             "shader/2D/sprite.vert",
@@ -395,7 +395,7 @@ void Game::mainloop()
     glLineWidth(3.0);
 
     /* Setting up the UI */
-    FastUI_context ui(fuiBatch, FUIfont, scene2D, defaultFontMaterial);
+    FastUI_context ui(fuiBatch, GameGlobals::FUIfont, scene2D, GameGlobals::defaultFontMaterial);
     FastUI_valueMenu menu(ui, {});
 
     menu->state.setPosition(vec3(-0.9, 0.5, 0)).scaleScalar(0.8);
@@ -441,7 +441,8 @@ void Game::mainloop()
     foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
     foxAlive->state
         .scaleScalar(0.009)
-        .setPosition(vec3(15, 0, -204));
+        .setRotation(vec3(radians(0.f), radians(275.f), radians(0.f)))
+        .setPosition(vec3(20, 0, -198));
     scene.add(foxAlive);
 
     ModelRef foxDead = newModel(GameGlobals::PBR);
@@ -453,6 +454,7 @@ void Game::mainloop()
     scene.add(foxDead);
 
     GameGlobals::scene = &scene;
+    GameGlobals::scene2D = &scene2D;
     GameGlobals::house = house;
 
     GameGlobals::foxAlive = foxAlive;
@@ -533,7 +535,8 @@ void Game::mainloop()
         .setPosition(vec3(-30, 0, 0));
     scene.add(shadowMonster);
 
-    ModelRef currentModel = signPost;
+
+    ModelRef currentModel = foxAlive;
     menu.push_back(
         {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
                                                                                FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
@@ -541,16 +544,6 @@ void Game::mainloop()
                                                                                FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"),
                                                                                FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"),
                                                                                FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")})});
-
-    GameGlobals::sun = sun;
-
-    GameGlobals::Zone2Center = vec3(-80, 0, 5);
-    GameGlobals::zone2radius = 60.0;
-    GameGlobals::Zone2Objectif = vec3(80E8, 0, 5);
-
-    GameGlobals::Zone1Center = vec3(100, 0, 0);
-    GameGlobals::zone1radius = 0.0;
-    GameGlobals::Zone1Objectif = vec3(100, 0, 0);
 
     GameGlobals::sun = sun;
 
@@ -595,6 +588,32 @@ void Game::mainloop()
         .loop(true)
         .play();
 
+    AudioFile step1File;
+    step1File.loadOGG("ressources/Audio/FootstepsStoneDirt1.ogg");
+
+    AudioFile step2File;
+    step2File.loadOGG("ressources/Audio/FootstepsStoneDirt2.ogg");
+
+    AudioFile step3File;
+    step3File.loadOGG("ressources/Audio/FootstepsStoneDirt3.ogg");
+
+    AudioFile step4File;
+    step4File.loadOGG("ressources/Audio/FootstepsStoneDirt4.ogg");
+
+    // AudioFile heartbeatFile;
+    // heartbeatFile.loadOGG("ressources/Audio/heartbeat.ogg");
+
+    Player::heartbeat = new AudioSource();
+    Player::step4 = new AudioSource();
+    Player::step3 = new AudioSource();
+    Player::step2 = new AudioSource();
+    Player::step1 = new AudioSource();
+
+    Player::step1->setBuffer(step1File.getHandle()).setGain(0.3f);
+    Player::step2->setBuffer(step2File.getHandle()).setGain(0.3f);
+    Player::step3->setBuffer(step3File.getHandle()).setGain(0.3f);
+    Player::step4->setBuffer(step4File.getHandle()).setGain(0.3f);
+    // Player::heartbeat.setBuffer(heartbeatFile.getHandle()).loop(true);
     AudioSource birdsSource;
     birdsSource
         .setBuffer(birds.getHandle())

@@ -12,14 +12,14 @@ private:
     vec3 mistEffectColor1;
     vec3 mistEffectColor2;
 
-    float z2Transition = 50.0;
-    float z1Transition = 30.0;
+    float z2Transition = 60.0/1.5;
+    float z1Transition = 60.0/1.5;
 
     float o2MinDist = 5.0;
-    float o2Transition = 60.0;
+    float o2Transition = 30.0;
 
-    float o1MinDist = 5.0;
-    float o1Transition = 35.0;
+    float o1MinDist = 42.0/1.5;
+    float o1Transition = 100.0/1.5;
 
 
 

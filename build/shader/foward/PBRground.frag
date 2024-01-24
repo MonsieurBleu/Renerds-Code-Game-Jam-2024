@@ -42,7 +42,7 @@ void main() {
     vec3 colorForest = texture(bColorPath, uv2).rgb;
     vec4 normalForest = texture(bMaterialPath, uv2);
 
-    float forest = smoothstep(0.0, 0.1, map.x);
+    float forest = smoothstep(0.0, 0.4, map.x);
 
     color = mix(colorForest, color, forest);
     NRM = mix(normalForest, NRM, forest);
@@ -58,7 +58,7 @@ void main() {
     normalComposed = perturbNormal(normal, viewVector, NRM.xy, uv2);
     viewDir = normalize(_cameraPosition - position);
 
-    color = map.xyz;
+    //color = map.xyz;
 
 
     normalComposed = gl_FrontFacing ? normalComposed : -normalComposed;
