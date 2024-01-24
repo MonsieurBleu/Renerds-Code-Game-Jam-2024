@@ -43,6 +43,7 @@ bool Player::canDie = true;
 vec3 Player::respawnPoint = vec3(0.0f);
 
 vec3 Player::deathLookDir = vec3(0.0f);
+vec3 Player::lifeLookDir = vec3(0.0f);
 
 bool Player::reviveAnimation = false;
 float Player::reviveAnimationStart = 0.0f;
@@ -148,7 +149,7 @@ void Player::update(float deltaTime)
         else
         {
             reviveAnimationProgress = (globals.appTime.getElapsedTime() - reviveAnimationStart) / reviveAnimationLength;
-            vec3 camDir = lerp(deathLookDir, vec3(1, 0, 0), reviveAnimationProgress);
+            vec3 camDir = lerp(deathLookDir, lifeLookDir, reviveAnimationProgress);
             globals.currentCamera->setDirection(camDir);
         }
 
@@ -583,7 +584,7 @@ void Player::mouseLook()
 
 void Player::die()
 {
-    return;
+    lifeLookDir = globals.currentCamera->getDirection();
     canDie = false;
     // death animation
     ((SphereCollider *)body->getCollider())->setRadius(0.5f);

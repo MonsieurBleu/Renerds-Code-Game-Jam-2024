@@ -89,7 +89,7 @@ void StartState::onEnter()
 
     Player::respawnPoint = vec3(11.5, 1, -188);
     GameGlobals::player->respawn();
-    // Player::deathLookDir = vec3(0, 0, -1);
+    Player::lifeLookDir = vec3(0, 0, 1);
     // GameGlobals::player->teleport(vec3(126, 1, 136));
 
     // GameGlobals::foxAlive->state.setPosition(vec3(110, 0, 126));

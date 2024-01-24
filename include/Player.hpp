@@ -112,6 +112,7 @@ public:
     static float deathAnimationProgress;
 
     static vec3 deathLookDir;
+    static vec3 lifeLookDir;
 
     static bool reviveAnimation;
     static float reviveAnimationStart;
