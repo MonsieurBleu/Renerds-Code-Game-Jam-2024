@@ -448,7 +448,6 @@ void Game::mainloop()
         .setPosition(vec3(12, 0, -179));
     scene.add(house);
 
-
     ModelRef foxAlive = newModel(GameGlobals::PBR);
     foxAlive->loadFromFolder("ressources/models/fox/foxAlive/");
     foxAlive->state
@@ -469,8 +468,6 @@ void Game::mainloop()
 
     GameGlobals::foxAlive = foxAlive;
     GameGlobals::foxDead = foxDead;
-
-
 
     ModelRef fence = newModel(GameGlobals::PBRstencil);
     fence->loadFromFolder("ressources/models/fence/");
@@ -506,7 +503,6 @@ void Game::mainloop()
         .setPosition(vec3(185, 0, 53));
     scene.add(stumpBook);
 
-  
     GameGlobals::foxTeddy = foxTeddy;
     GameGlobals::stumpTeddy = stumpTeddy;
     GameGlobals::bookFox = bookFox;
@@ -528,11 +524,10 @@ void Game::mainloop()
         .setPosition(vec3(-40, 0, -221));
     scene.add(carWithBlood);
 
-    
     GameGlobals::car = car;
     GameGlobals::carWithBlood = carWithBlood;
 
-   ModelRef signPost = newModel(GameGlobals::PBR);
+    ModelRef signPost = newModel(GameGlobals::PBR);
     signPost->loadFromFolder("ressources/models/signpost/");
     signPost->state
         .scaleScalar(1)
@@ -549,19 +544,14 @@ void Game::mainloop()
         .setPosition(vec3(-30, 0, 0));
     scene.add(shadowMonster);
 
-
     ModelRef currentModel = signPost;
     menu.push_back(
-        {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {
-            FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle), 
-            FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle), 
-            FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
-            FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"), 
-            FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"), 
-            FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")
-        })}
-    );
-
+        {FastUI_menuTitle(menu.ui, U"tmp rotation"), FastUI_valueTab(menu.ui, {FastUI_value(&(currentModel->state.rotation.x), U"r x\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+                                                                               FastUI_value(&(currentModel->state.rotation.y), U"r y\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+                                                                               FastUI_value(&(currentModel->state.rotation.z), U"r z\t", U"\f", FastUi_supportedValueType::FUI_floatAngle),
+                                                                               FastUI_value(&(currentModel->state.position.x), U"p x\t", U"\f"),
+                                                                               FastUI_value(&(currentModel->state.position.y), U"p y\t", U"\f"),
+                                                                               FastUI_value(&(currentModel->state.position.z), U"p z\t", U"\f")})});
 
     GameGlobals::sun = sun;
 
@@ -580,7 +570,7 @@ void Game::mainloop()
     shadowMonster->state.setPosition(GameGlobals::Zone2Center);
 
     GameGlobals::monster = &monster;
-    monster.playDrone();
+    monster.initSounds();
 
     std::vector<GameState *> states;
     states.push_back(new StartState());

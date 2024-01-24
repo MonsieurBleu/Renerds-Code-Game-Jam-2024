@@ -49,8 +49,11 @@ float Player::reviveAnimationStart = 0.0f;
 float Player::reviveAnimationLength = 1.0f;
 float Player::reviveAnimationProgress = 0.000f;
 
-// AudioSource Player::heartbeat;
-// AudioSource Player::step1;
+AudioSource Player::heartbeat;
+AudioSource Player::step1;
+AudioSource Player::step2;
+AudioSource Player::step3;
+AudioSource Player::step4;
 
 std::vector<RigidBodyRef>
     Player::thingsYouCanStandOn;
